@@ -4,13 +4,13 @@
 #SingleInstance Force
 
 ; ==============================================================================
-; 1. 初期設定・変数定義
+; 初期設定・変数定義
 ; ==============================================================================
 global AppName := "Prompt Linker"
 global ConfigFile := A_ScriptDir "\config.json"
 global TargetHWND := 0
 global TargetProcess := ""
-global IsSettingsVisible := false
+; global IsSettingsVisible := false
 global IsLinking := false
 
 ; デフォルト設定
@@ -30,7 +30,7 @@ if !DirExist(Settings["LogDir"]) {
 }
 
 ; ==============================================================================
-; 2. GUIの構築
+; GUIの構築
 ; ==============================================================================
 MainGui := Gui("+AlwaysOnTop +Resize -Caption", AppName) ; -Captionでタイトルバー削除
 MainGui.BackColor := "1e1e1e" ; 背景色をHTMLと合わせる
@@ -46,21 +46,28 @@ try {
     dllPath := ""
 
     ; 探索パスリスト
-    searchPaths := [A_ScriptDir "\Lib\WebView2\" subDir "\WebView2Loader.dll", A_ScriptDir "\WebView2\" subDir "\WebView2Loader.dll"]
+    searchPaths := [
+        A_ScriptDir "\Lib\WebView2\" subDir "\WebView2Loader.dll",
+        A_ScriptDir "\WebView2\" subDir "\WebView2Loader.dll"
+    ]
     for path in searchPaths {
         if FileExist(path)
             dllPath := path
     }
 
     if (dllPath == "") {
-        dllPath := A_ScriptDir "\Lib\WebView2\" subDir "\WebView2Loader.dll" ; エラーメッセージ用にデフォルトを設定
+        dllPath := A_ScriptDir "\Lib\WebView2\" subDir "\WebView2Loader.dll"
         throw Error("WebView2Loader.dll が見つかりません。`nパス: " dllPath)
     }
 
     ; 明示的なパスを指定してCreate
     wvc := WebView2.Create(MainGui.Hwnd, , , , , , dllPath)
 } catch as err {
-    MsgBox("WebView2の初期化に失敗しました。`n" err.Message "`n`nLib/WebView2/ フォルダの構成を確認してください。", "Error", 16)
+    MsgBox(
+        "WebView2の初期化に失敗しました。`n" err.Message "`n`nLib/WebView2/ フォルダの構成を確認してください。",
+        "Error",
+        16
+    )
     ExitApp
 }
 
@@ -97,7 +104,7 @@ wvc.IsVisible := true     ; WebView2を明示的に可視化
 wvc.Fill()                ; ウィンドウサイズに合わせてWebView2を広げる
 
 ; ==============================================================================
-; 3. 機能ロジック
+; 機能ロジック
 ; ==============================================================================
 
 Gui_Size(thisGui, minMax, width, height) {

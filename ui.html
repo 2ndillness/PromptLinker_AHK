@@ -1,104 +1,161 @@
 <!-- Modern UI Version -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <!-- Custom Title Bar -->
     <div class="title-bar">
-        <div class="drag-region" onmousedown="sendMsg('dragWindow')">
-            <span style="margin-left: 5px;">Prompt Linker</span>
-        </div>
-        <button class="win-btn" onclick="sendMsg('minWindow')" title="Minimize">
-            <svg width="10" height="1" viewBox="0 0 10 1"><rect width="10" height="1" fill="currentColor"/></svg>
-        </button>
-        <button class="win-btn" onclick="sendMsg('toggleMax')" title="Maximize/Restore">
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="9" height="9"/></svg>
-        </button>
-        <button class="win-btn close" onclick="sendMsg('closeWindow')" title="Close">
-            <svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1"/></svg>
-        </button>
+      <div class="drag-region" onmousedown="sendMsg('dragWindow')">
+        <span style="margin-left: 5px">Prompt Linker</span>
+      </div>
+      <button class="win-btn" onclick="sendMsg('minWindow')" title="Minimize">
+        <svg width="10" height="1" viewBox="0 0 10 1">
+          <rect width="10" height="1" fill="currentColor" />
+        </svg>
+      </button>
+      <button
+        class="win-btn"
+        onclick="sendMsg('toggleMax')"
+        title="Maximize/Restore"
+      >
+        <svg
+          width="10"
+          height="10"
+          viewBox="0 0 10 10"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+        >
+          <rect x="0.5" y="0.5" width="9" height="9" />
+        </svg>
+      </button>
+      <button
+        class="win-btn close"
+        onclick="sendMsg('closeWindow')"
+        title="Close"
+      >
+        <svg width="10" height="10" viewBox="0 0 10 10">
+          <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1" />
+        </svg>
+      </button>
     </div>
 
-    <div id="content-area" style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
+    <div
+      id="content-area"
+      style="
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      "
+    >
+      <!-- Main View -->
+      <div id="main-view">
+        <div class="toolbar">
+          <button id="link-btn" onclick="sendMsg('toggleLink')">
+            Link Target
+          </button>
 
-        <!-- Main View -->
-        <div id="main-view">
-            <div class="toolbar">
-                <button id="link-btn" onclick="sendMsg('toggleLink')">Link Target</button>
+          <select
+            id="send-mode"
+            onchange="sendMsg('updateSetting:SendMode:' + this.value)"
+          >
+            <option value="Enter">Enter</option>
+            <option value="Ctrl + Enter">Ctrl + Enter</option>
+            <option value="Shift + Enter">Shift + Enter</option>
+            <option value="Paste + Min">Paste + Min</option>
+            <option value="Paste Only">Paste Only</option>
+          </select>
 
-                <select id="send-mode" onchange="sendMsg('updateSetting:SendMode:' + this.value)">
-                    <option value="Enter">Enter</option>
-                    <option value="Ctrl + Enter">Ctrl + Enter</option>
-                    <option value="Shift + Enter">Shift + Enter</option>
-                    <option value="Paste + Min">Paste + Min</option>
-                    <option value="Paste Only">Paste Only</option>
-                </select>
+          <button
+            id="settings-btn"
+            onclick="toggleSettingsView()"
+            title="Settings"
+          >
+            ⚙
+          </button>
 
-                <button id="settings-btn" onclick="toggleSettingsView()" title="Settings">⚙</button>
-
-                <span id="status-label" class="status-label">Disconnected</span>
-            </div>
-
-            <textarea id="main-textarea"></textarea>
+          <span id="status-label" class="status-label">Disconnected</span>
         </div>
 
-        <!-- Settings View (Toggle) -->
-        <div id="settings-view" class="hidden">
-            <div class="settings-header">
-                <button onclick="toggleSettingsView()" style="margin-right:15px;">&larr; Back</button>
-                <h3>Settings</h3>
-            </div>
+        <textarea id="main-textarea"></textarea>
+      </div>
 
-            <div class="setting-row">
-                <label>Font Size</label>
-                <div class="num-control">
-                    <button onclick="sendMsg('changeFontSize:-1')">-</button>
-                    <span id="font-size-val">14</span>
-                    <button onclick="sendMsg('changeFontSize:1')" >+</button>
-                </div>
-            </div>
-
-            <div class="setting-row">
-                <label>Save Log</label>
-                <label class="switch">
-                    <input type="checkbox" id="save-log-check" onchange="sendMsg('updateSetting:SaveLog:' + (this.checked ? '1' : '0'))">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div style="margin-bottom: 15px;">
-                <label>Log Directory:</label>
-                <div class="input-group">
-                    <input type="text" id="log-dir-display" readonly value="C:\...">
-                    <!-- SVG Folder Icon -->
-                    <button onclick="sendMsg('selectLogDir')" title="Browse Folder">
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                            <path d="M14.5 3H7.71l-.85-.85A2.5 2.5 0 0 0 5.09 1.5H1.5A1.5 1.5 0 0 0 0 3v10a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V4.5A1.5 1.5 0 0 0 14.5 3zM1.5 2.5h3.59c.4 0 .78.16 1.06.44l.85.85H1.5V2.5zM15 13a.5.5 0 0 1-.5.5H1.5a.5.5 0 0 1-.5-.5V4.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5V13z"/>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <div class="setting-row" style="margin-top: 20px; justify-content: flex-end; gap: 10px;">
-                <button onclick="sendMsg('openLogDir')">Open Folder</button>
-                <button onclick="sendMsg('viewLatestLog')">View Log</button>
-            </div>
+      <!-- Settings View (Toggle) -->
+      <div id="settings-view" class="hidden">
+        <div class="settings-header">
+          <button onclick="toggleSettingsView()" style="margin-right: 15px">
+            &larr; Back
+          </button>
+          <h3>Settings</h3>
         </div>
+
+        <div class="setting-row">
+          <label>Font Size</label>
+          <div class="num-control">
+            <button onclick="sendMsg('changeFontSize:-1')">-</button>
+            <span id="font-size-val">14</span>
+            <button onclick="sendMsg('changeFontSize:1')">+</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label>Save Log</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="save-log-check"
+              onchange="
+                sendMsg('updateSetting:SaveLog:' + (this.checked ? '1' : '0'))
+              "
+            />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div style="margin-bottom: 15px">
+          <label>Log Directory:</label>
+          <div class="input-group">
+            <input type="text" id="log-dir-display" readonly value="C:\..." />
+            <!-- SVG Folder Icon -->
+            <button onclick="sendMsg('selectLogDir')" title="Browse Folder">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+              >
+                <path
+                  d="M14.5 3H7.71l-.85-.85A2.5 2.5 0 0 0 5.09 1.5H1.5A1.5 1.5 0 0 0 0 3v10a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V4.5A1.5 1.5 0 0 0 14.5 3zM1.5 2.5h3.59c.4 0 .78.16 1.06.44l.85.85H1.5V2.5zM15 13a.5.5 0 0 1-.5.5H1.5a.5.5 0 0 1-.5-.5V4.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5V13z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="setting-row"
+          style="margin-top: 20px; justify-content: flex-end; gap: 10px"
+        >
+          <button onclick="sendMsg('openLogDir')">Open Folder</button>
+          <button onclick="sendMsg('viewLatestLog')">View Log</button>
+        </div>
+      </div>
     </div>
 
     <!-- Context Menu -->
     <div id="context-menu" class="context-menu">
-        <div class="menu-item" onclick="execCmd('cut')">Cut</div>
-        <div class="menu-item" onclick="execCmd('copy')">Copy</div>
-        <div class="menu-item" onclick="execCmd('paste')">Paste</div>
-        <div class="separator"></div>
-        <div class="menu-item" onclick="execCmd('selectAll')">Select All</div>
+      <div class="menu-item" onclick="execCmd('cut')">Cut</div>
+      <div class="menu-item" onclick="execCmd('copy')">Copy</div>
+      <div class="menu-item" onclick="execCmd('paste')">Paste</div>
+      <div class="separator"></div>
+      <div class="menu-item" onclick="execCmd('selectAll')">Select All</div>
     </div>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
