@@ -1,7 +1,7 @@
 ﻿{
   "FontSize": 14,
-  "SaveLog": true,
   "LogDir": "C:\\MyProjects\\PromptLinker_AHK\\logs",
-  "SendMode": "Enter",
-  "PasteDelay": 400
+  "PasteDelay": 400,
+  "SaveLog": 1,
+  "SendMode": "Enter"
 }

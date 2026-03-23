@@ -55,6 +55,9 @@ body {
     color: #cc0000;
     margin-left: auto;
 }
+.status-label.waiting { color: #FF8C00; }
+.status-label.success { color: #28a745; }
+.status-label.error { color: #cc0000; }
 button {
     background-color: var(--input-bg);
     color: var(--text-color);

@@ -1,4 +1,5 @@
 #Include Lib\WebView2\WebView2.ahk
+#Include Lib\JSON.ahk
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
@@ -33,7 +34,7 @@ if !DirExist(Settings["LogDir"]) {
 ; ==============================================================================
 MainGui := Gui("+AlwaysOnTop +Resize -Caption", AppName) ; -Captionでタイトルバー削除
 MainGui.BackColor := "1e1e1e" ; 背景色をHTMLと合わせる
-MainGui.Opt("+MinSize400x300")
+MainGui.Opt("+MinSize300x150")
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
 
@@ -71,12 +72,7 @@ wv.Settings.IsZoomControlEnabled := false
 ; ==============================================================================
 ; 設定値の注入とHTMLファイルのロード
 ; ==============================================================================
-settingsJson := "{"
-settingsJson .= "SendMode: '" . Settings["SendMode"] . "',"
-settingsJson .= "FontSize: " . Settings["FontSize"] . ","
-settingsJson .= "SaveLog: " . (Settings["SaveLog"] ? "true" : "false") . ","
-settingsJson .= "LogDir: '" . StrReplace(Settings["LogDir"], "\", "\\") . "'"
-settingsJson .= "}"
+settingsJson := JSON.Dump(Settings)
 
 ; HTMLロード前にJS変数を定義しておく
 wv.AddScriptToExecuteOnDocumentCreatedAsync("window.ahkSettings = " . settingsJson . ";")
@@ -166,7 +162,7 @@ WebView_OnMessage(sender, args) {
 StartLinking() {
     global IsLinking := true
     ; HTML側の表示を更新
-    wv.ExecuteScriptAsync("updateBtn('Waiting...'); updateStatus('Activate Target Window...', '#FF8C00');")
+    wv.ExecuteScriptAsync("updateBtn('Waiting...'); updateStatus('Activate Target Window...', 'waiting');")
 
     global StartTime := A_TickCount
     SetTimer(CheckActiveWindow, 100)
@@ -176,8 +172,8 @@ CancelLinking(msg := "Cancelled") {
     global IsLinking := false
     SetTimer(CheckActiveWindow, 0)
 
-    color := (msg == "Cancelled" || msg == "Timeout") ? "#cc0000" : "#28a745"
-    wv.ExecuteScriptAsync("updateBtn('Link Target'); updateStatus('" . msg . "', '" . color . "');")
+    type := (msg == "Cancelled" || msg == "Timeout") ? "error" : "success"
+    wv.ExecuteScriptAsync("updateBtn('Link Target'); updateStatus('" . msg . "', '" . type . "');")
 }
 
 CheckActiveWindow() {
@@ -190,7 +186,7 @@ CheckActiveWindow() {
 
         ; リンク成功時の表示更新
         statusMsg := "Linked: " . TargetProcess
-        wv.ExecuteScriptAsync("updateBtn('Relink'); updateStatus('" . statusMsg . "', '#28a745');")
+        wv.ExecuteScriptAsync("updateBtn('Relink'); updateStatus('" . statusMsg . "', 'success');")
 
         WinActivate("ahk_id " . MainGui.Hwnd)
 
@@ -289,18 +285,9 @@ SaveToLog(content) {
 
 SaveAndExit(*) {
     try {
-        jsonStr := '{' . '`r`n'
-        jsonStr .= '  "FontSize": ' . Settings["FontSize"] . ',`r`n'
-        jsonStr .= '  "SaveLog": ' . (Settings["SaveLog"] ? "true" : "false") . ',`r`n'
-        jsonStr .= '  "LogDir": "' . StrReplace(Settings["LogDir"], "\", "\\") . '",`r`n'
-        jsonStr .= '  "SendMode": "' . Settings["SendMode"] . '",`r`n'
-        jsonStr .= '  "PasteDelay": ' . Settings["PasteDelay"] . '`r`n'
-        jsonStr .= '}'
-
-        if FileExist(ConfigFile) {
+        if FileExist(ConfigFile)
             FileDelete(ConfigFile)
-        }
-        FileAppend(jsonStr, ConfigFile, "UTF-8")
+        FileAppend(JSON.Dump(Settings, "  "), ConfigFile, "UTF-8")
     }
     ExitApp()
 }
@@ -312,20 +299,10 @@ LoadSettings() {
 
     try {
         raw := FileRead(ConfigFile, "UTF-8")
-        if RegExMatch(raw, '"FontSize":\s*(\d+)', &m) {
-            Settings["FontSize"] := Number(m[1])
-        }
-        if RegExMatch(raw, '"SaveLog":\s*(true|false)', &m) {
-            Settings["SaveLog"] := (m[1] = "true")
-        }
-        if RegExMatch(raw, '"LogDir":\s*"(.*?)"', &m) {
-            Settings["LogDir"] := StrReplace(m[1], "\\", "\")
-        }
-        if RegExMatch(raw, '"SendMode":\s*"(.*?)"', &m) {
-            Settings["SendMode"] := m[1]
-        }
-        if RegExMatch(raw, '"PasteDelay":\s*(\d+)', &m) {
-            Settings["PasteDelay"] := Number(m[1])
+        loaded := JSON.Load(raw)
+        for k, v in loaded {
+            if Settings.Has(k)
+                Settings[k] := v
         }
     }
 }

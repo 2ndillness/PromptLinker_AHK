@@ -28,10 +28,11 @@ function updateBtn(text) {
     document.getElementById('link-btn').innerText = text;
 }
 
-function updateStatus(text, color) {
+function updateStatus(text, type) {
     const el = document.getElementById('status-label');
     el.innerText = text;
-    el.style.color = color;
+    el.className = 'status-label ' + (type || '');
+    el.style.color = '';
 }
 
 function updateFontSizeDisplay(size) {
