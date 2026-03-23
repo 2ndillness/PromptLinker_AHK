@@ -31,20 +31,28 @@ if !DirExist(Settings["LogDir"]) {
 ; ==============================================================================
 ; 2. GUIの構築
 ; ==============================================================================
-MainGui := Gui("+AlwaysOnTop +Resize", AppName)
-MainGui.Opt("+MinSize600x450")
+MainGui := Gui("+AlwaysOnTop +Resize -Caption", AppName) ; -Captionでタイトルバー削除
+MainGui.BackColor := "1e1e1e" ; 背景色をHTMLと合わせる
+MainGui.Opt("+MinSize400x300")
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
-SetWindowAttribute(MainGui) ; ダークモード適用（タイトルバー等）
 
 ; WebView2 コントロールの作成
 global wvc := ""
 try {
     ; DLLのパスを明示的に解決する
-    dllDir := A_ScriptDir "\Lib\WebView2\" (A_PtrSize = 8 ? "64bit" : "32bit")
-    dllPath := dllDir "\WebView2Loader.dll"
+    subDir := (A_PtrSize = 8 ? "64bit" : "32bit")
+    dllPath := ""
 
-    if !FileExist(dllPath) {
+    ; 探索パスリスト
+    searchPaths := [A_ScriptDir "\Lib\WebView2\" subDir "\WebView2Loader.dll", A_ScriptDir "\WebView2\" subDir "\WebView2Loader.dll"]
+    for path in searchPaths {
+        if FileExist(path)
+            dllPath := path
+    }
+
+    if (dllPath == "") {
+        dllPath := A_ScriptDir "\Lib\WebView2\" subDir "\WebView2Loader.dll" ; エラーメッセージ用にデフォルトを設定
         throw Error("WebView2Loader.dll が見つかりません。`nパス: " dllPath)
     }
 
@@ -60,13 +68,32 @@ global wv := wvc.CoreWebView2
 wv.Settings.AreDefaultContextMenusEnabled := false ; 右クリックメニューを無効化
 wv.Settings.IsZoomControlEnabled := false
 
-; HTMLの読み込み（UIの定義）
-htmlContent := GetHtmlContent()
-if (htmlContent == "") {
-    MsgBox("ui.html の内容が空です。ファイルを正しく保存できているか確認してください。", "Error", 16)
+; ==============================================================================
+; 設定値の注入とHTMLファイルのロード
+; ==============================================================================
+settingsJson := "{"
+settingsJson .= "SendMode: '" . Settings["SendMode"] . "',"
+settingsJson .= "FontSize: " . Settings["FontSize"] . ","
+settingsJson .= "SaveLog: " . (Settings["SaveLog"] ? "true" : "false") . ","
+settingsJson .= "LogDir: '" . StrReplace(Settings["LogDir"], "\", "\\") . "'"
+settingsJson .= "}"
+
+; HTMLロード前にJS変数を定義しておく
+wv.AddScriptToExecuteOnDocumentCreatedAsync("window.ahkSettings = " . settingsJson . ";")
+
+; ui.html をファイルとしてロード (CSS/JSの相対パス解決のため)
+htmlPath := "file:///" . StrReplace(A_ScriptDir, "\", "/") . "/ui.html"
+
+; ファイル存在確認
+if !FileExist(A_ScriptDir "\ui.html") {
+    MsgBox("ui.html が見つかりません。", "Error", 16)
     ExitApp
 }
-wv.NavigateToString(htmlContent)
+
+; Navigate を使用してローカルファイルをロード
+wv.Navigate(htmlPath)
+
+; イベントハンドラ登録
 wv.add_WebMessageReceived(WebView_OnMessage)
 
 MainGui.Show("w600 h450") ; WebViewの準備が整ってからウィンドウを表示
@@ -119,6 +146,20 @@ WebView_OnMessage(sender, args) {
         Run(Settings["LogDir"])
     } else if (msg == "viewLatestLog") {
         OpenLatestLog()
+
+        ; ウィンドウ制御系メッセージの処理
+    } else if (msg == "dragWindow") {
+        DllCall("User32\ReleaseCapture") ; WebViewからマウスキャプチャを解放
+        PostMessage(0xA1, 2, 0, MainGui.Hwnd) ; WM_NCLBUTTONDOWN
+    } else if (msg == "toggleMax") {
+        if (WinGetMinMax(MainGui.Hwnd) == 1)
+            MainGui.Restore()
+        else
+            MainGui.Maximize()
+    } else if (msg == "minWindow") {
+        MainGui.Minimize()
+    } else if (msg == "closeWindow") {
+        SaveAndExit()
     }
 }
 
@@ -160,26 +201,6 @@ CheckActiveWindow() {
     }
 }
 
-/**
- * ウィンドウにダークモード属性を適用する
- * Windows 10 (Build 17763以降) / Windows 11 対応
- */
-SetWindowAttribute(GuiObj) {
-    if (VerCompare(A_OSVersion, "10.0.17763") < 0)
-        return
-
-    ; DWMWA_USE_IMMERSIVE_DARK_MODE = 20 (Windows 11, Windows 10 20H1+)
-    ; DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19 (Windows 10 older builds)
-    attr := 20
-    if (VerCompare(A_OSVersion, "10.0.18985") < 0)
-        attr := 19
-
-    DllCall("dwmapi\DwmSetWindowAttribute", "Ptr", GuiObj.Hwnd, "Int", attr, "Int*", 1, "Int", 4)
-
-    ; コントロールのテーマをExplorerスタイル（ダーク対応）に設定
-    DllCall("uxtheme\SetWindowTheme", "Ptr", GuiObj.Hwnd, "Str", "DarkMode_Explorer", "Str", "")
-}
-
 ChangeFontSize(delta) {
     newSize := Settings["FontSize"] + delta
     if (newSize < 8)
@@ -191,7 +212,12 @@ ChangeFontSize(delta) {
 }
 
 SelectLogDir(*) {
-    selDir := DirSelect("*" . Settings["LogDir"], 3, "Select Log Directory")
+    ; ダイアログが背後に隠れないように、一時的にAlwaysOnTopを解除
+    MainGui.Opt("-AlwaysOnTop")
+    ; モダンなフォルダ選択ダイアログを使用
+    selDir := FileSelect("D", "*" . Settings["LogDir"], "Select Log Directory")
+    ; AlwaysOnTopを再設定
+    MainGui.Opt("+AlwaysOnTop")
     if (selDir != "") {
         Settings["LogDir"] := selDir
         ; JS側の表示を更新（バックスラッシュをエスケープして渡す）
@@ -308,30 +334,4 @@ LoadSettings() {
     if WinExist("ahk_id " . MainGui.Hwnd) {
         WinActivate("ahk_id " . MainGui.Hwnd)
     }
-}
-
-; ==============================================================================
-; HTML Content (Modern UI Template)
-; ==============================================================================
-GetHtmlContent() {
-    global Settings ; グローバル変数を参照することを明示
-    htmlPath := A_ScriptDir "\ui.html"
-    if !FileExist(htmlPath) {
-        MsgBox("UI definition file not found:`n" htmlPath, "Error", 16)
-        ExitApp
-    }
-
-    htmlContent := FileRead(htmlPath, "UTF-8")
-
-    ; 現在の設定値をJSONオブジェクトとしてJSに注入する
-    settingsJson := "{"
-    settingsJson .= "SendMode: '" . Settings["SendMode"] . "',"
-    settingsJson .= "FontSize: " . Settings["FontSize"] . ","
-    settingsJson .= "SaveLog: " . (Settings["SaveLog"] ? "true" : "false") . ","
-    settingsJson .= "LogDir: '" . StrReplace(Settings["LogDir"], "\", "\\") . "'"
-    settingsJson .= "}"
-
-    jsInjection := "initSettings(" . settingsJson . ");"
-
-    return StrReplace(htmlContent, "// AHK_SETTINGS_INJECTION_PLACEHOLDER", jsInjection)
 }

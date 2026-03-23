@@ -1,172 +1,86 @@
+<!-- Modern UI Version -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        :root {
-            --bg-color: #1e1e1e;
-            --text-color: #e0e0e0;
-            --accent-color: #007acc;
-            --input-bg: #2d2d2d;
-            --font-family: 'Segoe UI', 'Meiryo', sans-serif;
-            --toolbar-height: 50px;
-            --border-color: #444;
-        }
-        .toolbar {
-            display: flex;
-            align-items: center;
-            padding-bottom: 10px;
-            gap: 15px;
-        }
-        .status-label {
-            font-weight: bold;
-            font-size: 14px;
-            color: #cc0000;
-        }
-        body {
-            font-family: var(--font-family);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            height: calc(100vh - 2rem);
-            box-sizing: border-box;
-            overflow: hidden;
-        }
-        button {
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 5px 15px;
-            cursor: pointer;
-            font-family: var(--font-family);
-            border-radius: 3px;
-        }
-        button:hover { background-color: #3e3e3e; }
-        button:active { background-color: #005a9e; }
-
-        select {
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 5px;
-            border-radius: 3px;
-        }
-        textarea {
-            flex-grow: 1;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            border: 1px solid #444;
-            border-radius: 4px;
-            padding: 10px;
-            font-size: 16px;
-            font-family: var(--font-family);
-            resize: none;
-            outline: none;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.6);
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-content {
-            background-color: #252526;
-            border: 1px solid #454545;
-            width: 80%;
-            max-width: 400px;
-            padding: 20px;
-            border-radius: 6px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
-        .modal-header h3 { margin: 0; color: var(--accent-color); }
-        .close-btn { color: #aaa; font-size: 24px; cursor: pointer; }
-        .close-btn:hover { color: #fff; }
-
-        .setting-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .setting-row label { font-size: 14px; }
-        .path-display {
-            width: 100%;
-            background: #1e1e1e;
-            border: 1px solid #333;
-            color: #888;
-            font-size: 12px;
-            padding: 5px;
-            margin-bottom: 5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="toolbar">
-        <button id="link-btn" onclick="sendMsg('toggleLink')">Link Target</button>
-
-        <select id="send-mode" onchange="sendMsg('updateSetting:SendMode:' + this.value)">
-            <option value="Enter">Enter</option>
-            <option value="Ctrl + Enter">Ctrl + Enter</option>
-            <option value="Shift + Enter">Shift + Enter</option>
-            <option value="Paste + Min">Paste + Min</option>
-            <option value="Paste Only">Paste Only</option>
-        </select>
-
-        <button id="settings-btn" onclick="openModal()" title="Settings">⚙</button>
-
-        <span id="status-label" class="status-label">Disconnected</span>
+    <!-- Custom Title Bar -->
+    <div class="title-bar">
+        <div class="drag-region" onmousedown="sendMsg('dragWindow')">
+            <span style="margin-left: 5px;">Prompt Linker</span>
+        </div>
+        <button class="win-btn" onclick="sendMsg('minWindow')" title="Minimize">
+            <svg width="10" height="1" viewBox="0 0 10 1"><rect width="10" height="1" fill="currentColor"/></svg>
+        </button>
+        <button class="win-btn" onclick="sendMsg('toggleMax')" title="Maximize/Restore">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1"><rect x="0.5" y="0.5" width="9" height="9"/></svg>
+        </button>
+        <button class="win-btn close" onclick="sendMsg('closeWindow')" title="Close">
+            <svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1"/></svg>
+        </button>
     </div>
 
-    <textarea id="main-textarea" placeholder="プロンプトをここに入力..."></textarea>
+    <div id="content-area" style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
 
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
+        <!-- Main View -->
+        <div id="main-view">
+            <div class="toolbar">
+                <button id="link-btn" onclick="sendMsg('toggleLink')">Link Target</button>
+
+                <select id="send-mode" onchange="sendMsg('updateSetting:SendMode:' + this.value)">
+                    <option value="Enter">Enter</option>
+                    <option value="Ctrl + Enter">Ctrl + Enter</option>
+                    <option value="Shift + Enter">Shift + Enter</option>
+                    <option value="Paste + Min">Paste + Min</option>
+                    <option value="Paste Only">Paste Only</option>
+                </select>
+
+                <button id="settings-btn" onclick="toggleSettingsView()" title="Settings">⚙</button>
+
+                <span id="status-label" class="status-label">Disconnected</span>
+            </div>
+
+            <textarea id="main-textarea"></textarea>
+        </div>
+
+        <!-- Settings View (Toggle) -->
+        <div id="settings-view" class="hidden">
+            <div class="settings-header">
+                <button onclick="toggleSettingsView()" style="margin-right:15px;">&larr; Back</button>
                 <h3>Settings</h3>
-                <span class="close-btn" onclick="closeModal()">&times;</span>
             </div>
 
             <div class="setting-row">
-                <label>Font Size: <span id="font-size-val">14</span>px</label>
-                <div>
+                <label>Font Size</label>
+                <div class="num-control">
                     <button onclick="sendMsg('changeFontSize:-1')">-</button>
-                    <button onclick="sendMsg('changeFontSize:1')">+</button>
+                    <span id="font-size-val">14</span>
+                    <button onclick="sendMsg('changeFontSize:1')" >+</button>
                 </div>
             </div>
 
             <div class="setting-row">
                 <label>Save Log</label>
-                <input type="checkbox" id="save-log-check" onchange="sendMsg('updateSetting:SaveLog:' + (this.checked ? '1' : '0'))">
+                <label class="switch">
+                    <input type="checkbox" id="save-log-check" onchange="sendMsg('updateSetting:SaveLog:' + (this.checked ? '1' : '0'))">
+                    <span class="slider"></span>
+                </label>
             </div>
 
             <div style="margin-bottom: 15px;">
                 <label>Log Directory:</label>
-                <div id="log-dir-display" class="path-display">C:\...</div>
-                <button onclick="sendMsg('selectLogDir')" style="width: 100%;">Browse...</button>
+                <div class="input-group">
+                    <input type="text" id="log-dir-display" readonly value="C:\...">
+                    <!-- SVG Folder Icon -->
+                    <button onclick="sendMsg('selectLogDir')" title="Browse Folder">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M14.5 3H7.71l-.85-.85A2.5 2.5 0 0 0 5.09 1.5H1.5A1.5 1.5 0 0 0 0 3v10a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 16 13V4.5A1.5 1.5 0 0 0 14.5 3zM1.5 2.5h3.59c.4 0 .78.16 1.06.44l.85.85H1.5V2.5zM15 13a.5.5 0 0 1-.5.5H1.5a.5.5 0 0 1-.5-.5V4.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5V13z"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <div class="setting-row" style="margin-top: 20px; justify-content: flex-end; gap: 10px;">
@@ -176,69 +90,15 @@
         </div>
     </div>
 
-    <script>
-        const textArea = document.getElementById('main-textarea');
-        const modal = document.getElementById('settings-modal');
+    <!-- Context Menu -->
+    <div id="context-menu" class="context-menu">
+        <div class="menu-item" onclick="execCmd('cut')">Cut</div>
+        <div class="menu-item" onclick="execCmd('copy')">Copy</div>
+        <div class="menu-item" onclick="execCmd('paste')">Paste</div>
+        <div class="separator"></div>
+        <div class="menu-item" onclick="execCmd('selectAll')">Select All</div>
+    </div>
 
-        // AHKから注入される設定値を受け取る変数（初期値は仮）
-        let ahkSettings = { SendMode: 'Enter', FontSize: 14, SaveLog: true, LogDir: 'Unknown' };
-
-        // AHKから設定を受け取ってUIに反映する関数
-        function initSettings(settings) {
-            ahkSettings = settings;
-
-            // SendMode
-            document.getElementById('send-mode').value = settings.SendMode;
-            // FontSize
-            updateFontSizeDisplay(settings.FontSize);
-            // SaveLog
-            document.getElementById('save-log-check').checked = settings.SaveLog;
-            // LogDir
-            document.getElementById('log-dir-display').innerText = settings.LogDir;
-        }
-
-        function sendMsg(msg) {
-            window.chrome.webview.postMessage(msg);
-        }
-
-        function updateBtn(text) {
-            document.getElementById('link-btn').innerText = text;
-        }
-
-        function updateStatus(text, color) {
-            const el = document.getElementById('status-label');
-            el.innerText = text;
-            el.style.color = color;
-        }
-
-        function updateFontSizeDisplay(size) {
-            document.getElementById('font-size-val').innerText = size;
-            textArea.style.fontSize = size + 'px';
-        }
-
-        function updateLogDirDisplay(path) {
-            document.getElementById('log-dir-display').innerText = path;
-        }
-
-        // Modal Control
-        function openModal() { modal.style.display = "flex"; }
-        function closeModal() { modal.style.display = "none"; textArea.focus(); }
-
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-
-        textArea.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'Enter') {
-                sendMsg('transfer:' + textArea.value);
-            }
-        });
-
-        // AHK_SETTINGS_INJECTION_PLACEHOLDER
-
-        textArea.focus();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
