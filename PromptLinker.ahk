@@ -1,3 +1,4 @@
+#Include Lib\WebView2\WebView2.ahk
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
@@ -31,55 +32,46 @@ if !DirExist(Settings["LogDir"]) {
 ; 2. GUIの構築
 ; ==============================================================================
 MainGui := Gui("+AlwaysOnTop +Resize", AppName)
-MainGui.Opt("+MinSize300x150")
+MainGui.Opt("+MinSize600x450")
 MainGui.OnEvent("Size", Gui_Size)
-
-; A. ツールバー
-MainGui.SetFont("s10", "Meiryo")
-LinkBtn := MainGui.Add("Button", "x10 y10 w110 h30", "Link Target")
-LinkBtn.OnEvent("Click", LinkBtn_Click)
-
-SendModeCombo := MainGui.Add("DropDownList", "x+10 yp w120 Choose1", ["Enter", "Ctrl + Enter", "Shift + Enter", "Paste + Min", "Paste Only"])
-SendModeCombo.Text := Settings["SendMode"]
-SendModeCombo.OnEvent("Change", (ctrl, *) => Settings["SendMode"] := ctrl.Text)
-
-SettingsBtn := MainGui.Add("Button", "x+10 yp w40 h30", "⚙")
-SettingsBtn.OnEvent("Click", ToggleSettings)
-
-MainGui.SetFont("Bold cRed s10")
-StatusLabel := MainGui.Add("Text", "x+10 yp+5 w250 vStatus", "Disconnected")
-
-; B. メインエリア
-MainGui.SetFont("Norm cDefault s" . Settings["FontSize"], "Meiryo")
-MainTextBox := MainGui.Add("Edit", "xm y50 w580 h340 Multi WantReturn vMainTextBox")
-MainTextBox.OnEvent("Focus", (*) => Hotkey("^Enter", ExecuteTransfer, "On"))
-MainTextBox.OnEvent("LoseFocus", (*) => Hotkey("^Enter", "Off"))
-
-; C. 設定パネル
-MainGui.SetFont("s10", "Meiryo")
-StGroup := MainGui.Add("GroupBox", "xm y50 w580 h340 Hidden vStGroup", "Settings")
-StFontLabel := MainGui.Add("Text", "xp+20 yp+40 Hidden vStFontLabel", "Font Size:")
-StFontDec := MainGui.Add("Button", "x+10 yp-5 w30 h25 Hidden vStFontDec", "-")
-StFontVal := MainGui.Add("Text", "x+5 yp+5 w30 Center Hidden vStFontVal", Settings["FontSize"])
-StFontInc := MainGui.Add("Button", "x+5 yp-5 w30 h25 Hidden vStFontInc", "+")
-StFontDec.OnEvent("Click", (*) => ChangeFontSize(-1))
-StFontInc.OnEvent("Click", (*) => ChangeFontSize(1))
-
-StLogCheck := MainGui.Add("CheckBox", "x20 y+20 Hidden vStLogCheck", "Save Log")
-StLogCheck.Value := Settings["SaveLog"]
-StLogCheck.OnEvent("Click", (ctrl, *) => Settings["SaveLog"] := ctrl.Value)
-
-StLogDirTxt := MainGui.Add("Edit", "x20 y+10 w350 ReadOnly Hidden vStLogDirTxt", Settings["LogDir"])
-StLogDirBtn := MainGui.Add("Button", "x+5 yp-2 w80 h28 Hidden vStLogDirBtn", "Browse...")
-StLogDirBtn.OnEvent("Click", SelectLogDir)
-
-StOpenDir := MainGui.Add("Button", "x20 y+20 w150 h30 Hidden vStOpenDir", "Open Log Folder")
-StOpenDir.OnEvent("Click", (*) => Run(Settings["LogDir"]))
-StViewLog := MainGui.Add("Button", "x+10 yp w150 h30 Hidden vStViewLog", "View Latest Log")
-StViewLog.OnEvent("Click", OpenLatestLog)
-
 MainGui.OnEvent("Close", SaveAndExit)
-MainGui.Show("w600 h450")
+SetWindowAttribute(MainGui) ; ダークモード適用（タイトルバー等）
+
+; WebView2 コントロールの作成
+global wvc := ""
+try {
+    ; DLLのパスを明示的に解決する
+    dllDir := A_ScriptDir "\Lib\WebView2\" (A_PtrSize = 8 ? "64bit" : "32bit")
+    dllPath := dllDir "\WebView2Loader.dll"
+
+    if !FileExist(dllPath) {
+        throw Error("WebView2Loader.dll が見つかりません。`nパス: " dllPath)
+    }
+
+    ; 明示的なパスを指定してCreate
+    wvc := WebView2.Create(MainGui.Hwnd, , , , , , dllPath)
+} catch as err {
+    MsgBox("WebView2の初期化に失敗しました。`n" err.Message "`n`nLib/WebView2/ フォルダの構成を確認してください。", "Error", 16)
+    ExitApp
+}
+
+; コアオブジェクトを取得し、設定を行う
+global wv := wvc.CoreWebView2
+wv.Settings.AreDefaultContextMenusEnabled := false ; 右クリックメニューを無効化
+wv.Settings.IsZoomControlEnabled := false
+
+; HTMLの読み込み（UIの定義）
+htmlContent := GetHtmlContent()
+if (htmlContent == "") {
+    MsgBox("ui.html の内容が空です。ファイルを正しく保存できているか確認してください。", "Error", 16)
+    ExitApp
+}
+wv.NavigateToString(htmlContent)
+wv.add_WebMessageReceived(WebView_OnMessage)
+
+MainGui.Show("w600 h450") ; WebViewの準備が整ってからウィンドウを表示
+wvc.IsVisible := true     ; WebView2を明示的に可視化
+wvc.Fill()                ; ウィンドウサイズに合わせてWebView2を広げる
 
 ; ==============================================================================
 ; 3. 機能ロジック
@@ -89,24 +81,52 @@ Gui_Size(thisGui, minMax, width, height) {
     if (minMax = -1) {
         return
     }
-    MainTextBox.Move(, , width - 20, height - 60)
-    StGroup.Move(, , width - 20, height - 60)
+    ; WebView2コントローラーをウィンドウサイズに合わせる
+    if (wvc)
+        wvc.Fill()
 }
 
-LinkBtn_Click(*) {
-    global IsLinking
-    if (IsLinking) {
-        CancelLinking()
-    } else {
-        StartLinking()
+WebView_OnMessage(sender, args) {
+    msg := args.TryGetWebMessageAsString()
+
+    if (msg == "toggleLink") {
+        if (IsLinking)
+            CancelLinking()
+        else
+            StartLinking()
+
+    } else if (SubStr(msg, 1, 9) == "transfer:") {
+        ExecuteTransfer(SubStr(msg, 10))
+
+    } else if (SubStr(msg, 1, 14) == "updateSetting:") {
+        parts := StrSplit(msg, ":")
+        if (parts.Length >= 3) {
+            key := parts[2]
+            val := parts[3]
+            if (key == "SaveLog")
+                Settings[key] := (val == "1")
+            else
+                Settings[key] := val
+        }
+
+    } else if (SubStr(msg, 1, 15) == "changeFontSize:") {
+        delta := Integer(SubStr(msg, 16))
+        ChangeFontSize(delta)
+
+    } else if (msg == "selectLogDir") {
+        SelectLogDir()
+    } else if (msg == "openLogDir") {
+        Run(Settings["LogDir"])
+    } else if (msg == "viewLatestLog") {
+        OpenLatestLog()
     }
 }
 
 StartLinking() {
     global IsLinking := true
-    LinkBtn.Text := "Waiting..."
-    StatusLabel.SetFont("Bold cFF8C00")
-    StatusLabel.Value := "Activate Target Window..."
+    ; HTML側の表示を更新
+    wv.ExecuteScriptAsync("updateBtn('Waiting...'); updateStatus('Activate Target Window...', '#FF8C00');")
+
     global StartTime := A_TickCount
     SetTimer(CheckActiveWindow, 100)
 }
@@ -114,9 +134,9 @@ StartLinking() {
 CancelLinking(msg := "Cancelled") {
     global IsLinking := false
     SetTimer(CheckActiveWindow, 0)
-    LinkBtn.Text := "Link Target"
-    StatusLabel.SetFont("Bold cRed")
-    StatusLabel.Value := msg
+
+    color := (msg == "Cancelled" || msg == "Timeout") ? "#cc0000" : "#28a745"
+    wv.ExecuteScriptAsync("updateBtn('Link Target'); updateStatus('" . msg . "', '" . color . "');")
 }
 
 CheckActiveWindow() {
@@ -126,33 +146,57 @@ CheckActiveWindow() {
         global IsLinking := false
         global TargetHWND := currentHWND
         global TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
-        LinkBtn.Text := "Relink"
-        StatusLabel.SetFont("Bold cGreen")
-        StatusLabel.Value := "Linked: " . TargetProcess
+
+        ; リンク成功時の表示更新
+        statusMsg := "Linked: " . TargetProcess
+        wv.ExecuteScriptAsync("updateBtn('Relink'); updateStatus('" . statusMsg . "', '#28a745');")
+
         WinActivate("ahk_id " . MainGui.Hwnd)
-        MainTextBox.Focus()
+
+        ; テキストエリアにフォーカスを戻す(JS経由)
+        wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")
     } else if (A_TickCount - StartTime > 10000) {
         CancelLinking("Timeout")
     }
 }
 
+/**
+ * ウィンドウにダークモード属性を適用する
+ * Windows 10 (Build 17763以降) / Windows 11 対応
+ */
+SetWindowAttribute(GuiObj) {
+    if (VerCompare(A_OSVersion, "10.0.17763") < 0)
+        return
+
+    ; DWMWA_USE_IMMERSIVE_DARK_MODE = 20 (Windows 11, Windows 10 20H1+)
+    ; DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19 (Windows 10 older builds)
+    attr := 20
+    if (VerCompare(A_OSVersion, "10.0.18985") < 0)
+        attr := 19
+
+    DllCall("dwmapi\DwmSetWindowAttribute", "Ptr", GuiObj.Hwnd, "Int", attr, "Int*", 1, "Int", 4)
+
+    ; コントロールのテーマをExplorerスタイル（ダーク対応）に設定
+    DllCall("uxtheme\SetWindowTheme", "Ptr", GuiObj.Hwnd, "Str", "DarkMode_Explorer", "Str", "")
+}
+
 ChangeFontSize(delta) {
-    Settings["FontSize"] := Settings["FontSize"] + delta
-    if (Settings["FontSize"] < 8) {
-        Settings["FontSize"] := 8
-    }
-    if (Settings["FontSize"] > 40) {
-        Settings["FontSize"] := 40
-    }
-    StFontVal.Value := Settings["FontSize"]
-    MainTextBox.SetFont("s" . Settings["FontSize"])
+    newSize := Settings["FontSize"] + delta
+    if (newSize < 8)
+        newSize := 8
+    if (newSize > 40)
+        newSize := 40
+    Settings["FontSize"] := newSize
+    wv.ExecuteScriptAsync("updateFontSizeDisplay(" . newSize . ");")
 }
 
 SelectLogDir(*) {
     selDir := DirSelect("*" . Settings["LogDir"], 3, "Select Log Directory")
     if (selDir != "") {
         Settings["LogDir"] := selDir
-        StLogDirTxt.Value := selDir
+        ; JS側の表示を更新（バックスラッシュをエスケープして渡す）
+        escapedPath := StrReplace(selDir, "\", "\\")
+        wv.ExecuteScriptAsync("updateLogDirDisplay('" . escapedPath . "');")
     }
 }
 
@@ -165,8 +209,7 @@ OpenLatestLog(*) {
     }
 }
 
-ExecuteTransfer(*) {
-    text := Trim(MainTextBox.Value)
+ExecuteTransfer(text) {
     if (text == "" || TargetHWND == 0 || !WinExist("ahk_id " . TargetHWND)) {
         return
     }
@@ -203,8 +246,7 @@ ExecuteTransfer(*) {
         WinMinimize("ahk_id " . MainGui.Hwnd)
     } else {
         WinActivate("ahk_id " . MainGui.Hwnd)
-        MainTextBox.Value := ""
-        MainTextBox.Focus()
+        wv.ExecuteScriptAsync("document.getElementById('main-textarea').value = ''; document.getElementById('main-textarea').focus();")
     }
 }
 
@@ -217,18 +259,6 @@ SaveToLog(content) {
     cleanContent := StrReplace(cleanContent, "`n", "`r`n")
     logEntry := "[" . FormatTime(, "HH:mm:ss") . "]`r`n" . cleanContent . "`r`n------------------------------`r`n"
     FileAppend(logEntry, fileName, "UTF-8")
-}
-
-ToggleSettings(*) {
-    global IsSettingsVisible := !IsSettingsVisible
-    show := IsSettingsVisible
-    MainTextBox.Visible := !show
-    ctrls := ["StGroup", "StFontLabel", "StFontDec", "StFontVal", "StFontInc",
-        "StLogCheck", "StLogDirTxt", "StLogDirBtn", "StOpenDir", "StViewLog"]
-    for name in ctrls {
-        MainGui[name].Visible := show
-    }
-    SettingsBtn.Text := show ? "🔙" : "⚙"
 }
 
 SaveAndExit(*) {
@@ -276,7 +306,32 @@ LoadSettings() {
 
 ^!l:: {
     if WinExist("ahk_id " . MainGui.Hwnd) {
-        WinActivate()
-        MainTextBox.Focus()
+        WinActivate("ahk_id " . MainGui.Hwnd)
     }
+}
+
+; ==============================================================================
+; HTML Content (Modern UI Template)
+; ==============================================================================
+GetHtmlContent() {
+    global Settings ; グローバル変数を参照することを明示
+    htmlPath := A_ScriptDir "\ui.html"
+    if !FileExist(htmlPath) {
+        MsgBox("UI definition file not found:`n" htmlPath, "Error", 16)
+        ExitApp
+    }
+
+    htmlContent := FileRead(htmlPath, "UTF-8")
+
+    ; 現在の設定値をJSONオブジェクトとしてJSに注入する
+    settingsJson := "{"
+    settingsJson .= "SendMode: '" . Settings["SendMode"] . "',"
+    settingsJson .= "FontSize: " . Settings["FontSize"] . ","
+    settingsJson .= "SaveLog: " . (Settings["SaveLog"] ? "true" : "false") . ","
+    settingsJson .= "LogDir: '" . StrReplace(Settings["LogDir"], "\", "\\") . "'"
+    settingsJson .= "}"
+
+    jsInjection := "initSettings(" . settingsJson . ");"
+
+    return StrReplace(htmlContent, "// AHK_SETTINGS_INJECTION_PLACEHOLDER", jsInjection)
 }
