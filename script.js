@@ -147,8 +147,6 @@ textArea.addEventListener("contextmenu", (e) => {
   if (x + menuWidth > winWidth) x -= menuWidth;
   if (y + menuHeight > winHeight) y -= menuHeight;
 
-  // 上端・左端で見切れる場合の最終補正
-  // (ウィンドウが小さい場合や上部でのクリック対応)
   if (x < 0) x = 0;
   if (y < 0) y = 0;
 

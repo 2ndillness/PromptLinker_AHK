@@ -57,8 +57,10 @@
 
 .resize-handle {
   position: absolute;
-  bottom: 1px; right: 1px;
-  width: 12px; height: 12px;
+  bottom: 1px;
+  right: 1px;
+  width: 12px;
+  height: 12px;
   cursor: nwse-resize;
   z-index: 2000;
   background: linear-gradient(135deg, transparent 50%, #666 50%);
@@ -70,4 +72,6 @@
   background: linear-gradient(135deg, transparent 50%, var(--accent-color) 50%);
 }
 
-.hidden { display: none !important; }
+.hidden {
+  display: none !important;
+}

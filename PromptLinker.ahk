@@ -149,8 +149,10 @@ wv.AddScriptToExecuteOnDocumentCreatedAsync(
 
 ; 展開した一時フォルダ内のHTMLをロード
 htmlPath := "file:///" . StrReplace(ResDir, "\", "/") . "/ui.html"
-wv.Navigate(htmlPath)
+
 wv.add_WebMessageReceived(OnWebMsg)
+wv.add_PermissionRequested(OnPermissionRequested)
+wv.Navigate(htmlPath)
 
 MainGui.Show("w600 h450")
 wvc.IsVisible := true
@@ -160,6 +162,10 @@ wvc.Fill()
 ; メインスレッド用関数
 ; ==============================================================================
 
+OnPermissionRequested(sender, args) {
+    args.State := 1
+    args.Handled := 1
+}
 OnWebMsg(sender, args) {
     msg := args.TryGetWebMessageAsString()
 
