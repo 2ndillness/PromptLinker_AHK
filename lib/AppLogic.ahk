@@ -121,14 +121,14 @@ ExecuteTransfer(text) {
     }
 
     Sleep(150)
+    ; 全モード共通でテキストエリアをクリア
+    wv.ExecuteScriptAsync("document.getElementById('main-textarea').value = '';")
+
     if (mode == "Paste + Min") {
         WinMinimize("ahk_id " . MainGui.Hwnd)
     } else {
         WinActivate("ahk_id " . MainGui.Hwnd)
-        wv.ExecuteScriptAsync(
-            "document.getElementById('main-textarea').value = ''; "
-            . "document.getElementById('main-textarea').focus();"
-        )
+        wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")
     }
 }
 

@@ -124,6 +124,7 @@ function toggleSetView() {
  */
 textArea.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.key === "Enter") {
+    e.preventDefault();
     sendMsg("transfer:" + textArea.value);
   }
 });
