@@ -1,7 +1,7 @@
 ; ==============================================================================
 ; リサイズ機能 (-Caption ウィンドウ用)
 ; ==============================================================================
-StartResizing() {
+StartResize() {
     global MainGui, wvc
     CoordMode "Mouse", "Screen"
 
@@ -39,16 +39,17 @@ StartResizing() {
 ; -Caption ウィンドウでもショートカットで配置できるようにする
 ; ==============================================================================
 #HotIf WinActive("ahk_id " . (IsSet(MainGui) ? MainGui.Hwnd : 0))
-#Left:: SnapWindow("Left")
-#Right:: SnapWindow("Right")
-#Up:: SnapWindow("Max")
-#Down:: SnapWindow("Min")
+#Left:: SnapWin("Left")
+#Right:: SnapWin("Right")
+#Up:: SnapWin("Max")
+#Down:: SnapWin("Min")
 #HotIf
 
-SnapWindow(pos) {
+SnapWin(pos) {
     global MainGui
     ; 現在のモニタの作業領域(タスクバー除く)を取得
-    MonitorGetWorkArea(MonitorGetPrimary(), &WALeft, &WATop, &WARight, &WABottom)
+    priMon := MonitorGetPrimary()
+    MonitorGetWorkArea(priMon, &WALeft, &WATop, &WARight, &WABottom)
     WAWidth := WARight - WALeft
     WAHeight := WABottom - WATop
 

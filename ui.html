@@ -1,128 +1,146 @@
 <!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
-  <title>Prompt Linker</title>
-</head>
-<body>
-  <!-- Custom Title Bar -->
-  <div class="title-bar">
-    <div class="drag-region" onmousedown="sendMsg('dragWindow')">
-      <img src="assets/app_icon.ico" class="app-icon" alt="icon" />
-      <span class="title-text">Prompt Linker</span>
-    </div>
-    <button class="win-btn" onclick="sendMsg('minWindow')" title="Minimize">
-      <svg width="10" height="1" viewBox="0 0 10 1">
-        <rect width="10" height="1" fill="currentColor" />
-      </svg>
-    </button>
-    <button id="max-btn" class="win-btn" onclick="sendMsg('toggleMax')"
-      title="Maximize">
-      <span class="icon-placeholder" data-icon="maximize"></span>
-    </button>
-    <button class="win-btn close" onclick="sendMsg('closeWindow')" title="Close">
-      <svg width="10" height="10" viewBox="0 0 10 10">
-        <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1" />
-      </svg>
-    </button>
-  </div>
-
-  <div id="content-area">
-    <!-- Main View -->
-    <div id="main-view">
-      <div class="toolbar">
-        <button id="link-btn" onclick="sendMsg('toggleLink')">
-          <span class="icon-placeholder" data-icon="link"></span>
-          <span class="btn-text">Link Target</span>
-        </button>
-
-        <div class="select-wrapper">
-          <select id="send-mode"
-            onchange="sendMsg('updateSetting:SendMode:' + this.value)">
-            <option value="Enter">Enter</option>
-            <option value="Ctrl + Enter">Ctrl + Enter</option>
-            <option value="Shift + Enter">Shift + Enter</option>
-            <option value="Paste + Min">Paste + Min</option>
-            <option value="Paste Only">Paste Only</option>
-          </select>
-          <span class="icon-placeholder select-arrow" data-icon="chevron-down">
-          </span>
-        </div>
-
-        <button id="settings-btn" onclick="toggleSettingsView()" title="Settings">
-          <span class="icon-placeholder" data-icon="settings"></span>
-        </button>
-
-        <span id="status-label" class="status-label">Disconnected</span>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Prompt Linker</title>
+  </head>
+  <body>
+    <!-- Custom Title Bar -->
+    <div class="title-bar">
+      <div class="drag-region" onmousedown="sendMsg('dragWindow')">
+        <img src="assets/app_icon.ico" class="app-icon" alt="icon" />
+        <span class="title-text">Prompt Linker</span>
       </div>
-
-      <textarea id="main-textarea"></textarea>
+      <button class="win-btn" onclick="sendMsg('minWindow')" title="Min">
+        <svg width="10" height="1" viewBox="0 0 10 1">
+          <rect width="10" height="1" fill="currentColor" />
+        </svg>
+      </button>
+      <button
+        id="max-btn"
+        class="win-btn"
+        onclick="sendMsg('toggleMax')"
+        title="Max"
+      >
+        <span class="icon-placeholder" data-icon="maximize"></span>
+      </button>
+      <button
+        class="win-btn close"
+        onclick="sendMsg('closeWindow')"
+        title="Close"
+      >
+        <svg width="10" height="10" viewBox="0 0 10 10">
+          <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1" />
+        </svg>
+      </button>
     </div>
 
-    <!-- Settings View -->
-    <div id="settings-view" class="hidden">
-      <div class="settings-header">
-        <button class="back-btn" onclick="toggleSettingsView()">
-          <span class="icon-placeholder" data-icon="back"></span>
-          Back
-        </button>
-        <h3>Settings</h3>
-      </div>
+    <div id="content-area">
+      <!-- Main View -->
+      <div id="main-view">
+        <div class="toolbar">
+          <button id="link-btn" onclick="sendMsg('toggleLink')">
+            <span class="icon-placeholder" data-icon="link"></span>
+            <span class="btn-text">Link Target</span>
+          </button>
 
-      <div class="setting-row">
-        <label>Font Size</label>
-        <div class="num-control">
-          <button onclick="sendMsg('changeFontSize:-1')">-</button>
-          <span id="font-size-val">14</span>
-          <button onclick="sendMsg('changeFontSize:1')">+</button>
+          <div class="select-wrapper">
+            <select
+              id="send-mode"
+              onchange="sendMsg('updateSetting:SendMode:' + this.value)"
+            >
+              <option value="Enter">Enter</option>
+              <option value="Ctrl + Enter">Ctrl + Enter</option>
+              <option value="Shift + Enter">Shift + Enter</option>
+              <option value="Paste + Min">Paste + Min</option>
+              <option value="Paste Only">Paste Only</option>
+            </select>
+            <span
+              class="icon-placeholder select-arrow"
+              data-icon="chevron-down"
+            >
+            </span>
+          </div>
+
+          <button id="settings-btn" onclick="toggleSetView()" title="Settings">
+            <span class="icon-placeholder" data-icon="settings"></span>
+          </button>
+
+          <span id="status-label" class="status-label">Disconnected</span>
         </div>
+
+        <textarea id="main-textarea"></textarea>
       </div>
 
-      <div class="setting-row">
-        <label>Save Log</label>
-        <label class="switch">
-          <input type="checkbox" id="save-log-check"
-            onchange="sendMsg('updateSetting:SaveLog:' + (this.checked?'1':'0'))"/>
-          <span class="slider"></span>
-        </label>
-      </div>
+      <!-- Settings View -->
+      <div id="settings-view" class="hidden">
+        <div class="settings-header">
+          <button class="back-btn" onclick="toggleSetView()">
+            <span class="icon-placeholder" data-icon="back"></span>
+            Back
+          </button>
+          <h3>Settings</h3>
+        </div>
 
-      <div class="setting-group">
-        <label>Log Directory:</label>
-        <div class="input-group">
-          <input type="text" id="log-dir-display" readonly value="C:\..." />
-          <button onclick="sendMsg('selectLogDir')" title="Browse Folder">
-            <span class="icon-placeholder" data-icon="folder"></span>
+        <div class="setting-row">
+          <label>Font Size</label>
+          <div class="num-control">
+            <button onclick="sendMsg('changeFontSize:-1')">-</button>
+            <span id="font-size-val">14</span>
+            <button onclick="sendMsg('changeFontSize:1')">+</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <label>Save Log</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="save-log-check"
+              onchange="
+                sendMsg('updateSetting:SaveLog:' + (this.checked ? '1' : '0'))
+              "
+            />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-group">
+          <label>Log Directory:</label>
+          <div class="input-group">
+            <input type="text" id="log-dir-display" readonly value="C:\..." />
+            <button onclick="sendMsg('selectLogDir')" title="Browse Folder">
+              <span class="icon-placeholder" data-icon="folder"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button onclick="sendMsg('openLogDir')">
+            <span class="icon-placeholder" data-icon="open-folder"></span>
+            Open Folder
+          </button>
+          <button onclick="sendMsg('viewLatestLog')">
+            <span class="icon-placeholder" data-icon="view-log"></span>
+            View Log
           </button>
         </div>
       </div>
-
-      <div class="action-row">
-        <button onclick="sendMsg('openLogDir')">
-          <span class="icon-placeholder" data-icon="open-folder"></span>
-          Open Folder
-        </button>
-        <button onclick="sendMsg('viewLatestLog')">
-          <span class="icon-placeholder" data-icon="view-log"></span>
-          View Log
-        </button>
-      </div>
     </div>
-  </div>
 
-  <div id="context-menu" class="context-menu">
-    <div class="menu-item" onclick="execCmd('cut')">Cut</div>
-    <div class="menu-item" onclick="execCmd('copy')">Copy</div>
-    <div class="menu-item" onclick="execCmd('paste')">Paste</div>
-    <div class="separator"></div>
-    <div class="menu-item" onclick="execCmd('selectAll')">Select All</div>
-  </div>
+    <div id="context-menu" class="context-menu">
+      <div class="menu-item" onclick="execCmd('cut')">Cut</div>
+      <div class="menu-item" onclick="execCmd('copy')">Copy</div>
+      <div class="menu-item" onclick="execCmd('paste')">Paste</div>
+      <div class="separator"></div>
+      <div class="menu-item" onclick="execCmd('selectAll')">Select All</div>
+    </div>
 
-  <div class="resize-handle" onmousedown="sendMsg('resizeWindow')"></div>
+    <div class="resize-handle" onmousedown="sendMsg('resizeWindow')"></div>
 
-  <script src="icons.js"></script>
-  <script src="script.js"></script>
-</body>
+    <script src="icons.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>

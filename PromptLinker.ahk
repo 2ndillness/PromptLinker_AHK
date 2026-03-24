@@ -12,26 +12,34 @@
 ; リソースの展開処理 (単一EXE化用)
 ; ==============================================================================
 global ResDir := A_Temp "\PromptLinker_Resources"
-if !DirExist(ResDir)
+if !DirExist(ResDir) {
     DirCreate(ResDir)
-if !DirExist(ResDir "\assets\css")
+}
+if !DirExist(ResDir "\assets\css") {
     DirCreate(ResDir "\assets\css")
-if !DirExist(ResDir "\assets\icons")
+}
+if !DirExist(ResDir "\assets\icons") {
     DirCreate(ResDir "\assets\icons")
-if !DirExist(ResDir "\WebView2\32bit")
+}
+if !DirExist(ResDir "\WebView2\32bit") {
     DirCreate(ResDir "\WebView2\32bit")
-if !DirExist(ResDir "\WebView2\64bit")
+}
+if !DirExist(ResDir "\WebView2\64bit") {
     DirCreate(ResDir "\WebView2\64bit")
+}
 
 ; ファイルの展開 (コンパイル時のみEXEに埋め込まれ、実行時に展開される)
 FileInstall "ui.html", ResDir "\ui.html", 1
 FileInstall "script.js", ResDir "\script.js", 1
 FileInstall "style.css", ResDir "\style.css", 1
 FileInstall "icons.js", ResDir "\icons.js", 1
+
 FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
+
 FileInstall "assets\css\components.css", ResDir "\assets\css\components.css", 1
 FileInstall "assets\css\layout.css", ResDir "\assets\css\layout.css", 1
 FileInstall "assets\css\theme.css", ResDir "\assets\css\theme.css", 1
+
 FileInstall "assets\icons\back.svg", ResDir "\assets\icons\back.svg", 1
 FileInstall "assets\icons\file.svg", ResDir "\assets\icons\file.svg", 1
 FileInstall "assets\icons\folder.svg", ResDir "\assets\icons\folder.svg", 1
@@ -39,17 +47,24 @@ FileInstall "assets\icons\link.svg", ResDir "\assets\icons\link.svg", 1
 FileInstall "assets\icons\open-folder.svg", ResDir "\assets\icons\open-folder.svg", 1
 FileInstall "assets\icons\settings.svg", ResDir "\assets\icons\settings.svg", 1
 FileInstall "assets\icons\view-log.svg", ResDir "\assets\icons\view-log.svg", 1
-FileInstall "lib\WebView2\32bit\WebView2Loader.dll", ResDir "\WebView2\32bit\WebView2Loader.dll", 1
-FileInstall "lib\WebView2\64bit\WebView2Loader.dll", ResDir "\WebView2\64bit\WebView2Loader.dll", 1
+
+FileInstall "lib\WebView2\32bit\WebView2Loader.dll", ResDir
+    . "\WebView2\32bit\WebView2Loader.dll", 1
+FileInstall "lib\WebView2\64bit\WebView2Loader.dll", ResDir
+    . "\WebView2\64bit\WebView2Loader.dll", 1
 
 ; ==============================================================================
 ; 初期設定・変数定義
 ; ==============================================================================
 global AppName := "Prompt Linker"
-global ConfigFile := A_ScriptDir "\config.json" ; 設定ファイルはEXEと同じ場所に保持
+; 設定ファイルはEXEと同じ場所に保持
+global ConfigFile := A_ScriptDir "\config.json"
 global TargetHWND := 0
 global TargetProcess := ""
 global IsLinking := false
+
+; 設定マップ
+; フォントサイズ、ログ保存、ログパス、送信モード、貼り付け遅延
 global Settings := Map(
     "FontSize", 14,
     "SaveLog", true,
@@ -67,15 +82,18 @@ global wv := ""
 
 Gui_Size(thisGui, minMax, width, height) {
     global wvc, wv
-    if (minMax == -1)
+    if (minMax == -1) {
         return
+    }
 
-    if (IsSet(wvc) && wvc)
+    if (IsSet(wvc) && wvc) {
         wvc.Fill()
+    }
 
     if (IsSet(wv) && wv) {
         isMax := (minMax == 1 ? "true" : "false")
-        wv.ExecuteScript("if(typeof updateMaxIcon === 'function') updateMaxIcon(" . isMax . ");")
+        wv.ExecuteScript("if(typeof updateMaxIcon === 'function')"
+            . " updateMaxIcon(" . isMax . ");")
     }
 }
 
@@ -107,8 +125,9 @@ try {
     ; 展開したDLLのパスを指定
     dllPath := ResDir "\WebView2\" subDir "\WebView2Loader.dll"
 
-    if !FileExist(dllPath)
+    if !FileExist(dllPath) {
         throw Error("WebView2Loader.dll が展開されていません。`nパス: " dllPath)
+    }
 
     wvc := WebView2.Create(MainGui.Hwnd, , , , , , dllPath)
 } catch as err {
@@ -131,7 +150,7 @@ wv.AddScriptToExecuteOnDocumentCreatedAsync(
 ; 展開した一時フォルダ内のHTMLをロード
 htmlPath := "file:///" . StrReplace(ResDir, "\", "/") . "/ui.html"
 wv.Navigate(htmlPath)
-wv.add_WebMessageReceived(WebView_OnMessage)
+wv.add_WebMessageReceived(OnWebMsg)
 
 MainGui.Show("w600 h450")
 wvc.IsVisible := true
@@ -141,24 +160,26 @@ wvc.Fill()
 ; メインスレッド用関数
 ; ==============================================================================
 
-WebView_OnMessage(sender, args) {
+OnWebMsg(sender, args) {
     msg := args.TryGetWebMessageAsString()
 
     if (msg == "toggleLink") {
-        if (IsLinking)
+        if (IsLinking) {
             CancelLinking()
-        else
+        } else {
             StartLinking()
+        }
     } else if (SubStr(msg, 1, 9) == "transfer:") {
         ExecuteTransfer(SubStr(msg, 10))
     } else if (SubStr(msg, 1, 14) == "updateSetting:") {
         parts := StrSplit(msg, ":")
         if (parts.Length >= 3) {
             key := parts[2], val := parts[3]
-            if (key == "SaveLog")
+            if (key == "SaveLog") {
                 Settings[key] := (val == "1")
-            else
+            } else {
                 Settings[key] := val
+            }
         }
     } else if (SubStr(msg, 1, 15) == "changeFontSize:") {
         ChangeFontSize(Integer(SubStr(msg, 16)))
@@ -172,15 +193,16 @@ WebView_OnMessage(sender, args) {
         DllCall("User32\ReleaseCapture")
         PostMessage(0xA1, 2, 0, MainGui.Hwnd)
     } else if (msg == "toggleMax") {
-        if (WinGetMinMax(MainGui.Hwnd) == 1)
+        if (WinGetMinMax(MainGui.Hwnd) == 1) {
             MainGui.Restore()
-        else
+        } else {
             MainGui.Maximize()
+        }
     } else if (msg == "minWindow") {
         MainGui.Minimize()
     } else if (msg == "closeWindow") {
         SaveAndExit()
     } else if (msg == "resizeWindow") {
-        StartResizing()
+        StartResize()
     }
 }
