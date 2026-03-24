@@ -1,20 +1,14 @@
-#Include Lib\WebView2\WebView2.ahk
-#Include Lib\JSON.ahk
-#Include Lib\AppLogic.ahk
-#Include Lib\WindowControl.ahk
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
 ; ==============================================================================
-; 初期設定・変数定義
+; 初期設定・変数定義 (Includeより先に宣言してグローバルスコープを確立)
 ; ==============================================================================
 global AppName := "Prompt Linker"
 global ConfigFile := A_ScriptDir "\config.json"
 global TargetHWND := 0
 global TargetProcess := ""
 global IsLinking := false
-
-; デフォルト設定
 global Settings := Map(
     "FontSize", 14,
     "SaveLog", true,
@@ -22,24 +16,54 @@ global Settings := Map(
     "SendMode", "Enter",
     "PasteDelay", 400
 )
+global MainGui := ""
+global wvc := ""
+global wv := ""
 
-; 設定の読み込み
+; ==============================================================================
+; コールバック関数 (Includeより先に定義して他ファイルから参照可能にする)
+; ==============================================================================
+
+Gui_Size(thisGui, minMax, width, height) {
+    global wvc, wv
+    if (minMax == -1) {
+        return
+    }
+
+    ; WebView2のリサイズ
+    if (IsSet(wvc) && wvc)
+        wvc.Fill()
+
+    ; UIの最大化ボタンのアイコン更新 (1: 最大化, 0: 通常)
+    if (IsSet(wv) && wv) {
+        isMax := (minMax == 1 ? "true" : "false")
+        wv.ExecuteScript("if(typeof updateMaxIcon === 'function') updateMaxIcon(" . isMax . ");")
+    }
+}
+
+; ==============================================================================
+; ライブラリのインクルード
+; ==============================================================================
+#Include Lib\WebView2\WebView2.ahk
+#Include Lib\JSON.ahk
+#Include Lib\AppLogic.ahk
+#Include Lib\WindowControl.ahk
+
+; ==============================================================================
+; アプリケーションの初期化
+; ==============================================================================
 LoadSettings()
 
 if !DirExist(Settings["LogDir"]) {
     DirCreate(Settings["LogDir"])
 }
 
-; ==============================================================================
 ; GUIの構築
-; ==============================================================================
 MainGui := Gui("+AlwaysOnTop -Caption", AppName)
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
 
-; WebView2 コントロールの作成
-global wvc := ""
 try {
     ; DLLのパスを明示的に解決する
     subDir := (A_PtrSize = 8 ? "64bit" : "32bit")
@@ -74,58 +98,34 @@ try {
 }
 
 ; コアオブジェクトを取得し、設定を行う
-global wv := wvc.CoreWebView2
-wv.Settings.AreDefaultContextMenusEnabled := false ; 右クリックメニューを無効化
+wv := wvc.CoreWebView2
+wv.Settings.AreDefaultContextMenusEnabled := false
 wv.Settings.IsZoomControlEnabled := false
 
-; ==============================================================================
-; 設定値の注入とHTMLファイルのロード
-; ==============================================================================
+; 設定値の注入
 settingsJson := JSON.Dump(Settings)
-
-; HTMLロード前にJS変数を定義しておく
 wv.AddScriptToExecuteOnDocumentCreatedAsync(
     "window.ahkSettings = " . settingsJson . ";"
 )
 
-; ui.html をファイルとしてロード
+; ui.html をロード
 htmlPath := "file:///" . StrReplace(A_ScriptDir, "\", "/") . "/ui.html"
-
-; ファイル存在確認
 if !FileExist(A_ScriptDir "\ui.html") {
     MsgBox("ui.html が見つかりません。", "Error", 16)
     ExitApp
 }
-
-; Navigate を使用してローカルファイルをロード
 wv.Navigate(htmlPath)
 
 ; イベントハンドラ登録
 wv.add_WebMessageReceived(WebView_OnMessage)
 
 MainGui.Show("w600 h450")
-wvc.IsVisible := true     ; WebView2を明示的に可視化
-wvc.Fill()                ; ウィンドウサイズに合わせてWebView2を広げる
+wvc.IsVisible := true
+wvc.Fill()
 
 ; ==============================================================================
-; 機能ロジック
+; メインスレッド用関数
 ; ==============================================================================
-
-Gui_Size(thisGui, minMax, width, height) {
-    if (minMax == -1) {
-        return
-    }
-
-    ; WebView2のリサイズ
-    if (wvc)
-        wvc.Fill()
-
-    ; UIの最大化ボタンのアイコン更新 (1: 最大化, 0: 通常)
-    if (wv) {
-        isMax := (minMax == 1 ? "true" : "false")
-        wv.ExecuteScript("if(typeof updateMaxIcon === 'function') updateMaxIcon(" . isMax . ");")
-    }
-}
 
 WebView_OnMessage(sender, args) {
     msg := args.TryGetWebMessageAsString()
@@ -160,11 +160,9 @@ WebView_OnMessage(sender, args) {
         Run(Settings["LogDir"])
     } else if (msg == "viewLatestLog") {
         OpenLatestLog()
-
-        ; ウィンドウ制御系メッセージの処理
     } else if (msg == "dragWindow") {
-        DllCall("User32\ReleaseCapture") ; WebViewからマウスキャプチャを解放
-        PostMessage(0xA1, 2, 0, MainGui.Hwnd) ; WM_NCLBUTTONDOWN
+        DllCall("User32\ReleaseCapture")
+        PostMessage(0xA1, 2, 0, MainGui.Hwnd)
     } else if (msg == "toggleMax") {
         if (WinGetMinMax(MainGui.Hwnd) == 1)
             MainGui.Restore()
@@ -175,7 +173,6 @@ WebView_OnMessage(sender, args) {
     } else if (msg == "closeWindow") {
         SaveAndExit()
     } else if (msg == "resizeWindow") {
-        ; HTML側のグリップ(右下)がドラッグされたらリサイズモードを開始
         StartResizing()
     }
 }

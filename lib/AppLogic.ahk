@@ -1,5 +1,6 @@
 StartLinking() {
     global IsLinking := true
+    global wv
     ; HTML側の表示を更新
     wv.ExecuteScriptAsync(
         "updateBtn('Waiting...'); "
@@ -12,6 +13,7 @@ StartLinking() {
 
 CancelLinking(msg := "Cancelled") {
     global IsLinking := false
+    global wv
     SetTimer(CheckActiveWindow, 0)
 
     type := (msg == "Cancelled" || msg == "Timeout") ? "error" : "success"
@@ -22,12 +24,13 @@ CancelLinking(msg := "Cancelled") {
 }
 
 CheckActiveWindow() {
+    global MainGui, wv, StartTime, TargetHWND, TargetProcess, IsLinking
     currentHWND := WinActive("A")
     if (currentHWND != 0 && currentHWND != MainGui.Hwnd) {
         SetTimer(CheckActiveWindow, 0)
-        global IsLinking := false
-        global TargetHWND := currentHWND
-        global TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
+        IsLinking := false
+        TargetHWND := currentHWND
+        TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
 
         ; リンク成功時の表示更新
         statusMsg := "Linked: " . TargetProcess
@@ -48,6 +51,7 @@ CheckActiveWindow() {
 }
 
 ChangeFontSize(delta) {
+    global Settings, wv
     newSize := Settings["FontSize"] + delta
     if (newSize < 8)
         newSize := 8
@@ -58,6 +62,7 @@ ChangeFontSize(delta) {
 }
 
 SelectLogDir(*) {
+    global MainGui, Settings, wv
     ; ダイアログが背後に隠れないように、一時的にAlwaysOnTopを解除
     MainGui.Opt("-AlwaysOnTop")
     selDir := FileSelect("D", "*" . Settings["LogDir"], "Select Log Directory")
@@ -72,6 +77,7 @@ SelectLogDir(*) {
 }
 
 OpenLatestLog(*) {
+    global Settings, AppName
     logFile := Settings["LogDir"]
         . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
     if FileExist(logFile) {
@@ -82,6 +88,7 @@ OpenLatestLog(*) {
 }
 
 ExecuteTransfer(text) {
+    global MainGui, wv, TargetHWND, Settings
     if (text == "" || TargetHWND == 0 || !WinExist("ahk_id " . TargetHWND)) {
         return
     }
@@ -126,6 +133,7 @@ ExecuteTransfer(text) {
 }
 
 SaveToLog(content) {
+    global Settings
     if !DirExist(Settings["LogDir"]) {
         DirCreate(Settings["LogDir"])
     }
@@ -140,6 +148,7 @@ SaveToLog(content) {
 }
 
 SaveAndExit(*) {
+    global Settings, ConfigFile
     try {
         if FileExist(ConfigFile)
             FileDelete(ConfigFile)
@@ -149,6 +158,7 @@ SaveAndExit(*) {
 }
 
 LoadSettings() {
+    global Settings, ConfigFile
     if !FileExist(ConfigFile) {
         return
     }
@@ -164,6 +174,7 @@ LoadSettings() {
 }
 
 ^!l:: {
+    global MainGui
     if WinExist("ahk_id " . MainGui.Hwnd) {
         WinActivate("ahk_id " . MainGui.Hwnd)
     }

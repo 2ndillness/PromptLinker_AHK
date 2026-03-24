@@ -2,9 +2,15 @@
 ; リサイズ機能 (-Caption ウィンドウ用)
 ; ==============================================================================
 StartResizing() {
+    global MainGui, wvc
+    CoordMode "Mouse", "Screen"
+
     DllCall("User32\ReleaseCapture")
     MouseGetPos(&startX, &startY)
     WinGetPos(&winX, &winY, &winW, &winH, "ahk_id " . MainGui.Hwnd)
+
+    ; リサイズ中の描画負荷を軽減するため、Sizeイベントを一時的に無効化
+    MainGui.OnEvent("Size", %"Gui_Size"%, 0)
 
     ; ドラッグ中の処理
     while GetKeyState("LButton", "P") {
@@ -21,8 +27,10 @@ StartResizing() {
         WinMove(winX, winY, newW, newH, "ahk_id " . MainGui.Hwnd)
         Sleep(10)
     }
-    ; リサイズ終了後にWebView2を再調整（念のため）
-    if (wvc)
+
+    ; イベントを再開し、最終的なサイズにWebView2を合わせる
+    MainGui.OnEvent("Size", %"Gui_Size"%, 1)
+    if (IsSet(wvc) && wvc)
         wvc.Fill()
 }
 
@@ -30,7 +38,7 @@ StartResizing() {
 ; スナップ機能 (Win + 矢印)
 ; -Caption ウィンドウでもショートカットで配置できるようにする
 ; ==============================================================================
-#HotIf WinActive("ahk_id " . MainGui.Hwnd)
+#HotIf WinActive("ahk_id " . (IsSet(MainGui) ? MainGui.Hwnd : 0))
 #Left:: SnapWindow("Left")
 #Right:: SnapWindow("Right")
 #Up:: SnapWindow("Max")
@@ -38,6 +46,7 @@ StartResizing() {
 #HotIf
 
 SnapWindow(pos) {
+    global MainGui
     ; 現在のモニタの作業領域(タスクバー除く)を取得
     MonitorGetWorkArea(MonitorGetPrimary(), &WALeft, &WATop, &WARight, &WABottom)
     WAWidth := WARight - WALeft
@@ -75,5 +84,6 @@ SnapWindow(pos) {
     }
 
     ; サイズ変更イベントを発火させてWebViewを調整
-    Gui_Size(MainGui, 0, 0, 0)
+    if (IsSet(MainGui) && MainGui)
+        Gui_Size(MainGui, 0, 0, 0)
 }
