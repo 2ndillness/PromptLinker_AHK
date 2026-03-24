@@ -1,5 +1,7 @@
 #Include Lib\WebView2\WebView2.ahk
 #Include Lib\JSON.ahk
+#Include Lib\AppLogic.ahk
+#Include Lib\WindowControl.ahk
 #Requires AutoHotkey v2.0
 #SingleInstance Force
 
@@ -32,9 +34,9 @@ if !DirExist(Settings["LogDir"]) {
 ; ==============================================================================
 ; GUIの構築
 ; ==============================================================================
-MainGui := Gui("+AlwaysOnTop +Resize -Caption", AppName) ; -Captionでタイトルバー削除
+MainGui := Gui("+AlwaysOnTop -Caption", AppName) ; 太い枠を消すためResizeを削除
 MainGui.BackColor := "1e1e1e" ; 背景色をHTMLと合わせる
-MainGui.Opt("+MinSize300x150")
+; MainGui.Opt("+MinSize300x150") ; 自前リサイズ時はGuiの制限が効かないためコード内で制御
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
 
@@ -64,7 +66,9 @@ try {
     wvc := WebView2.Create(MainGui.Hwnd, , , , , , dllPath)
 } catch as err {
     MsgBox(
-        "WebView2の初期化に失敗しました。`n" err.Message "`n`nLib/WebView2/ フォルダの構成を確認してください。",
+        "WebView2の初期化に失敗しました。`n"
+        . err.Message
+        . "`n`nLib/WebView2/ フォルダの構成を確認してください。",
         "Error",
         16
     )
@@ -82,7 +86,9 @@ wv.Settings.IsZoomControlEnabled := false
 settingsJson := JSON.Dump(Settings)
 
 ; HTMLロード前にJS変数を定義しておく
-wv.AddScriptToExecuteOnDocumentCreatedAsync("window.ahkSettings = " . settingsJson . ";")
+wv.AddScriptToExecuteOnDocumentCreatedAsync(
+    "window.ahkSettings = " . settingsJson . ";"
+)
 
 ; ui.html をファイルとしてロード (CSS/JSの相対パス解決のため)
 htmlPath := "file:///" . StrReplace(A_ScriptDir, "\", "/") . "/ui.html"
@@ -163,159 +169,8 @@ WebView_OnMessage(sender, args) {
         MainGui.Minimize()
     } else if (msg == "closeWindow") {
         SaveAndExit()
-    }
-}
-
-StartLinking() {
-    global IsLinking := true
-    ; HTML側の表示を更新
-    wv.ExecuteScriptAsync("updateBtn('Waiting...'); updateStatus('Activate Target Window...', 'waiting');")
-
-    global StartTime := A_TickCount
-    SetTimer(CheckActiveWindow, 100)
-}
-
-CancelLinking(msg := "Cancelled") {
-    global IsLinking := false
-    SetTimer(CheckActiveWindow, 0)
-
-    type := (msg == "Cancelled" || msg == "Timeout") ? "error" : "success"
-    wv.ExecuteScriptAsync("updateBtn('Link Target'); updateStatus('" . msg . "', '" . type . "');")
-}
-
-CheckActiveWindow() {
-    currentHWND := WinActive("A")
-    if (currentHWND != 0 && currentHWND != MainGui.Hwnd) {
-        SetTimer(CheckActiveWindow, 0)
-        global IsLinking := false
-        global TargetHWND := currentHWND
-        global TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
-
-        ; リンク成功時の表示更新
-        statusMsg := "Linked: " . TargetProcess
-        wv.ExecuteScriptAsync("updateBtn('Relink'); updateStatus('" . statusMsg . "', 'success');")
-
-        WinActivate("ahk_id " . MainGui.Hwnd)
-
-        ; テキストエリアにフォーカスを戻す(JS経由)
-        wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")
-    } else if (A_TickCount - StartTime > 10000) {
-        CancelLinking("Timeout")
-    }
-}
-
-ChangeFontSize(delta) {
-    newSize := Settings["FontSize"] + delta
-    if (newSize < 8)
-        newSize := 8
-    if (newSize > 40)
-        newSize := 40
-    Settings["FontSize"] := newSize
-    wv.ExecuteScriptAsync("updateFontSizeDisplay(" . newSize . ");")
-}
-
-SelectLogDir(*) {
-    ; ダイアログが背後に隠れないように、一時的にAlwaysOnTopを解除
-    MainGui.Opt("-AlwaysOnTop")
-    ; モダンなフォルダ選択ダイアログを使用
-    selDir := FileSelect("D", "*" . Settings["LogDir"], "Select Log Directory")
-    ; AlwaysOnTopを再設定
-    MainGui.Opt("+AlwaysOnTop")
-    if (selDir != "") {
-        Settings["LogDir"] := selDir
-        ; JS側の表示を更新（バックスラッシュをエスケープして渡す）
-        escapedPath := StrReplace(selDir, "\", "\\")
-        wv.ExecuteScriptAsync("updateLogDirDisplay('" . escapedPath . "');")
-    }
-}
-
-OpenLatestLog(*) {
-    logFile := Settings["LogDir"] . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
-    if FileExist(logFile) {
-        Run(logFile)
-    } else {
-        MsgBox("No log file found for today.", AppName)
-    }
-}
-
-ExecuteTransfer(text) {
-    if (text == "" || TargetHWND == 0 || !WinExist("ahk_id " . TargetHWND)) {
-        return
-    }
-
-    if (Settings["SaveLog"]) {
-        SaveToLog(text)
-    }
-
-    A_Clipboard := text
-    if (WinGetMinMax("ahk_id " . TargetHWND) = -1) {
-        WinRestore("ahk_id " . TargetHWND)
-    }
-
-    WinActivate("ahk_id " . TargetHWND)
-    if (!WinWaitActive("ahk_id " . TargetHWND, , 2)) {
-        return
-    }
-
-    Sleep(200)
-    Send("^v")
-    Sleep(Settings["PasteDelay"])
-
-    mode := Settings["SendMode"]
-    if (mode == "Enter") {
-        Send("{Enter}")
-    } else if (mode == "Ctrl + Enter") {
-        Send("^{Enter}")
-    } else if (mode == "Shift + Enter") {
-        Send("+{Enter}")
-    }
-
-    Sleep(150)
-    if (mode == "Paste + Min") {
-        WinMinimize("ahk_id " . MainGui.Hwnd)
-    } else {
-        WinActivate("ahk_id " . MainGui.Hwnd)
-        wv.ExecuteScriptAsync("document.getElementById('main-textarea').value = ''; document.getElementById('main-textarea').focus();")
-    }
-}
-
-SaveToLog(content) {
-    if !DirExist(Settings["LogDir"]) {
-        DirCreate(Settings["LogDir"])
-    }
-    fileName := Settings["LogDir"] . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
-    cleanContent := StrReplace(StrReplace(content, "`r`n", "`n"), "`r", "`n")
-    cleanContent := StrReplace(cleanContent, "`n", "`r`n")
-    logEntry := "[" . FormatTime(, "HH:mm:ss") . "]`r`n" . cleanContent . "`r`n------------------------------`r`n"
-    FileAppend(logEntry, fileName, "UTF-8")
-}
-
-SaveAndExit(*) {
-    try {
-        if FileExist(ConfigFile)
-            FileDelete(ConfigFile)
-        FileAppend(JSON.Dump(Settings, "  "), ConfigFile, "UTF-8")
-    }
-    ExitApp()
-}
-
-LoadSettings() {
-    if !FileExist(ConfigFile) {
-        return
-    }
-
-    try {
-        raw := FileRead(ConfigFile, "UTF-8")
-        loaded := JSON.Load(raw)
-        for k, v in loaded {
-            if Settings.Has(k)
-                Settings[k] := v
-        }
-    }
-}
-
-^!l:: {
-    if WinExist("ahk_id " . MainGui.Hwnd) {
-        WinActivate("ahk_id " . MainGui.Hwnd)
+    } else if (msg == "resizeWindow") {
+        ; HTML側のグリップがドラッグされたらリサイズモード(右下)を開始
+        StartResizing()
     }
 }

@@ -284,3 +284,21 @@ input:checked + .slider:before {
   background-color: #454545;
   margin: 5px 0;
 }
+
+/* Resize Handle (Bottom Right) */
+.resize-handle {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  width: 12px;
+  height: 12px;
+  cursor: nwse-resize;
+  z-index: 2000;
+  /* 三角形のようなグラデーションでグリップを表現 */
+  background: linear-gradient(135deg, transparent 50%, #666 50%);
+  opacity: 0.6;
+}
+.resize-handle:hover {
+  opacity: 1;
+  background: linear-gradient(135deg, transparent 50%, var(--accent-color) 50%);
+}
