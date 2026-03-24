@@ -12,7 +12,6 @@ global AppName := "Prompt Linker"
 global ConfigFile := A_ScriptDir "\config.json"
 global TargetHWND := 0
 global TargetProcess := ""
-; global IsSettingsVisible := false
 global IsLinking := false
 
 ; デフォルト設定
@@ -34,9 +33,8 @@ if !DirExist(Settings["LogDir"]) {
 ; ==============================================================================
 ; GUIの構築
 ; ==============================================================================
-MainGui := Gui("+AlwaysOnTop -Caption", AppName) ; 太い枠を消すためResizeを削除
-MainGui.BackColor := "1e1e1e" ; 背景色をHTMLと合わせる
-; MainGui.Opt("+MinSize300x150") ; 自前リサイズ時はGuiの制限が効かないためコード内で制御
+MainGui := Gui("+AlwaysOnTop -Caption", AppName)
+MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
 
@@ -90,7 +88,7 @@ wv.AddScriptToExecuteOnDocumentCreatedAsync(
     "window.ahkSettings = " . settingsJson . ";"
 )
 
-; ui.html をファイルとしてロード (CSS/JSの相対パス解決のため)
+; ui.html をファイルとしてロード
 htmlPath := "file:///" . StrReplace(A_ScriptDir, "\", "/") . "/ui.html"
 
 ; ファイル存在確認
@@ -105,7 +103,7 @@ wv.Navigate(htmlPath)
 ; イベントハンドラ登録
 wv.add_WebMessageReceived(WebView_OnMessage)
 
-MainGui.Show("w600 h450") ; WebViewの準備が整ってからウィンドウを表示
+MainGui.Show("w600 h450")
 wvc.IsVisible := true     ; WebView2を明示的に可視化
 wvc.Fill()                ; ウィンドウサイズに合わせてWebView2を広げる
 
@@ -170,7 +168,7 @@ WebView_OnMessage(sender, args) {
     } else if (msg == "closeWindow") {
         SaveAndExit()
     } else if (msg == "resizeWindow") {
-        ; HTML側のグリップがドラッグされたらリサイズモード(右下)を開始
+        ; HTML側のグリップ(右下)がドラッグされたらリサイズモードを開始
         StartResizing()
     }
 }

@@ -60,7 +60,6 @@ ChangeFontSize(delta) {
 SelectLogDir(*) {
     ; ダイアログが背後に隠れないように、一時的にAlwaysOnTopを解除
     MainGui.Opt("-AlwaysOnTop")
-    ; モダンなフォルダ選択ダイアログを使用
     selDir := FileSelect("D", "*" . Settings["LogDir"], "Select Log Directory")
     ; AlwaysOnTopを再設定
     MainGui.Opt("+AlwaysOnTop")

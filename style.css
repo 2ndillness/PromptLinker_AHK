@@ -294,7 +294,6 @@ input:checked + .slider:before {
   height: 12px;
   cursor: nwse-resize;
   z-index: 2000;
-  /* 三角形のようなグラデーションでグリップを表現 */
   background: linear-gradient(135deg, transparent 50%, #666 50%);
   opacity: 0.6;
 }
