@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
  */
 function renderIcons() {
   const placeholders = document.querySelectorAll(".icon-placeholder");
-  placeholders.forEach(el => {
+  placeholders.forEach((el) => {
     const iconName = el.getAttribute("data-icon");
     if (ICONS[iconName]) {
       el.innerHTML = ICONS[iconName];
@@ -130,9 +130,29 @@ textArea.addEventListener("keydown", (e) => {
 
 textArea.addEventListener("contextmenu", (e) => {
   e.preventDefault();
-  contextMenu.style.left = e.clientX + "px";
-  contextMenu.style.top = e.clientY + "px";
+
+  // 位置計算のために一旦表示（非可視）
+  contextMenu.style.visibility = "hidden";
   contextMenu.style.display = "block";
+
+  const menuWidth = contextMenu.offsetWidth;
+  const menuHeight = contextMenu.offsetHeight;
+  const winWidth = window.innerWidth;
+  const winHeight = window.innerHeight;
+
+  let x = e.clientX;
+  let y = e.clientY;
+
+  if (x + menuWidth > winWidth) x -= menuWidth;
+  if (y + menuHeight > winHeight) y -= menuHeight;
+
+  // 上端・左端で見切れる場合の最終補正 (ウィンドウが小さい場合や上部でのクリック対応)
+  if (x < 0) x = 0;
+  if (y < 0) y = 0;
+
+  contextMenu.style.left = x + "px";
+  contextMenu.style.top = y + "px";
+  contextMenu.style.visibility = "visible";
 });
 
 window.addEventListener("click", (e) => {
@@ -144,8 +164,36 @@ window.addEventListener("click", (e) => {
 /**
  * コンテキストメニューコマンド実行
  */
-function execCmd(cmd) {
+async function execCmd(cmd) {
   textArea.focus();
-  document.execCommand(cmd);
   contextMenu.style.display = "none";
+
+  const command = cmd.toLowerCase();
+  if (command === "copy" || command === "cut") {
+    const text = textArea.value.substring(
+      textArea.selectionStart,
+      textArea.selectionEnd,
+    );
+    if (text) {
+      await navigator.clipboard.writeText(text);
+      if (command === "cut")
+        textArea.setRangeText(
+          "",
+          textArea.selectionStart,
+          textArea.selectionEnd,
+          "end",
+        );
+    }
+  } else if (command === "paste") {
+    const text = await navigator.clipboard.readText();
+    if (text)
+      textArea.setRangeText(
+        text,
+        textArea.selectionStart,
+        textArea.selectionEnd,
+        "end",
+      );
+  } else if (command === "selectall") {
+    textArea.select();
+  }
 }

@@ -18,11 +18,11 @@ StartResizing() {
         newW := winW + (curX - startX)
         newH := winH + (curY - startY)
 
-        ; 最小サイズ制限 (300x150)
-        if (newW < 300)
-            newW := 300
-        if (newH < 150)
-            newH := 150
+        ; 最小サイズ制限 (450x200)
+        if (newW < 450)
+            newW := 450
+        if (newH < 200)
+            newH := 200
 
         WinMove(winX, winY, newW, newH, "ahk_id " . MainGui.Hwnd)
         Sleep(10)
