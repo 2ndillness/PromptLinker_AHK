@@ -4,7 +4,7 @@ StartLinking() {
     ; HTML側の表示を更新
     wv.ExecuteScriptAsync(
         "updateBtn('Waiting...'); "
-        . "updateStatus('Activate Target Window...', 'waiting');"
+        . "updateStatus('Click Target Window...', 'waiting');"
     )
 
     global StartTime := A_TickCount

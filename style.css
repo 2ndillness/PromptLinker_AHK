@@ -22,13 +22,14 @@
 }
 
 #settings-view {
-  padding: 20px;
+  padding: 10px 15px;
   background-color: var(--bg-color);
+  font-size: 13px;
 }
 .settings-header {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   border-bottom: 1px solid var(--border-dark);
   padding-bottom: 10px;
 }
@@ -53,10 +54,15 @@
 .input-group {
   display: flex;
   gap: 5px;
-  margin-top: 5px;
+}
+.input-group.expand {
+  flex-grow: 1;
+  margin-left: 20px;
 }
 .input-group input {
   flex-grow: 1;
+  min-width: 100px;
+  min-width: 0;
   background: var(--input-bg);
   border: 1px solid var(--border-color);
   color: var(--text-color);
@@ -73,7 +79,7 @@
 }
 
 .action-row {
-  margin-top: 20px;
+  margin-top: 0;
   display: flex;
   justify-content: flex-end;
   gap: 10px;

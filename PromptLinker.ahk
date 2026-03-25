@@ -57,14 +57,14 @@ FileInstall "lib\WebView2\64bit\WebView2Loader.dll", ResDir
 ; 初期設定・変数定義
 ; ==============================================================================
 global AppName := "Prompt Linker"
-; 設定ファイルはEXEと同じ場所に保持
 global ConfigFile := A_ScriptDir "\config.json"
 global TargetHWND := 0
-global TargetProcess := ""
 global IsLinking := false
-
+global TargetProcess := ""
+global MainGui := ""
+global wvc := ""
+global wv := ""
 ; 設定マップ
-; フォントサイズ、ログ保存オプション、ログ保存ディレクトリ、キー操作、貼り付け遅延、最小化オプション
 global Settings := Map(
     "FontSize", 14,
     "MinimizeAfter", false,
@@ -75,9 +75,6 @@ global Settings := Map(
     "RestoreHotkey", "^!l",
     "TriggerKey", "Ctrl + Enter"
 )
-global MainGui := ""
-global wvc := ""
-global wv := ""
 
 ; ==============================================================================
 ; コールバック関数

@@ -139,9 +139,10 @@
           </label>
         </div>
 
-        <div class="setting-group">
-          <label>Restore Shortcut:</label>
+        <div class="setting-row">
+          <label>Restore Hotkey</label>
           <div class="input-group">
+            <div class="explanation">Press Key to Set</div>
             <input
               type="text"
               id="hotkey-input"
@@ -155,11 +156,11 @@
           </div>
         </div>
 
-        <div class="setting-group">
-          <label>Log Directory:</label>
-          <div class="input-group">
+        <div class="setting-row">
+          <label>Log Directory</label>
+          <div class="input-group expand">
             <input type="text" id="log-dir-display" readonly value="C:\..." />
-            <button onclick="sendMsg('selectLogDir')" title="Browse Folder">
+            <button onclick="sendMsg('selectLogDir')" title="Browse...">
               <span class="icon-placeholder" data-icon="folder"></span>
             </button>
           </div>

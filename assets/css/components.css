@@ -75,7 +75,7 @@ select {
   height: 100%;
   cursor: pointer;
   outline: none;
-  font-size: 13px;
+  font-size: 12px;
   z-index: 1;
 }
 select option {
@@ -116,6 +116,9 @@ select option {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+}
+.setting-row label {
+  white-space: nowrap;
 }
 .num-control {
   display: flex;
@@ -160,6 +163,11 @@ input:checked + .slider {
 }
 input:checked + .slider:before {
   transform: translateX(20px);
+}
+.explanation {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-right: 10px;
 }
 
 /* コンテキストメニューと共有メニューのスタイル */
