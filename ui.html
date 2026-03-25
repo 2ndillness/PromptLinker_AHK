@@ -48,9 +48,9 @@
           <!-- ドロップダウンメニュー -->
           <div class="select-wrapper">
             <select
-              id="send-mode"
-              onchange="sendMsg('updateSetting:SendMode:' + this.value)"
-              title="Key Operation"
+              id="target-action"
+              onchange="sendMsg('updateSetting:TargetAction:' + this.value)"
+              title="Target Action"
             >
               <option value="Enter">Enter</option>
               <option value="Ctrl + Enter">Ctrl + Enter</option>

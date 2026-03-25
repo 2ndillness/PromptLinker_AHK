@@ -109,9 +109,9 @@ ExecuteTransfer(text) {
 
     Sleep(200)
     Send("^v")
-    Sleep(Settings["PasteDelay"])
+    Sleep(Settings["SubmitDelay"])
 
-    mode := Settings["SendMode"]
+    mode := Settings["TargetAction"]
     if (mode == "Enter") {
         Send("{Enter}")
     } else if (mode == "Ctrl + Enter") {

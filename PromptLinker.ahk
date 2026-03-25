@@ -70,8 +70,8 @@ global Settings := Map(
     "MinimizeAfter", false,
     "SaveLog", false,
     "LogDir", A_ScriptDir "\logs",
-    "SendMode", "Enter",
-    "PasteDelay", 400,
+    "TargetAction", "Enter",
+    "SubmitDelay", 400,
     "RestoreHotkey", "^!l"
 )
 global MainGui := ""

@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   textArea.focus();
 
   // セレクトボックスのアニメーション用
-  const select = document.getElementById("send-mode");
+  const select = document.getElementById("target-action");
   const wrapper = select.parentElement;
   select.addEventListener("focus", () => wrapper.classList.add("active"));
   select.addEventListener("blur", () => wrapper.classList.remove("active"));
@@ -65,7 +65,7 @@ function updateMaxIcon(isMaximized) {
  * AHKからの設定をUIに反映
  */
 function initSettings(settings) {
-  document.getElementById("send-mode").value = settings.SendMode;
+  document.getElementById("target-action").value = settings.TargetAction;
   updateFontSize(settings.FontSize);
   document.getElementById("minimize-after-check").checked =
     settings.MinimizeAfter;
