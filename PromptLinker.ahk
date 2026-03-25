@@ -133,7 +133,7 @@ try {
 } catch as err {
     MsgBox(
         "WebView2の初期化に失敗しました。`n" . err.Message,
-        "Error", 16
+        "Error", 4096
     )
     ExitApp
 }
