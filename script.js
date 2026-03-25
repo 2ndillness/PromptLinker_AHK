@@ -13,6 +13,13 @@ document.addEventListener("DOMContentLoaded", () => {
     initSettings(window.ahkSettings);
   }
   textArea.focus();
+
+  // セレクトボックスのアニメーション用
+  const select = document.getElementById("send-mode");
+  const wrapper = select.parentElement;
+  select.addEventListener("focus", () => wrapper.classList.add("active"));
+  select.addEventListener("blur", () => wrapper.classList.remove("active"));
+  select.addEventListener("change", () => select.blur()); // 選択したら閉じる
 });
 
 /**
@@ -162,38 +169,38 @@ window.addEventListener("click", (e) => {
 });
 
 /**
- * コンテキストメニューコマンド実行
+ * トースト通知の表示
+ * @param {string} msg 
+ * @param {string} type 'info' | 'error' | 'success'
  */
-async function execCmd(cmd) {
-  textArea.focus();
-  contextMenu.style.display = "none";
-
-  const command = cmd.toLowerCase();
-  if (command === "copy" || command === "cut") {
-    const text = textArea.value.substring(
-      textArea.selectionStart,
-      textArea.selectionEnd,
-    );
-    if (text) {
-      await navigator.clipboard.writeText(text);
-      if (command === "cut")
-        textArea.setRangeText(
-          "",
-          textArea.selectionStart,
-          textArea.selectionEnd,
-          "end",
-        );
-    }
-  } else if (command === "paste") {
-    const text = await navigator.clipboard.readText();
-    if (text)
-      textArea.setRangeText(
-        text,
-        textArea.selectionStart,
-        textArea.selectionEnd,
-        "end",
-      );
-  } else if (command === "selectall") {
-    textArea.select();
-  }
+function showToast(msg, type = "info") {
+  const container = document.getElementById("toast-container");
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.innerText = msg;
+  
+  container.appendChild(toast);
+  
+  // 3秒後に削除
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(-20px)';
+    toast.style.transition = 'all 0.3s ease-in';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
 }
+
+/**
+ * AHKからのメッセージを受信
+ */
+window.chrome.webview.addEventListener("message", (event) => {
+  const msg = event.data;
+  if (typeof msg !== "string") return;
+
+  if (msg.startsWith("notify:")) {
+    const parts = msg.split(":");
+    const type = parts[1] || "info";
+    const text = parts.slice(2).join(":");
+    showToast(text, type);
+  }
+});

@@ -1,4 +1,4 @@
-/* Components Styles */
+/* コンポーネントのスタイル */
 button,
 .select-wrapper {
   background-color: var(--input-bg);
@@ -26,14 +26,14 @@ button:hover,
 }
 button:active,
 .select-wrapper:active {
-  background-color: #005a9e;
+  background-color: var(--accent-color);
 }
 
-/* Win Controls */
+/* ウィンドウ操作ボタン */
 .win-btn {
   background: transparent;
   border: none;
-  color: #ccc;
+  color: var(--text-muted);
   width: 46px;
   height: 100%;
   border-radius: 0;
@@ -42,20 +42,29 @@ button:active,
   align-items: center;
 }
 .win-btn:hover {
-  background-color: #444;
-  color: #fff;
+  background-color: var(--border-color);
+  color: var(--text-color);
 }
 .win-btn.close:hover {
-  background-color: #e81123;
+  background-color: var(--error-color);
+  color: white;
 }
 
-/* Select Box */
+/* セレクトボックスとオプション */
 .select-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   min-width: 130px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
+.select-wrapper.active {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 1px var(--accent-color);
+}
+
 select {
   appearance: none;
   background: transparent;
@@ -67,10 +76,11 @@ select {
   cursor: pointer;
   outline: none;
   font-size: 13px;
+  z-index: 1;
 }
 select option {
-  background-color: #252526;
-  color: #e0e0e0;
+  background-color: var(--menu-bg);
+  color: var(--text-color);
 }
 .select-arrow {
   position: absolute;
@@ -78,24 +88,29 @@ select option {
   pointer-events: none;
   display: flex;
   align-items: center;
-  color: #aaa;
+  color: var(--text-muted);
+  transition: transform 0.3s ease;
+}
+.select-wrapper.active .select-arrow {
+  transform: rotate(180deg);
+  color: var(--accent-color);
 }
 
-/* Status Label */
+/* ステータスラベル */
 .status-label {
   font-weight: bold;
   font-size: 14px;
-  color: #cc0000;
+  color: var(--error-color);
   margin-left: auto;
 }
 .status-label.waiting {
-  color: #ff8c00;
+  color: var(--warning-color);
 }
 .status-label.success {
-  color: #28a745;
+  color: var(--success-color);
 }
 
-/* Settings Components */
+/* 設定画面のコンポーネント */
 .setting-row {
   display: flex;
   justify-content: space-between;
@@ -125,7 +140,7 @@ select option {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #444;
+  background-color: var(--border-color);
   transition: 0.4s;
   border-radius: 20px;
 }
@@ -147,27 +162,76 @@ input:checked + .slider:before {
   transform: translateX(20px);
 }
 
-/* Context Menu */
+/* コンテキストメニューと共有メニューのスタイル */
 .context-menu {
   display: none;
   position: absolute;
   z-index: 1000;
-  background-color: #252526;
-  border: 1px solid #454545;
-  padding: 5px 0;
-  min-width: 150px;
+  background-color: var(--menu-bg);
+  border: 1px solid var(--menu-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  padding: 4px 0;
+  min-width: 130px;
+  border-radius: 3px;
 }
 .menu-item {
-  padding: 8px 15px;
+  padding: 6px 12px;
   font-size: 13px;
   cursor: pointer;
+  color: var(--text-color);
 }
 .menu-item:hover {
-  background-color: #007acc;
-  color: white;
+  background-color: var(--hover-bg);
 }
 .separator {
   height: 1px;
-  background-color: #454545;
-  margin: 5px 0;
+  background-color: var(--border-dark);
+  margin: 4px 0;
+}
+
+/* トースト通知 */
+.toast-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  background-color: var(--menu-bg);
+  color: var(--text-color);
+  border: 1px solid var(--menu-border);
+  border-left: 4px solid var(--accent-color);
+  padding: 10px 15px;
+  border-radius: 3px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-size: 13px;
+  min-width: 200px;
+  max-width: 400px;
+  pointer-events: auto;
+  animation: toast-in 0.3s ease-out;
+}
+.toast.error {
+  border-left-color: var(--error-color);
+}
+.toast.success {
+  border-left-color: var(--success-color);
+}
+.toast.info {
+  border-left-color: var(--accent-color);
+}
+
+@keyframes toast-in {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }

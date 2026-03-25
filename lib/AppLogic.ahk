@@ -77,13 +77,13 @@ SelectLogDir(*) {
 }
 
 OpenLatestLog(*) {
-    global Settings, AppName
+    global Settings, AppName, wv
     logFile := Settings["LogDir"]
         . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
     if FileExist(logFile) {
         Run(logFile)
     } else {
-        MsgBox("No log file found for today.", AppName)
+        wv.PostWebMessageAsString("notify:error:No log file found for today.")
     }
 }
 

@@ -1,12 +1,32 @@
-/* Theme & Base Styles */
+/* テーマと基本スタイル */
 :root {
+  /* 基本色 */
   --bg-color: #1e1e1e;
+  --bg-dark: #2d2d2d;
   --text-color: #e0e0e0;
+  --text-muted: #999999;
+
+  /* アクセントカラー */
   --accent-color: #007acc;
+
+  /* コンポーネントの色 */
   --input-bg: #252526;
-  --font-family: "Segoe UI", "Meiryo", sans-serif;
-  --border-color: #444;
   --hover-bg: #3e3e3e;
+  --border-color: #444444;
+  --border-dark: #333333;
+  --border-light: #555555;
+
+  /* メニューの色 */
+  --menu-bg: var(--input-bg);
+  --menu-border: var(--border-color);
+
+  /* ステータスの色 */
+  --error-color: #f44336;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+
+  /* フォントとその他 */
+  --font-family: "Segoe UI", "Meiryo", sans-serif;
 }
 
 body {
@@ -20,20 +40,20 @@ body {
   height: 100vh;
   overflow: hidden;
   box-sizing: border-box;
-  border: 1px solid #333;
-  user-select: none; /* 全体で選択を禁止 */
+  border: 1px solid var(--border-dark);
+  user-select: none;
 }
 
 textarea {
   flex-grow: 1;
-  background-color: #1e1e1e;
+  background-color: var(--bg-color);
   color: var(--text-color);
   border: none;
-  border-top: 1px solid #333;
+  border-top: 1px solid var(--border-dark);
   padding: 10px;
   font-size: 16px;
   font-family: var(--font-family);
   resize: none;
   outline: none;
-  user-select: text; /* テキストエリアのみ許可 */
+  user-select: text;
 }

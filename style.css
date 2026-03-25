@@ -1,9 +1,9 @@
-/* Prompt Linker - Main Stylesheet */
+/* Prompt Linker - メインスタイルシート */
 @import url("assets/css/theme.css");
 @import url("assets/css/layout.css");
 @import url("assets/css/components.css");
 
-/* Unique ID based adjustments */
+/* 特定のIDに基づいた調整 */
 .app-icon {
   width: 16px;
   height: 16px;
@@ -23,13 +23,13 @@
 
 #settings-view {
   padding: 20px;
-  background-color: #1e1e1e;
+  background-color: var(--bg-color);
 }
 .settings-header {
   display: flex;
   align-items: center;
   margin-bottom: 20px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--border-dark);
   padding-bottom: 10px;
 }
 .settings-header h3 {
@@ -57,12 +57,15 @@
 }
 .input-group input {
   flex-grow: 1;
-  background: #252526;
-  border: 1px solid #444;
-  color: #888;
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
   font-size: 12px;
   padding: 5px;
   border-radius: 3px;
+}
+.input-group input:read-only {
+  color: var(--text-muted);
 }
 .input-group button {
   width: 38px;

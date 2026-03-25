@@ -7,7 +7,7 @@
     <title>Prompt Linker</title>
   </head>
   <body>
-    <!-- Custom Title Bar -->
+    <!-- Customタイトルバー -->
     <div class="title-bar">
       <div class="drag-region" onmousedown="sendMsg('dragWindow')">
         <img src="assets/app_icon.ico" class="app-icon" alt="icon" />
@@ -38,14 +38,14 @@
     </div>
 
     <div id="content-area">
-      <!-- Main View -->
       <div id="main-view">
+        <!-- ツールバー -->
         <div class="toolbar">
           <button id="link-btn" onclick="sendMsg('toggleLink')">
             <span class="icon-placeholder" data-icon="link"></span>
             <span class="btn-text">Link Target</span>
           </button>
-
+          <!-- ドロップダウンメニュー -->
           <div class="select-wrapper">
             <select
               id="send-mode"
@@ -63,7 +63,6 @@
             >
             </span>
           </div>
-
           <button id="settings-btn" onclick="toggleSetView()" title="Settings">
             <span class="icon-placeholder" data-icon="settings"></span>
           </button>
@@ -74,7 +73,7 @@
         <textarea id="main-textarea"></textarea>
       </div>
 
-      <!-- Settings View -->
+      <!-- 設定画面 -->
       <div id="settings-view" class="hidden">
         <div class="settings-header">
           <button class="back-btn" onclick="toggleSetView()">
@@ -129,7 +128,7 @@
         </div>
       </div>
     </div>
-
+    <!-- 右クリックメニュー -->
     <div id="context-menu" class="context-menu">
       <div class="menu-item" onclick="execCmd('cut')">Cut</div>
       <div class="menu-item" onclick="execCmd('copy')">Copy</div>
@@ -139,6 +138,8 @@
     </div>
 
     <div class="resize-handle" onmousedown="sendMsg('resizeWindow')"></div>
+
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="icons.js"></script>
     <script src="script.js"></script>
