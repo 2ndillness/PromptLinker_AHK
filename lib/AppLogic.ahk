@@ -58,7 +58,7 @@ ChangeFontSize(delta) {
     if (newSize > 40)
         newSize := 40
     Settings["FontSize"] := newSize
-    wv.ExecuteScriptAsync("updateFontSizeDisplay(" . newSize . ");")
+    wv.ExecuteScriptAsync("updateFontSize(" . newSize . ");")
 }
 
 SelectLogDir(*) {
