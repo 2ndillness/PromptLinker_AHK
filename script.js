@@ -71,6 +71,53 @@ function initSettings(settings) {
     settings.MinimizeAfter;
   document.getElementById("save-log-check").checked = settings.SaveLog;
   document.getElementById("log-dir-display").value = settings.LogDir;
+
+  const hotkeyInput = document.getElementById("hotkey-input");
+  if (hotkeyInput) {
+    hotkeyInput.value = formatHotkey(settings.RestoreHotkey || "^!l");
+    hotkeyInput.onkeydown = handleHotkeyInput;
+  }
+}
+
+/**
+ * ホットキーを人間が読みやすい形式に変換 (例: ^!l -> Ctrl + Alt + L)
+ */
+function formatHotkey(ahkKey) {
+  if (!ahkKey) return "None";
+  const displayParts = [];
+
+  // モディファイアキーの順序を整えて追加
+  if (ahkKey.includes("^")) displayParts.push("Ctrl");
+  if (ahkKey.includes("+")) displayParts.push("Shift");
+  if (ahkKey.includes("!")) displayParts.push("Alt");
+  if (ahkKey.includes("#")) displayParts.push("Win");
+
+  // AHKの特殊記号を除去して残ったキー名を取得
+  const keyPart = ahkKey.replace(/[\^\+\!#]/g, "");
+
+  if (keyPart.length === 1) {
+    // 1文字（a, b, c...）なら大文字にして追加
+    displayParts.push(keyPart.toUpperCase());
+  } else if (keyPart) {
+    // 特殊キー（Space, Enter, F1...）ならそのまま追加
+    displayParts.push(keyPart);
+  }
+
+  return displayParts.length > 0 ? displayParts.join(" + ") : "None";
+}
+
+/**
+ * ホットキーをデフォルト値にリセット
+ */
+function resetHotkey() {
+  const defaultHotkey = "^!l";
+  const hotkeyInput = document.getElementById("hotkey-input");
+  if (hotkeyInput) {
+    const formatted = formatHotkey(defaultHotkey);
+    hotkeyInput.value = formatted;
+    sendMsg("updateSetting:RestoreHotkey:" + defaultHotkey);
+    showToast("Shortcut reset to default: " + formatted, "success");
+  }
 }
 
 /**
@@ -206,3 +253,54 @@ window.chrome.webview.addEventListener("message", (event) => {
     showToast(text, type);
   }
 });
+
+/**
+ * ホットキー入力ハンドラ
+ * キー入力をAHK形式の文字列(^!lなど)に変換して送信
+ */
+function handleHotkeyInput(e) {
+  e.preventDefault();
+  // 修飾キーのみの場合は無視
+  if (["Control", "Shift", "Alt", "Meta"].includes(e.key)) return;
+
+  const parts = [];
+  if (e.ctrlKey) parts.push("^");
+  if (e.shiftKey) parts.push("+");
+  if (e.altKey) parts.push("!");
+  if (e.metaKey) parts.push("#");
+
+  let key = e.key;
+  // 特殊キーの変換マップ
+  const map = {
+    " ": "Space",
+    Escape: "Esc",
+    Enter: "Enter",
+    Tab: "Tab",
+    ArrowUp: "Up",
+    ArrowDown: "Down",
+    ArrowLeft: "Left",
+    ArrowRight: "Right",
+    Backspace: "BS",
+    Delete: "Del",
+  };
+
+  if (map[key]) {
+    key = map[key];
+  } else if (key.length === 1) {
+    key = key.toLowerCase();
+  } else if (!key.startsWith("F")) {
+    // F1-F12以外で未対応の特殊キーは無視
+    return;
+  }
+
+  // 安全策: 修飾キーがなく、かつF1-F12でない場合は登録を許可しない
+  // (単独の 'a' や 'Enter' などをグローバルホットキーにするとPC操作不能になるため)
+  if (parts.length === 0 && !key.match(/^F([1-9]|1[0-2])$/)) {
+    showToast("Modifier key (Ctrl/Alt/Shift) required.", "error");
+    return;
+  }
+
+  const ahkString = parts.join("") + key;
+  e.target.value = formatHotkey(ahkString);
+  sendMsg("updateSetting:RestoreHotkey:" + ahkString);
+}

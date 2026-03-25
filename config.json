@@ -1,0 +1,9 @@
+﻿{
+  "FontSize": 14,
+  "LogDir": "C:\\MyProjects\\PromptLinker_AHK\\logs",
+  "MinimizeAfter": 0,
+  "PasteDelay": 400,
+  "RestoreHotkey": "^!l",
+  "SaveLog": 0,
+  "SendMode": "Enter"
+}

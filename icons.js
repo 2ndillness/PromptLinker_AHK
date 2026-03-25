@@ -1,6 +1,5 @@
 /**
  * SVGアイコンデータを保持するオブジェクト
- * 1行を短く保つため、パスデータを分割して定義
  */
 const ICONS = {
   link: `
@@ -78,5 +77,5 @@ const ICONS = {
       stroke="currentColor" stroke-width="1">
       <rect x="1.5" y="3.5" width="7" height="7" />
       <path d="M3.5 1.5h7v7h-2 M3.5 1.5v1 M10.5 3.5h-1" />
-    </svg>`
+    </svg>`,
 };

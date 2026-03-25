@@ -123,6 +123,22 @@
         </div>
 
         <div class="setting-group">
+          <label>Restore Shortcut:</label>
+          <div class="input-group">
+            <input
+              type="text"
+              id="hotkey-input"
+              class="hotkey-input"
+              placeholder="Press keys (e.g. Ctrl+Alt+L)"
+              readonly
+            />
+            <button onclick="resetHotkey()" title="Reset to Default">
+              <span class="icon-placeholder" data-icon="back"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="setting-group">
           <label>Log Directory:</label>
           <div class="input-group">
             <input type="text" id="log-dir-display" readonly value="C:\..." />

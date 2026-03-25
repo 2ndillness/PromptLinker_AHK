@@ -183,7 +183,30 @@ LoadSettings() {
     }
 }
 
-^!l:: {
+global CurrentRestoreHotkey := ""
+
+UpdateRestoreHotkey(newKey) {
+    global CurrentRestoreHotkey, wv
+    ; 以前のホットキーがあれば無効化
+    if (CurrentRestoreHotkey != "") {
+        try Hotkey(CurrentRestoreHotkey, "Off")
+    }
+
+    ; 新しいホットキーを登録 (空文字の場合は登録解除のみ)
+    if (newKey != "") {
+        try {
+            Hotkey(newKey, RestoreWindow, "On")
+            CurrentRestoreHotkey := newKey
+        } catch as err {
+            ; 登録失敗（システム予約キーや構文エラー）の場合
+            wv.PostWebMessageAsString("notify:error:Hotkey Registration Failed: " . newKey)
+            ; UI側の表示を元に戻すために古い値を送り返す等の処理が必要だが、今回はエラー通知のみ行う
+            CurrentRestoreHotkey := ""
+        }
+    }
+}
+
+RestoreWindow(hk) {
     global MainGui
     if WinExist("ahk_id " . MainGui.Hwnd) {
         WinActivate("ahk_id " . MainGui.Hwnd)

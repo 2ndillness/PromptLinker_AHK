@@ -64,14 +64,15 @@ global TargetProcess := ""
 global IsLinking := false
 
 ; 設定マップ
-; フォントサイズ、ログ保存、ログパス、送信モード、貼り付け遅延、最小化後
+; フォントサイズ、ログ保存オプション、ログ保存ディレクトリ、キー操作、貼り付け遅延、最小化オプション
 global Settings := Map(
     "FontSize", 14,
-    "SaveLog", true,
+    "MinimizeAfter", false,
+    "SaveLog", false,
     "LogDir", A_ScriptDir "\logs",
     "SendMode", "Enter",
     "PasteDelay", 400,
-    "MinimizeAfter", false
+    "RestoreHotkey", "^!l"
 )
 global MainGui := ""
 global wvc := ""
@@ -93,7 +94,7 @@ Gui_Size(thisGui, minMax, width, height) {
 
     if (IsSet(wv) && wv) {
         isMax := (minMax == 1 ? "true" : "false")
-        wv.ExecuteScript("if(typeof updateMaxIcon === 'function')"
+        wv.ExecuteScriptAsync("if(typeof updateMaxIcon === 'function')"
             . " updateMaxIcon(" . isMax . ");")
     }
 }
@@ -110,6 +111,7 @@ Gui_Size(thisGui, minMax, width, height) {
 ; アプリケーションの初期化
 ; ==============================================================================
 LoadSettings()
+UpdateRestoreHotkey(Settings["RestoreHotkey"])
 
 if !DirExist(Settings["LogDir"]) {
     DirCreate(Settings["LogDir"])
@@ -188,6 +190,11 @@ OnWebMsg(sender, args) {
                 Settings[key] := (val == "1")
             } else {
                 Settings[key] := val
+            }
+
+            ; ホットキーの設定変更であれば即時反映
+            if (key == "RestoreHotkey") {
+                UpdateRestoreHotkey(Settings[key])
             }
         }
     } else if (SubStr(msg, 1, 15) == "changeFontSize:") {
