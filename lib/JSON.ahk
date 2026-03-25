@@ -4,10 +4,6 @@
  * JSONの相互変換を行うクラス
  */
 class JSON {
-    static null := ComValue(1, 0)
-    static true := ComValue(0xB, 1)
-    static false := ComValue(0xB, 0)
-
     static Dump(obj, indent := "") {
         return this._Dump(obj, indent, "")
     }
@@ -36,12 +32,6 @@ class JSON {
             throw Error("Object type not supported.", -1, Type(obj))
         } else if IsNumber(obj)
             return String(obj)
-        else if obj == this.null
-            return "null"
-        else if obj == this.true
-            return "true"
-        else if obj == this.false
-            return "false"
 
         ; 文字列のエスケープ処理
         obj := StrReplace(obj, "\", "\\")
@@ -53,30 +43,144 @@ class JSON {
     }
 
     static Load(text) {
-        try {
-            html := ComObject("htmlfile")
-            html.write("<meta http-equiv='X-UA-Compatible' content='IE=9'>")
-            v := html.parentWindow.JSON.parse(text)
-            return this._Convert(v)
-        } catch
-            throw Error("Invalid JSON", -1)
+        text := StrReplace(text, "`r", "")
+        pos := 1
+        len := StrLen(text)
+        return this._ParseValue(text, &pos, len)
     }
 
-    static _Convert(v) {
-        if IsObject(v) {
-            ; JavaScriptのArray判定
-            if v.constructor.toString() == "function Array() { [native code] }" {
-                arr := []
-                loop v.length
-                    arr.Push(this._Convert(v.%A_Index - 1%))
+    static _ParseValue(text, &pos, len) {
+        while pos <= len && InStr(" `t`n", SubStr(text, pos, 1))
+            pos++
+        if pos > len
+            return ""
+
+        char := SubStr(text, pos, 1)
+        if char == "{"
+            return this._ParseObject(text, &pos, len)
+        if char == "["
+            return this._ParseArray(text, &pos, len)
+        if char == '"'
+            return this._ParseString(text, &pos, len)
+        if IsNumber(char) || char == "-"
+            return this._ParseNumber(text, &pos, len)
+        if SubStr(text, pos, 4) = "true" {
+            pos += 4
+            return 1
+        }
+        if SubStr(text, pos, 5) = "false" {
+            pos += 5
+            return 0
+        }
+        if SubStr(text, pos, 4) = "null" {
+            pos += 4
+            return ""
+        }
+        throw Error("Invalid JSON at position " . pos)
+    }
+
+    static _ParseObject(text, &pos, len) {
+        pos++
+        obj := Map()
+        while pos <= len {
+            while pos <= len && InStr(" `t`n", SubStr(text, pos, 1))
+                pos++
+            if SubStr(text, pos, 1) == "}" {
+                pos++
+                return obj
+            }
+            if SubStr(text, pos, 1) != '"'
+                throw Error("Expected key at position " . pos)
+            key := this._ParseString(text, &pos, len)
+
+            while pos <= len && InStr(" `t`n", SubStr(text, pos, 1))
+                pos++
+            if SubStr(text, pos, 1) != ":"
+                throw Error("Expected ':' at position " . pos)
+            pos++
+            val := this._ParseValue(text, &pos, len)
+            obj[key] := val
+
+            while pos <= len && InStr(" `t`n", SubStr(text, pos, 1))
+                pos++
+            char := SubStr(text, pos, 1)
+            if char == "}" {
+                pos++
+                return obj
+            }
+            if char == ","
+                pos++
+            else
+                throw Error("Expected '}' or ',' at position " . pos)
+        }
+    }
+
+    static _ParseArray(text, &pos, len) {
+        pos++
+        arr := []
+        while pos <= len {
+            while pos <= len && InStr(" `t`n", SubStr(text, pos, 1))
+                pos++
+            if SubStr(text, pos, 1) == "]" {
+                pos++
                 return arr
+            }
+            val := this._ParseValue(text, &pos, len)
+            arr.Push(val)
+            while pos <= len && InStr(" `t`n", SubStr(text, pos, 1))
+                pos++
+            char := SubStr(text, pos, 1)
+            if char == "]" {
+                pos++
+                return arr
+            }
+            if char == ","
+                pos++
+            else
+                throw Error("Expected ']' or ',' at position " . pos)
+        }
+    }
+
+    static _ParseString(text, &pos, len) {
+        pos++
+        str := ""
+        while pos <= len {
+            char := SubStr(text, pos, 1)
+            if char == '"' {
+                pos++
+                return str
+            }
+            if char == "\" {
+                pos++
+                char := SubStr(text, pos, 1)
+                if char == "u" {
+                    pos++
+                    code := SubStr(text, pos, 4)
+                    str .= Chr("0x" . code)
+                    pos += 4
+                } else {
+                    if char == "n"
+                        str .= "`n"
+                    else if char == "r"
+                        str .= "`r"
+                    else if char == "t"
+                        str .= "`t"
+                    else
+                        str .= char
+                    pos++
+                }
             } else {
-                m := Map()
-                for k in v
-                    m[k] := this._Convert(v.%k%)
-                return m
+                str .= char
+                pos++
             }
         }
-        return v
+    }
+
+    static _ParseNumber(text, &pos, len) {
+        start := pos
+        while pos <= len && (IsNumber(SubStr(text, pos, 1)) || InStr("-.eE+", SubStr(text, pos, 1)))
+            pos++
+        numStr := SubStr(text, start, pos - start)
+        return IsNumber(numStr) ? numStr + 0 : numStr
     }
 }

@@ -150,9 +150,9 @@ SaveToLog(content) {
 SaveAndExit(*) {
     global Settings, ConfigFile
     try {
-        if FileExist(ConfigFile)
-            FileDelete(ConfigFile)
-        FileAppend(JSON.Dump(Settings, "  "), ConfigFile, "UTF-8")
+        f := FileOpen(ConfigFile, "w", "UTF-8")
+        f.Write(JSON.Dump(Settings, "  "))
+        f.Close()
     }
     ExitApp()
 }
@@ -163,12 +163,22 @@ LoadSettings() {
         return
     }
 
+    raw := ""
     try {
         raw := FileRead(ConfigFile, "UTF-8")
+        if (raw == "")
+            return
         loaded := JSON.Load(raw)
         for k, v in loaded {
             if Settings.Has(k)
                 Settings[k] := v
+        }
+    } catch as err {
+        MsgBox("設定ファイルが破損している可能性があるため、初期設定にリセットします。`n"
+            . "詳細: " . err.Message . "`n"
+            . "読込内容(先頭): " . SubStr(raw, 1, 100), "Config Load Error", 48)
+        try {
+            FileDelete(ConfigFile)
         }
     }
 }
