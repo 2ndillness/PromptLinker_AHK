@@ -5,5 +5,6 @@
   "RestoreHotkey": "^!l",
   "SaveLog": 0,
   "SubmitDelay": 400,
-  "TargetAction": "Enter"
+  "TargetAction": "Enter",
+  "TriggerKey": "Ctrl + Enter"
 }

@@ -72,7 +72,8 @@ global Settings := Map(
     "LogDir", A_ScriptDir "\logs",
     "TargetAction", "Enter",
     "SubmitDelay", 400,
-    "RestoreHotkey", "^!l"
+    "RestoreHotkey", "^!l",
+    "TriggerKey", "Ctrl + Enter"
 )
 global MainGui := ""
 global wvc := ""

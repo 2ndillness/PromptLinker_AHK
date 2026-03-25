@@ -66,6 +66,8 @@ function updateMaxIcon(isMaximized) {
  */
 function initSettings(settings) {
   document.getElementById("target-action").value = settings.TargetAction;
+  document.getElementById("trigger-key").value =
+    settings.TriggerKey || "Ctrl + Enter";
   updateFontSize(settings.FontSize);
   document.getElementById("minimize-after-check").checked =
     settings.MinimizeAfter;
@@ -179,7 +181,12 @@ function toggleSetView() {
  * イベントリスナー
  */
 textArea.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.key === "Enter") {
+  const trigger = document.getElementById("trigger-key").value;
+  const isCtrlTrigger = trigger === "Ctrl + Enter" && e.ctrlKey && !e.shiftKey;
+  const isShiftTrigger =
+    trigger === "Shift + Enter" && e.shiftKey && !e.ctrlKey;
+
+  if ((isCtrlTrigger || isShiftTrigger) && e.key === "Enter") {
     e.preventDefault();
     sendMsg("transfer:" + textArea.value);
   }

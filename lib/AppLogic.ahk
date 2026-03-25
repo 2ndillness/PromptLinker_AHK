@@ -170,8 +170,14 @@ LoadSettings() {
             return
         loaded := Jxon_Load(&raw)
         for k, v in loaded {
-            if Settings.Has(k)
+            if Settings.Has(k) {
                 Settings[k] := v
+            }
+        }
+        ; SubmitDelay のクランプ処理 (100ms - 2000ms)
+        if Settings.Has("SubmitDelay") {
+            val := Settings["SubmitDelay"]
+            Settings["SubmitDelay"] := Max(100, Min(2000, val))
         }
     } catch as err {
         MsgBox("設定ファイルが破損している可能性があるため、初期設定にリセットします。`n"

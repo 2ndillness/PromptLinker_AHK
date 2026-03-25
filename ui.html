@@ -84,6 +84,23 @@
         </div>
 
         <div class="setting-row">
+          <label>Trigger Key</label>
+          <div class="select-wrapper mini">
+            <select
+              id="trigger-key"
+              onchange="sendMsg('updateSetting:TriggerKey:' + this.value)"
+            >
+              <option value="Ctrl + Enter">Ctrl + Enter</option>
+              <option value="Shift + Enter">Shift + Enter</option>
+            </select>
+            <span
+              class="icon-placeholder select-arrow"
+              data-icon="chevron-down"
+            ></span>
+          </div>
+        </div>
+
+        <div class="setting-row">
           <label>Font Size</label>
           <div class="num-control">
             <button onclick="sendMsg('changeFontSize:-1')">-</button>
