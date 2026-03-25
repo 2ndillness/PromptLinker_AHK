@@ -102,7 +102,7 @@ Gui_Size(thisGui, minMax, width, height) {
 ; ライブラリのインクルード
 ; ==============================================================================
 #Include Lib\WebView2\WebView2.ahk
-#Include Lib\JSON.ahk
+#Include Lib\_JXON.ahk
 #Include Lib\AppLogic.ahk
 #Include Lib\WindowControl.ahk
 
@@ -143,7 +143,7 @@ wv := wvc.CoreWebView2
 wv.Settings.AreDefaultContextMenusEnabled := false
 wv.Settings.IsZoomControlEnabled := false
 
-settingsJson := JSON.Dump(Settings)
+settingsJson := Jxon_Dump(Settings)
 wv.AddScriptToExecuteOnDocumentCreatedAsync(
     "window.ahkSettings = " . settingsJson . ";"
 )
