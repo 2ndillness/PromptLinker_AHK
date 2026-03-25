@@ -50,11 +50,11 @@
             <select
               id="send-mode"
               onchange="sendMsg('updateSetting:SendMode:' + this.value)"
+              title="Key Operation"
             >
               <option value="Enter">Enter</option>
               <option value="Ctrl + Enter">Ctrl + Enter</option>
               <option value="Shift + Enter">Shift + Enter</option>
-              <option value="Paste + Min">Paste + Min</option>
               <option value="Paste Only">Paste Only</option>
             </select>
             <span
@@ -90,6 +90,22 @@
             <span id="font-size-val">14</span>
             <button onclick="sendMsg('changeFontSize:1')">+</button>
           </div>
+        </div>
+
+        <div class="setting-row">
+          <label>After Minimize</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="minimize-after-check"
+              onchange="
+                sendMsg(
+                  'updateSetting:MinimizeAfter:' + (this.checked ? '1' : '0'),
+                )
+              "
+            />
+            <span class="slider"></span>
+          </label>
         </div>
 
         <div class="setting-row">

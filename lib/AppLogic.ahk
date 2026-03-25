@@ -124,7 +124,7 @@ ExecuteTransfer(text) {
     ; 全モード共通でテキストエリアをクリア
     wv.ExecuteScriptAsync("document.getElementById('main-textarea').value = '';")
 
-    if (mode == "Paste + Min") {
+    if (Settings["MinimizeAfter"]) {
         WinMinimize("ahk_id " . MainGui.Hwnd)
     } else {
         WinActivate("ahk_id " . MainGui.Hwnd)

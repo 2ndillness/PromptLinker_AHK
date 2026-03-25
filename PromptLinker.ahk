@@ -64,13 +64,14 @@ global TargetProcess := ""
 global IsLinking := false
 
 ; 設定マップ
-; フォントサイズ、ログ保存、ログパス、送信モード、貼り付け遅延
+; フォントサイズ、ログ保存、ログパス、送信モード、貼り付け遅延、最小化後
 global Settings := Map(
     "FontSize", 14,
     "SaveLog", true,
     "LogDir", A_ScriptDir "\logs",
     "SendMode", "Enter",
-    "PasteDelay", 400
+    "PasteDelay", 400,
+    "MinimizeAfter", false
 )
 global MainGui := ""
 global wvc := ""
@@ -182,6 +183,8 @@ OnWebMsg(sender, args) {
         if (parts.Length >= 3) {
             key := parts[2], val := parts[3]
             if (key == "SaveLog") {
+                Settings[key] := (val == "1")
+            } else if (key == "MinimizeAfter") {
                 Settings[key] := (val == "1")
             } else {
                 Settings[key] := val

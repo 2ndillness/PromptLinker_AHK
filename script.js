@@ -67,6 +67,8 @@ function updateMaxIcon(isMaximized) {
 function initSettings(settings) {
   document.getElementById("send-mode").value = settings.SendMode;
   updateFontSize(settings.FontSize);
+  document.getElementById("minimize-after-check").checked =
+    settings.MinimizeAfter;
   document.getElementById("save-log-check").checked = settings.SaveLog;
   document.getElementById("log-dir-display").value = settings.LogDir;
 }
@@ -170,7 +172,7 @@ window.addEventListener("click", (e) => {
 
 /**
  * トースト通知の表示
- * @param {string} msg 
+ * @param {string} msg
  * @param {string} type 'info' | 'error' | 'success'
  */
 function showToast(msg, type = "info") {
@@ -178,14 +180,14 @@ function showToast(msg, type = "info") {
   const toast = document.createElement("div");
   toast.className = `toast ${type}`;
   toast.innerText = msg;
-  
+
   container.appendChild(toast);
-  
+
   // 3秒後に削除
   setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateY(-20px)';
-    toast.style.transition = 'all 0.3s ease-in';
+    toast.style.opacity = "0";
+    toast.style.transform = "translateY(-20px)";
+    toast.style.transition = "all 0.3s ease-in";
     setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
