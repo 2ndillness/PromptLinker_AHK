@@ -72,7 +72,7 @@ SelectLogDir(*) {
         Settings["LogDir"] := selDir
         ; JS側の表示を更新（バックスラッシュをエスケープして渡す）
         escapedPath := StrReplace(selDir, "\", "\\")
-        wv.ExecuteScriptAsync("updateLogDirDisplay('" . escapedPath . "');")
+        wv.ExecuteScriptAsync("updateLogDir('" . escapedPath . "');")
     }
 }
 
@@ -151,7 +151,7 @@ SaveAndExit(*) {
     global Settings, ConfigFile
     try {
         f := FileOpen(ConfigFile, "w", "UTF-8")
-        f.Write(JSON.Dump(Settings, "  "))
+        f.Write(Jxon_Dump(Settings, "  "))
         f.Close()
     }
     ExitApp()
@@ -168,7 +168,7 @@ LoadSettings() {
         raw := FileRead(ConfigFile, "UTF-8")
         if (raw == "")
             return
-        loaded := JSON.Load(raw)
+        loaded := Jxon_Load(&raw)
         for k, v in loaded {
             if Settings.Has(k)
                 Settings[k] := v
