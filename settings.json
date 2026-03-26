@@ -2,6 +2,11 @@
   "FontSize": 14,
   "LogDir": "C:\\MyProjects\\PromptLinker_AHK\\logs",
   "MinimizeAfter": 0,
+  "Presets": {
+    "1": "",
+    "2": "",
+    "3": ""
+  },
   "RestoreHotkey": "^!l",
   "SaveLog": 0,
   "SubmitDelay": 400,

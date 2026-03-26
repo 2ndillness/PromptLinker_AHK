@@ -39,13 +39,15 @@ FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
 FileInstall "assets\css\components.css", ResDir "\assets\css\components.css", 1
 FileInstall "assets\css\theme.css", ResDir "\assets\css\theme.css", 1
 
-FileInstall "assets\icons\back.svg", ResDir "\assets\icons\back.svg", 1
-FileInstall "assets\icons\file.svg", ResDir "\assets\icons\file.svg", 1
+FileInstall "assets\icons\arrow-left.svg", ResDir "\assets\icons\arrow-left.svg", 1
+FileInstall "assets\icons\chevron-down.svg", ResDir "\assets\icons\chevron-down.svg", 1
+FileInstall "assets\icons\file-text.svg", ResDir "\assets\icons\file-text.svg", 1
 FileInstall "assets\icons\folder.svg", ResDir "\assets\icons\folder.svg", 1
+FileInstall "assets\icons\folder-open.svg", ResDir "\assets\icons\folder-open.svg", 1
 FileInstall "assets\icons\link.svg", ResDir "\assets\icons\link.svg", 1
-FileInstall "assets\icons\open-folder.svg", ResDir "\assets\icons\open-folder.svg", 1
+FileInstall "assets\icons\move.svg", ResDir "\assets\icons\move.svg", 1
+FileInstall "assets\icons\save.svg", ResDir "\assets\icons\save.svg", 1
 FileInstall "assets\icons\settings.svg", ResDir "\assets\icons\settings.svg", 1
-FileInstall "assets\icons\view-log.svg", ResDir "\assets\icons\view-log.svg", 1
 
 FileInstall "lib\WebView2\32bit\WebView2Loader.dll", ResDir
     . "\WebView2\32bit\WebView2Loader.dll", 1
@@ -56,14 +58,14 @@ FileInstall "lib\WebView2\64bit\WebView2Loader.dll", ResDir
 ; 初期設定・変数定義
 ; ==============================================================================
 global AppName := "Prompt Linker"
-global ConfigFile := A_ScriptDir "\config.json"
+global SettingsFile := A_ScriptDir "\settings.json"
 global TargetHWND := 0
 global IsLinking := false
 global TargetProcess := ""
 global MainGui := ""
 global wvc := ""
 global wv := ""
-; 設定マップ
+; 設定マップの初期値
 global Settings := Map(
     "FontSize", 14,
     "MinimizeAfter", false,
@@ -72,7 +74,8 @@ global Settings := Map(
     "TargetAction", "Enter",
     "SubmitDelay", 400,
     "RestoreHotkey", "^!l",
-    "TriggerKey", "Ctrl + Enter"
+    "TriggerKey", "Ctrl + Enter",
+    "Presets", Map("1", "", "2", "", "3", "")
 )
 
 ; ==============================================================================

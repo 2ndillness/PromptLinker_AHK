@@ -46,10 +46,44 @@
       <div id="settings-view" class="hidden">
         <div class="settings-header">
           <button class="back-btn" onclick="toggleSetView()">
-            <span class="icon-placeholder" data-icon="back"></span>
+            <span class="icon-placeholder" data-icon="arrow-left"></span>
             Back
           </button>
           <h3>Settings</h3>
+        </div>
+
+        <!-- Window Presets Section -->
+        <div class="setting-row">
+          <label>Window Presets</label>
+          <div class="preset-controls">
+            <div class="preset-item">
+              <span class="preset-label">1</span>
+              <button class="icon-btn" onclick="sendMsg('applyPreset:1')" title="Apply Preset 1">
+                <span class="icon-placeholder" data-icon="move"></span>
+              </button>
+              <button class="icon-btn" onclick="sendMsg('savePreset:1')" title="Save current position to 1">
+                <span class="icon-placeholder" data-icon="save"></span>
+              </button>
+            </div>
+            <div class="preset-item">
+              <span class="preset-label">2</span>
+              <button class="icon-btn" onclick="sendMsg('applyPreset:2')" title="Apply Preset 2">
+                <span class="icon-placeholder" data-icon="move"></span>
+              </button>
+              <button class="icon-btn" onclick="sendMsg('savePreset:2')" title="Save current position to 2">
+                <span class="icon-placeholder" data-icon="save"></span>
+              </button>
+            </div>
+            <div class="preset-item">
+              <span class="preset-label">3</span>
+              <button class="icon-btn" onclick="sendMsg('applyPreset:3')" title="Apply Preset 3">
+                <span class="icon-placeholder" data-icon="move"></span>
+              </button>
+              <button class="icon-btn" onclick="sendMsg('savePreset:3')" title="Save current position to 3">
+                <span class="icon-placeholder" data-icon="save"></span>
+              </button>
+            </div>
+          </div>
         </div>
 
         <div class="setting-row">
@@ -120,7 +154,7 @@
               readonly
             />
             <button onclick="resetHotkey()" title="Reset to Default">
-              <span class="icon-placeholder" data-icon="back"></span>
+              <span class="icon-placeholder" data-icon="arrow-left"></span>
             </button>
           </div>
         </div>
@@ -137,11 +171,11 @@
 
         <div class="action-row">
           <button onclick="sendMsg('openLogDir')">
-            <span class="icon-placeholder" data-icon="open-folder"></span>
+            <span class="icon-placeholder" data-icon="folder-open"></span>
             Open Folder
           </button>
           <button onclick="sendMsg('viewLatestLog')">
-            <span class="icon-placeholder" data-icon="view-log"></span>
+            <span class="icon-placeholder" data-icon="file-text"></span>
             View Log
           </button>
         </div>

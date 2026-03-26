@@ -148,9 +148,9 @@ SaveToLog(content) {
 }
 
 SaveAndExit(*) {
-    global Settings, ConfigFile
+    global Settings, SettingsFile
     try {
-        f := FileOpen(ConfigFile, "w", "UTF-8")
+        f := FileOpen(SettingsFile, "w", "UTF-8")
         f.Write(Jxon_Dump(Settings, "  "))
         f.Close()
     }
@@ -158,14 +158,14 @@ SaveAndExit(*) {
 }
 
 LoadSettings() {
-    global Settings, ConfigFile
-    if !FileExist(ConfigFile) {
+    global Settings, SettingsFile
+    if !FileExist(SettingsFile) {
         return
     }
 
     raw := ""
     try {
-        raw := FileRead(ConfigFile, "UTF-8")
+        raw := FileRead(SettingsFile, "UTF-8")
         if (raw == "")
             return
         loaded := Jxon_Load(&raw)
@@ -174,7 +174,7 @@ LoadSettings() {
                 Settings[k] := v
             }
         }
-        ; SubmitDelay のクランプ処理 (100ms - 2000ms)
+        ; SubmitDelay の許容範囲チェック (100ms - 2000ms)
         if Settings.Has("SubmitDelay") {
             val := Settings["SubmitDelay"]
             Settings["SubmitDelay"] := Max(100, Min(2000, val))
@@ -182,9 +182,9 @@ LoadSettings() {
     } catch as err {
         MsgBox("設定ファイルが破損している可能性があるため、初期設定にリセットします。`n"
             . "詳細: " . err.Message . "`n"
-            . "読込内容(先頭): " . SubStr(raw, 1, 100), "Config Load Error", 48)
+            . "読込内容(先頭): " . SubStr(raw, 1, 100), "Settings Load Error", 48)
         try {
-            FileDelete(ConfigFile)
+            FileDelete(SettingsFile)
         }
     }
 }

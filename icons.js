@@ -36,22 +36,39 @@ const ICONS = {
       <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9
         a2 2 0 0 1 2 2z"></path>
     </svg>`,
-  back: `
+  "arrow-left": `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" stroke-width="2" stroke-linecap="round"
       stroke-linejoin="round">
       <line x1="19" y1="12" x2="5" y2="12"></line>
       <polyline points="12 19 5 12 12 5"></polyline>
     </svg>`,
-  "open-folder": `
+  move: `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" stroke-width="2" stroke-linecap="round"
       stroke-linejoin="round">
-      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-      <polyline points="15 3 21 3 21 9"></polyline>
-      <line x1="10" y1="14" x2="21" y2="3"></line>
+      <path d="m15 19-3 3-3-3"></path>
+      <path d="M19 15l3-3-3-3"></path>
+      <path d="M9 5l3-3 3 3"></path>
+      <path d="M5 9l-3 3 3 3"></path>
+      <path d="M2 12h20"></path>
+      <path d="M12 2v20"></path>
     </svg>`,
-  "view-log": `
+  "folder-open": `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <path d="m6 14 1.45-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.55 6a2 2 0 0 1-1.94 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"></path>
+    </svg>`,
+  save: `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+      <polyline points="17 21 17 13 7 13 7 21"></polyline>
+      <polyline points="7 3 7 8 15 8"></polyline>
+    </svg>`,
+  "file-text": `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" stroke-width="2" stroke-linecap="round"
       stroke-linejoin="round">
@@ -66,16 +83,5 @@ const ICONS = {
       stroke="currentColor" stroke-width="3" stroke-linecap="round"
       stroke-linejoin="round">
       <polyline points="6 9 12 15 18 9"></polyline>
-    </svg>`,
-  maximize: `
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-      stroke="currentColor" stroke-width="1">
-      <rect x="1.5" y="1.5" width="9" height="9" />
-    </svg>`,
-  restore: `
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-      stroke="currentColor" stroke-width="1">
-      <rect x="1.5" y="3.5" width="7" height="7" />
-      <path d="M3.5 1.5h7v7h-2 M3.5 1.5v1 M10.5 3.5h-1" />
     </svg>`,
 };
