@@ -17,7 +17,7 @@ CancelLinking(msg := "Cancelled") {
     IsLinking := false
     SetTimer(CheckActiveWindow, 0)
 
-    MainGui.Title := AppName " - Unlinked" ; タイトルをUnlinkedに設定
+    MainGui.Title := AppName " - Unlinked" ;
 
     ; キャンセル時はinfo、タイムアウト時はerrorとしてトーストを表示
     type := (msg == "Timeout") ? "error" : "info"
@@ -37,8 +37,9 @@ CheckActiveWindow() {
         TargetHWND := currentHWND
         TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
 
-        MainGui.Title := AppName . " - Linked: " . TargetProcess ; タイトルバーに接続先を表示
-        wv.PostWebMessageAsString("notify:success:Linked: " . TargetProcess) ; 成功をトーストで通知
+        ; タイトルバーに接続先を表示
+        MainGui.Title := AppName . " - Linked: " . TargetProcess
+        wv.PostWebMessageAsString("notify:success:Linked: " . TargetProcess)
 
         wv.ExecuteScriptAsync(
             "updateBtn('Relink'); "
@@ -87,7 +88,12 @@ ApplyWindowPreset(index) {
     Loop monitorCount {
         MonitorGetWorkArea(A_Index, &left, &top, &right, &bottom)
         ; 左上角がモニターのいずれかに含まれていればOKとする
-        if (preset["x"] >= left && preset["x"] < right && preset["y"] >= top && preset["y"] < bottom) {
+        if (
+            preset["x"] >= left
+            && preset["x"] < right
+            && preset["y"] >= top
+            && preset["y"] < bottom
+        ) {
             isVisible := true
             break
         }

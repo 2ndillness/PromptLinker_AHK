@@ -105,7 +105,7 @@ MainGui.OnEvent("Close", SaveAndExit)
 ; 復元ホットキーは常にグローバル
 UpdateRestoreHotkey(Settings["RestoreHotkey"])
 
-; プリセット用ホットキーの登録 (このアプリにフォーカスがある時のみ有効に制限)
+; プリセット用ホットキー(このアプリにフォーカスがある時のみ有効に制限)
 HotIf((*) => WinActive("ahk_id " MainGui.Hwnd))
 Loop 3 {
     Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
