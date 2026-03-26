@@ -189,7 +189,7 @@ input:checked + .slider:before {
   color: var(--text-color);
 }
 .menu-item:hover {
-  background-color: var(--hover-bg);
+  background-color: var(--select-bg);
 }
 .separator {
   height: 1px;
