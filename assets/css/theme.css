@@ -41,7 +41,6 @@ body {
   height: 100vh;
   overflow: hidden;
   box-sizing: border-box;
-  border: 1px solid var(--border-dark);
   user-select: none;
 }
 

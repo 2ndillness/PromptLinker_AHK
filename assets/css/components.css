@@ -29,26 +29,6 @@ button:active,
   background-color: var(--accent-color);
 }
 
-/* ウィンドウ操作ボタン */
-.win-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  width: 46px;
-  height: 100%;
-  border-radius: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.win-btn:hover {
-  background-color: var(--border-color);
-  color: var(--text-color);
-}
-.win-btn.close:hover {
-  background-color: var(--error-color);
-  color: white;
-}
 
 /* セレクトボックスとオプション */
 .select-wrapper {

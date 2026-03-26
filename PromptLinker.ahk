@@ -109,7 +109,7 @@ if !DirExist(Settings["LogDir"]) {
     DirCreate(Settings["LogDir"])
 }
 
-MainGui := Gui("+AlwaysOnTop +Resize", AppName)
+MainGui := Gui("+AlwaysOnTop +Resize +MinSize450x150", AppName)
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)

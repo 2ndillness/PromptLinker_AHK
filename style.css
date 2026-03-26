@@ -3,15 +3,6 @@
 @import url("assets/css/layout.css");
 @import url("assets/css/components.css");
 
-/* 特定のIDに基づいた調整 */
-.app-icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 6px;
-}
-.title-text {
-  margin-top: 1px;
-}
 
 #link-btn {
   min-width: 120px;
