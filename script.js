@@ -285,3 +285,42 @@ function handleHotkeyInput(e) {
   e.target.value = formatHotkey(ahkString);
   sendMsg("updateSetting:RestoreHotkey:" + ahkString);
 }
+
+/**
+ * テキスト編集コマンドの実行
+ * @param {string} cmd
+ */
+async function execCmd(cmd) {
+  textArea.focus();
+  const start = textArea.selectionStart;
+  const end = textArea.selectionEnd;
+  const selectedText = textArea.value.substring(start, end);
+
+  try {
+    switch (cmd) {
+      case "cut":
+        if (start !== end) {
+          await navigator.clipboard.writeText(selectedText);
+          textArea.setRangeText("", start, end, "end");
+          textArea.dispatchEvent(new Event("input"));
+        }
+        break;
+      case "copy":
+        if (start !== end) {
+          await navigator.clipboard.writeText(selectedText);
+        }
+        break;
+      case "paste":
+        const text = await navigator.clipboard.readText();
+        textArea.setRangeText(text, start, end, "end");
+        textArea.dispatchEvent(new Event("input"));
+        break;
+      case "selectAll":
+        textArea.select();
+        break;
+    }
+  } catch (err) {
+    console.error(`${cmd} failed: `, err);
+  }
+  contextMenu.style.display = "none";
+}
