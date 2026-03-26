@@ -37,7 +37,6 @@ FileInstall "icons.js", ResDir "\icons.js", 1
 FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
 
 FileInstall "assets\css\components.css", ResDir "\assets\css\components.css", 1
-FileInstall "assets\css\layout.css", ResDir "\assets\css\layout.css", 1
 FileInstall "assets\css\theme.css", ResDir "\assets\css\theme.css", 1
 
 FileInstall "assets\icons\back.svg", ResDir "\assets\icons\back.svg", 1
@@ -97,7 +96,6 @@ Gui_Size(thisGui, minMax, width, height) {
 #Include Lib\WebView2\WebView2.ahk
 #Include Lib\_JXON.ahk
 #Include Lib\AppLogic.ahk
-
 
 ; ==============================================================================
 ; アプリケーションの初期化

@@ -205,8 +205,9 @@ UpdateRestoreHotkey(newKey) {
             CurrentRestoreHotkey := newKey
         } catch as err {
             ; 登録失敗（システム予約キーや構文エラー）の場合
-            wv.PostWebMessageAsString("notify:error:Hotkey Registration Failed: " . newKey)
-            ; UI側の表示を元に戻すために古い値を送り返す等の処理が必要だが、今回はエラー通知のみ行う
+            wv.PostWebMessageAsString(
+                "notify:error:Hotkey Registration Failed: " . newKey
+            )
             CurrentRestoreHotkey := ""
         }
     }

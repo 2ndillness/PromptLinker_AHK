@@ -45,8 +45,6 @@ function updateIcon(el, iconName) {
   }
 }
 
-
-
 /**
  * AHKからの設定をUIに反映
  */
@@ -287,7 +285,6 @@ function handleHotkeyInput(e) {
   }
 
   // 安全策: 修飾キーがなく、かつF1-F12でない場合は登録を許可しない
-  // (単独の 'a' や 'Enter' などをグローバルホットキーにするとPC操作不能になるため)
   if (parts.length === 0 && !key.match(/^F([1-9]|1[0-2])$/)) {
     showToast("Modifier key (Ctrl/Alt/Shift) required.", "error");
     return;
