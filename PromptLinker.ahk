@@ -93,11 +93,18 @@ Gui_Size(thisGui, minMax, width, height) {
 LoadSettings()
 UpdateRestoreHotkey(Settings["RestoreHotkey"])
 
+; プリセット用ホットキーの登録 (Alt+1~3 で適用、Shift+Alt+1~3 で保存)
+Loop 3 {
+    index := A_Index
+    Hotkey("!" . index, (*) => ApplyWindowPreset(index))
+    Hotkey("+!" . index, (*) => SaveWindowPreset(index))
+}
+
 if !DirExist(Settings["LogDir"]) {
     DirCreate(Settings["LogDir"])
 }
 
-MainGui := Gui("+AlwaysOnTop +Resize +MinSize450x150", AppName)
+MainGui := Gui("+AlwaysOnTop +Resize +MinSize450x150", AppName . " - Unlinked")
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
@@ -193,5 +200,9 @@ OnWebMsg(sender, args) {
         Run(Settings["LogDir"])
     } else if (msg == "viewLatestLog") {
         OpenLatestLog()
+    } else if (SubStr(msg, 1, 12) == "applyPreset:") {
+        ApplyWindowPreset(Integer(SubStr(msg, 13)))
+    } else if (SubStr(msg, 1, 11) == "savePreset:") {
+        SaveWindowPreset(Integer(SubStr(msg, 12)))
     }
 }

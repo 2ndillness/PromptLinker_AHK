@@ -125,15 +125,6 @@ function updateBtn(text) {
 }
 
 /**
- * ステータスラベルの更新
- */
-function updateStatus(text, type) {
-  const el = document.getElementById("status-label");
-  el.innerText = text;
-  el.className = "status-label " + (type || "");
-}
-
-/**
  * フォントサイズの更新
  */
 function updateFontSize(size) {

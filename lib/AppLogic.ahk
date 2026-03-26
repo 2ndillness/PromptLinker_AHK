@@ -1,10 +1,12 @@
 StartLinking() {
     global IsLinking := true
     global wv
+    global MainGui
     ; HTML側の表示を更新
+    MainGui.Title := AppName . " - Waiting for target window..."
+    wv.PostWebMessageAsString("notify:info:Click Target Window...")
     wv.ExecuteScriptAsync(
         "updateBtn('Waiting...'); "
-        . "updateStatus('Click Target Window...', 'waiting');"
     )
 
     global StartTime := A_TickCount
@@ -12,19 +14,23 @@ StartLinking() {
 }
 
 CancelLinking(msg := "Cancelled") {
-    global IsLinking := false
-    global wv
+    global IsLinking, MainGui, wv, AppName
+    IsLinking := false
     SetTimer(CheckActiveWindow, 0)
 
-    type := (msg == "Cancelled" || msg == "Timeout") ? "error" : "success"
+    MainGui.Title := AppName " - Unlinked" ; タイトルをUnlinkedに設定
+
+    ; キャンセル時はinfo、タイムアウト時はerrorとしてトーストを表示
+    type := (msg == "Timeout") ? "error" : "info"
+    wv.PostWebMessageAsString("notify:" type ":" msg)
+
     wv.ExecuteScriptAsync(
         "updateBtn('Link Target'); "
-        . "updateStatus('" . msg . "', '" . type . "');"
     )
 }
 
 CheckActiveWindow() {
-    global MainGui, wv, StartTime, TargetHWND, TargetProcess, IsLinking
+    global TargetHWND, TargetProcess, IsLinking
     currentHWND := WinActive("A")
     if (currentHWND != 0 && currentHWND != MainGui.Hwnd) {
         SetTimer(CheckActiveWindow, 0)
@@ -32,11 +38,11 @@ CheckActiveWindow() {
         TargetHWND := currentHWND
         TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
 
-        ; リンク成功時の表示更新
-        statusMsg := "Linked: " . TargetProcess
+        MainGui.Title := AppName . " - Linked: " . TargetProcess ; タイトルバーに接続先を表示
+        wv.PostWebMessageAsString("notify:success:Linked: " . TargetProcess) ; 成功をトーストで通知
+
         wv.ExecuteScriptAsync(
             "updateBtn('Relink'); "
-            . "updateStatus('" . statusMsg . "', 'success');"
         )
 
         WinActivate("ahk_id " . MainGui.Hwnd)
@@ -48,6 +54,56 @@ CheckActiveWindow() {
     } else if (A_TickCount - StartTime > 10000) {
         CancelLinking("Timeout")
     }
+}
+
+/**
+ * 現在のウィンドウ位置とサイズをプリセットに保存
+ * @param {number} index プリセット番号 (1-3)
+ */
+SaveWindowPreset(index) {
+    global MainGui, Settings, wv
+    WinGetPos(&x, &y, &w, &h, "ahk_id " . MainGui.Hwnd)
+
+    ; 座標データを保存（Mapとして保持し、Jxon_Dumpで保存可能な形式にする）
+    presetData := Map("x", x, "y", y, "w", w, "h", h)
+    Settings["Presets"][String(index)] := presetData
+
+    wv.PostWebMessageAsString("notify:success:Preset " . index . " Saved!")
+}
+
+/**
+ * プリセットの座標を適用
+ * @param {number} index プリセット番号 (1-3)
+ */
+ApplyWindowPreset(index) {
+    global MainGui, Settings, wv
+    preset := Settings["Presets"][String(index)]
+
+    if (preset == "" || !(preset is Map)) {
+        wv.PostWebMessageAsString("notify:error:Preset " . index . " is empty.")
+        return
+    }
+
+    ; 安全チェック: 保存された座標が現在のモニター領域内にあるか確認
+    isVisible := false
+    monitorCount := MonitorGetCount()
+    Loop monitorCount {
+        MonitorGetWorkArea(A_Index, &left, &top, &right, &bottom)
+        ; 左上角がモニターのいずれかに含まれていればOKとする
+        if (preset["x"] >= left && preset["x"] < right && preset["y"] >= top && preset["y"] < bottom) {
+            isVisible := true
+            break
+        }
+    }
+
+    ; 画面外（モニター構成変更時など）の場合は、中央付近へ補正
+    if (!isVisible) {
+        preset["x"] := 100
+        preset["y"] := 100
+    }
+
+    MainGui.Move(preset["x"], preset["y"], preset["w"], preset["h"])
+    wv.PostWebMessageAsString("notify:info:Preset " . index . " Applied")
 }
 
 ChangeFontSize(delta) {

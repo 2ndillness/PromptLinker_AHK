@@ -75,26 +75,25 @@ select option {
   color: var(--accent-color);
 }
 
-/* ステータスラベル */
-.status-label {
-  font-weight: bold;
-  font-size: 14px;
-  color: var(--error-color);
-  margin-left: auto;
-}
-.status-label.waiting {
-  color: var(--warning-color);
-}
-.status-label.success {
-  color: var(--success-color);
-}
-
 /* 設定画面のコンポーネント */
 .setting-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+}
+/* メインツールバーのプリセット呼び出しボタン */
+.main-presets {
+  display: flex;
+  gap: 4px;
+}
+.preset-call-btn {
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  font-size: 11px;
+  border-radius: 4px;
 }
 .setting-row label {
   white-space: nowrap;
@@ -104,40 +103,28 @@ select option {
   gap: 8px;
   align-items: center;
 }
-.preset-item {
+/* 設定画面の保存ボタンタイル */
+.preset-save-tile {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  padding: 2px;
-  gap: 4px;
+  padding: 0 10px !important;
+  height: 32px !important;
+  min-width: 100px;
+  gap: 8px !important;
+  transition: all 0.2s;
+}
+.preset-save-tile:hover {
+  background-color: var(--hover-bg);
+  border-color: var(--accent-color);
 }
 .preset-label {
   font-size: 11px;
   font-weight: bold;
   color: var(--text-muted);
-  padding: 0 6px;
-  min-width: 14px;
-  text-align: center;
-  border-right: 1px solid var(--border-dark);
-}
-.icon-btn {
-  background-color: var(--bg-color);
-  border: 1px solid var(--border-dark);
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border-radius: 3px;
-  opacity: 0.7;
-  transition: all 0.2s;
-}
-.icon-btn:hover {
-  background-color: var(--hover-bg);
-  opacity: 1;
-}
-.icon-btn:active {
-  background-color: var(--accent-color);
 }
 .num-control {
   display: flex;

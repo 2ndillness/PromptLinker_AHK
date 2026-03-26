@@ -14,6 +14,13 @@
             <span class="icon-placeholder" data-icon="link"></span>
             <span class="btn-text">Link Target</span>
           </button>
+          <!-- メイン画面用プリセット呼び出しボタン -->
+          <div class="main-presets">
+            <button class="preset-call-btn" onclick="sendMsg('applyPreset:1')" title="Apply Preset 1">1</button>
+            <button class="preset-call-btn" onclick="sendMsg('applyPreset:2')" title="Apply Preset 2">2</button>
+            <button class="preset-call-btn" onclick="sendMsg('applyPreset:3')" title="Apply Preset 3">3</button>
+          </div>
+
           <!-- ドロップダウンメニュー -->
           <div class="select-wrapper">
             <select
@@ -35,8 +42,6 @@
           <button id="settings-btn" onclick="toggleSetView()" title="Settings">
             <span class="icon-placeholder" data-icon="settings"></span>
           </button>
-
-          <span id="status-label" class="status-label">Unlinked</span>
         </div>
 
         <textarea id="main-textarea"></textarea>
@@ -56,33 +61,18 @@
         <div class="setting-row">
           <label>Window Presets</label>
           <div class="preset-controls">
-            <div class="preset-item">
-              <span class="preset-label">1</span>
-              <button class="icon-btn" onclick="sendMsg('applyPreset:1')" title="Apply Preset 1">
-                <span class="icon-placeholder" data-icon="move"></span>
-              </button>
-              <button class="icon-btn" onclick="sendMsg('savePreset:1')" title="Save current position to 1">
-                <span class="icon-placeholder" data-icon="save"></span>
-              </button>
-            </div>
-            <div class="preset-item">
-              <span class="preset-label">2</span>
-              <button class="icon-btn" onclick="sendMsg('applyPreset:2')" title="Apply Preset 2">
-                <span class="icon-placeholder" data-icon="move"></span>
-              </button>
-              <button class="icon-btn" onclick="sendMsg('savePreset:2')" title="Save current position to 2">
-                <span class="icon-placeholder" data-icon="save"></span>
-              </button>
-            </div>
-            <div class="preset-item">
-              <span class="preset-label">3</span>
-              <button class="icon-btn" onclick="sendMsg('applyPreset:3')" title="Apply Preset 3">
-                <span class="icon-placeholder" data-icon="move"></span>
-              </button>
-              <button class="icon-btn" onclick="sendMsg('savePreset:3')" title="Save current position to 3">
-                <span class="icon-placeholder" data-icon="save"></span>
-              </button>
-            </div>
+            <button class="preset-save-tile" onclick="sendMsg('savePreset:1')" title="Save current position to Preset 1">
+              <span class="preset-label">Preset 1</span>
+              <span class="icon-placeholder" data-icon="save"></span>
+            </button>
+            <button class="preset-save-tile" onclick="sendMsg('savePreset:2')" title="Save current position to Preset 2">
+              <span class="preset-label">Preset 2</span>
+              <span class="icon-placeholder" data-icon="save"></span>
+            </button>
+            <button class="preset-save-tile" onclick="sendMsg('savePreset:3')" title="Save current position to Preset 3">
+              <span class="preset-label">Preset 3</span>
+              <span class="icon-placeholder" data-icon="save"></span>
+            </button>
           </div>
         </div>
 
