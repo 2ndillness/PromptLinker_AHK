@@ -45,21 +45,7 @@ function updateIcon(el, iconName) {
   }
 }
 
-/**
- * 最大化ボタンのアイコン切り替え
- * @param {boolean} isMaximized
- */
-function updateMaxIcon(isMaximized) {
-  const btn = document.getElementById("max-btn");
-  const placeholder = btn.querySelector(".icon-placeholder");
-  if (isMaximized) {
-    updateIcon(placeholder, "restore");
-    btn.title = "Restore";
-  } else {
-    updateIcon(placeholder, "maximize");
-    btn.title = "Maximize";
-  }
-}
+
 
 /**
  * AHKからの設定をUIに反映

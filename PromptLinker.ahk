@@ -81,19 +81,13 @@ global Settings := Map(
 ; ==============================================================================
 
 Gui_Size(thisGui, minMax, width, height) {
-    global wvc, wv
+    global wvc
     if (minMax == -1) {
         return
     }
 
     if (IsSet(wvc) && wvc) {
         wvc.Fill()
-    }
-
-    if (IsSet(wv) && wv) {
-        isMax := (minMax == 1 ? "true" : "false")
-        wv.ExecuteScriptAsync("if(typeof updateMaxIcon === 'function')"
-            . " updateMaxIcon(" . isMax . ");")
     }
 }
 
@@ -103,7 +97,7 @@ Gui_Size(thisGui, minMax, width, height) {
 #Include Lib\WebView2\WebView2.ahk
 #Include Lib\_JXON.ahk
 #Include Lib\AppLogic.ahk
-#Include Lib\WindowControl.ahk
+
 
 ; ==============================================================================
 ; アプリケーションの初期化
@@ -115,8 +109,7 @@ if !DirExist(Settings["LogDir"]) {
     DirCreate(Settings["LogDir"])
 }
 
-; GUIの構築
-MainGui := Gui("+AlwaysOnTop -Caption", AppName)
+MainGui := Gui("+AlwaysOnTop +Resize", AppName)
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
@@ -155,7 +148,16 @@ wv.add_WebMessageReceived(OnWebMsg)
 wv.add_PermissionRequested(OnPermissionRequested)
 wv.Navigate(htmlPath)
 
+DwmSetDarkMode(hwnd) {
+    val := Buffer(4, 0)
+    NumPut("Int", 1, val)
+    DllCall("Dwmapi\DwmSetWindowAttribute"
+        , "Ptr", hwnd, "Int", 20
+        , "Ptr", val, "Int", 4)
+}
+
 MainGui.Show("w600 h450")
+DwmSetDarkMode(MainGui.Hwnd)
 wvc.IsVisible := true
 wvc.Fill()
 
@@ -203,20 +205,5 @@ OnWebMsg(sender, args) {
         Run(Settings["LogDir"])
     } else if (msg == "viewLatestLog") {
         OpenLatestLog()
-    } else if (msg == "dragWindow") {
-        DllCall("User32\ReleaseCapture")
-        PostMessage(0xA1, 2, 0, MainGui.Hwnd)
-    } else if (msg == "toggleMax") {
-        if (WinGetMinMax(MainGui.Hwnd) == 1) {
-            MainGui.Restore()
-        } else {
-            MainGui.Maximize()
-        }
-    } else if (msg == "minWindow") {
-        MainGui.Minimize()
-    } else if (msg == "closeWindow") {
-        SaveAndExit()
-    } else if (msg == "resizeWindow") {
-        StartResize()
     }
 }

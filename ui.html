@@ -5,37 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>Prompt Linker</title>
-  </head>
-  <body>
-    <!-- Customタイトルバー -->
-    <div class="title-bar">
-      <div class="drag-region" onmousedown="sendMsg('dragWindow')">
-        <img src="assets/app_icon.ico" class="app-icon" alt="icon" />
-        <span class="title-text">Prompt Linker</span>
-      </div>
-      <button class="win-btn" onclick="sendMsg('minWindow')" title="Min">
-        <svg width="10" height="1" viewBox="0 0 10 1">
-          <rect width="10" height="1" fill="currentColor" />
-        </svg>
-      </button>
-      <button
-        id="max-btn"
-        class="win-btn"
-        onclick="sendMsg('toggleMax')"
-        title="Max"
-      >
-        <span class="icon-placeholder" data-icon="maximize"></span>
-      </button>
-      <button
-        class="win-btn close"
-        onclick="sendMsg('closeWindow')"
-        title="Close"
-      >
-        <svg width="10" height="10" viewBox="0 0 10 10">
-          <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" stroke-width="1" />
-        </svg>
-      </button>
-    </div>
 
     <div id="content-area">
       <div id="main-view">
@@ -187,7 +156,7 @@
       <div class="menu-item" onclick="execCmd('selectAll')">Select All</div>
     </div>
 
-    <div class="resize-handle" onmousedown="sendMsg('resizeWindow')"></div>
+
 
     <div id="toast-container" class="toast-container"></div>
 
