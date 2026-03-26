@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
     <title>Prompt Linker</title>
+  </head>
 
+  <body>
     <div id="content-area">
       <div id="main-view">
         <!-- ツールバー -->
@@ -16,9 +18,27 @@
           </button>
           <!-- メイン画面用プリセット呼び出しボタン -->
           <div class="main-presets">
-            <button class="preset-call-btn" onclick="sendMsg('applyPreset:1')" title="Apply Preset 1">1</button>
-            <button class="preset-call-btn" onclick="sendMsg('applyPreset:2')" title="Apply Preset 2">2</button>
-            <button class="preset-call-btn" onclick="sendMsg('applyPreset:3')" title="Apply Preset 3">3</button>
+            <button
+              class="preset-call-btn"
+              onclick="sendMsg('applyPreset:1')"
+              title="Apply Preset 1"
+            >
+              1
+            </button>
+            <button
+              class="preset-call-btn"
+              onclick="sendMsg('applyPreset:2')"
+              title="Apply Preset 2"
+            >
+              2
+            </button>
+            <button
+              class="preset-call-btn"
+              onclick="sendMsg('applyPreset:3')"
+              title="Apply Preset 3"
+            >
+              3
+            </button>
           </div>
 
           <!-- ドロップダウンメニュー -->
@@ -57,19 +77,31 @@
           <h3>Settings</h3>
         </div>
 
-        <!-- Window Presets Section -->
+        <!--プリセット保存 -->
         <div class="setting-row">
           <label>Window Presets</label>
           <div class="preset-controls">
-            <button class="preset-save-tile" onclick="sendMsg('savePreset:1')" title="Save current position to Preset 1">
+            <button
+              class="preset-save-tile"
+              onclick="sendMsg('savePreset:1')"
+              title="Save  to Preset 1"
+            >
               <span class="preset-label">Preset 1</span>
               <span class="icon-placeholder" data-icon="save"></span>
             </button>
-            <button class="preset-save-tile" onclick="sendMsg('savePreset:2')" title="Save current position to Preset 2">
+            <button
+              class="preset-save-tile"
+              onclick="sendMsg('savePreset:2')"
+              title="Save  to Preset 2"
+            >
               <span class="preset-label">Preset 2</span>
               <span class="icon-placeholder" data-icon="save"></span>
             </button>
-            <button class="preset-save-tile" onclick="sendMsg('savePreset:3')" title="Save current position to Preset 3">
+            <button
+              class="preset-save-tile"
+              onclick="sendMsg('savePreset:3')"
+              title="Save  to Preset 3"
+            >
               <span class="preset-label">Preset 3</span>
               <span class="icon-placeholder" data-icon="save"></span>
             </button>

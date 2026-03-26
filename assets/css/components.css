@@ -17,7 +17,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 button:hover,
@@ -85,7 +85,7 @@ select option {
 /* メインツールバーのプリセット呼び出しボタン */
 .main-presets {
   display: flex;
-  gap: 4px;
+  gap: 8px;
 }
 .preset-call-btn {
   width: 28px !important;
@@ -100,21 +100,21 @@ select option {
 }
 .preset-controls {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
 }
 /* 設定画面の保存ボタンタイル */
 .preset-save-tile {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
   border-radius: 4px;
   padding: 0 10px !important;
   height: 32px !important;
-  min-width: 100px;
-  gap: 8px !important;
+  min-width: 85px;
+  gap: 6px !important;
   transition: all 0.2s;
 }
 .preset-save-tile:hover {

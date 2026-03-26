@@ -3,7 +3,7 @@
 @import url("assets/css/components.css");
 
 #link-btn {
-  min-width: 120px;
+  min-width: 100px; /* 120pxから短縮 */
 }
 #settings-btn {
   width: 34px;
@@ -71,7 +71,7 @@
   margin-top: 0;
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 15px;
 }
 
 /* レイアウトのスタイル */
@@ -80,7 +80,7 @@
   display: flex;
   align-items: center;
   padding: 10px;
-  gap: 10px;
+  gap: 15px;
   background-color: var(--bg-color);
 }
 

@@ -3,6 +3,7 @@
   "editor.formatOnSave": true,
   "[html]": {
     "editor.tabSize": 2,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.insertSpaces": true
   },
   "[css]": {
@@ -12,5 +13,5 @@
   "[javascript]": {
     "editor.tabSize": 2,
     "editor.insertSpaces": true
-  },
+  }
 }

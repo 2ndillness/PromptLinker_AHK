@@ -3,9 +3,24 @@
   "LogDir": "C:\\MyProjects\\PromptLinker_AHK\\logs",
   "MinimizeAfter": 0,
   "Presets": {
-    "1": "",
-    "2": "",
-    "3": ""
+    "1": {
+      "h": 489,
+      "w": 616,
+      "x": 652,
+      "y": 280
+    },
+    "2": {
+      "h": 201,
+      "w": 974,
+      "x": 949,
+      "y": 855
+    },
+    "3": {
+      "h": 1057,
+      "w": 974,
+      "x": 953,
+      "y": 0
+    }
   },
   "RestoreHotkey": "^!l",
   "SaveLog": 0,

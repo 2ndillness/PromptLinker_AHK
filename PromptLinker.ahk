@@ -95,9 +95,8 @@ UpdateRestoreHotkey(Settings["RestoreHotkey"])
 
 ; プリセット用ホットキーの登録 (Alt+1~3 で適用、Shift+Alt+1~3 で保存)
 Loop 3 {
-    index := A_Index
-    Hotkey("!" . index, (*) => ApplyWindowPreset(index))
-    Hotkey("+!" . index, (*) => SaveWindowPreset(index))
+    Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
+    Hotkey("+!" A_Index, (hk) => SaveWindowPreset(Integer(SubStr(hk, -1))))
 }
 
 if !DirExist(Settings["LogDir"]) {

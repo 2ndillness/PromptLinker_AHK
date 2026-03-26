@@ -1,7 +1,6 @@
 StartLinking() {
-    global IsLinking := true
-    global wv
-    global MainGui
+    global IsLinking, wv, MainGui, AppName, StartTime
+    IsLinking := true
     ; HTML側の表示を更新
     MainGui.Title := AppName . " - Waiting for target window..."
     wv.PostWebMessageAsString("notify:info:Click Target Window...")
@@ -9,7 +8,7 @@ StartLinking() {
         "updateBtn('Waiting...'); "
     )
 
-    global StartTime := A_TickCount
+    StartTime := A_TickCount
     SetTimer(CheckActiveWindow, 100)
 }
 
@@ -30,7 +29,7 @@ CancelLinking(msg := "Cancelled") {
 }
 
 CheckActiveWindow() {
-    global TargetHWND, TargetProcess, IsLinking
+    global TargetHWND, TargetProcess, IsLinking, MainGui, AppName, StartTime
     currentHWND := WinActive("A")
     if (currentHWND != 0 && currentHWND != MainGui.Hwnd) {
         SetTimer(CheckActiveWindow, 0)
@@ -104,6 +103,8 @@ ApplyWindowPreset(index) {
 
     MainGui.Move(preset["x"], preset["y"], preset["w"], preset["h"])
     wv.PostWebMessageAsString("notify:info:Preset " . index . " Applied")
+    WinActivate("ahk_id " . MainGui.Hwnd)
+    wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")
 }
 
 ChangeFontSize(delta) {
