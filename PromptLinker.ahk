@@ -52,6 +52,7 @@ global TargetProcess := ""
 global MainGui := ""
 global wvc := ""
 global wv := ""
+global StartTime := 0
 ; 設定マップの初期値
 global Settings := Map(
     "FontSize", 14,
@@ -91,13 +92,6 @@ Gui_Size(thisGui, minMax, width, height) {
 ; アプリケーションの初期化
 ; ==============================================================================
 LoadSettings()
-UpdateRestoreHotkey(Settings["RestoreHotkey"])
-
-; プリセット用ホットキーの登録 (Alt+1~3 で適用、Shift+Alt+1~3 で保存)
-Loop 3 {
-    Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
-    Hotkey("+!" A_Index, (hk) => SaveWindowPreset(Integer(SubStr(hk, -1))))
-}
 
 if !DirExist(Settings["LogDir"]) {
     DirCreate(Settings["LogDir"])
@@ -107,6 +101,17 @@ MainGui := Gui("+AlwaysOnTop +Resize +MinSize450x150", AppName . " - Unlinked")
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
+
+; 復元ホットキーは常にグローバル
+UpdateRestoreHotkey(Settings["RestoreHotkey"])
+
+; プリセット用ホットキーの登録 (このアプリにフォーカスがある時のみ有効に制限)
+HotIf((*) => WinActive("ahk_id " MainGui.Hwnd))
+Loop 3 {
+    Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
+    Hotkey("+!" A_Index, (hk) => SaveWindowPreset(Integer(SubStr(hk, -1))))
+}
+HotIf() ; コンテキストをリセット
 
 try {
     subDir := (A_PtrSize = 8 ? "64bit" : "32bit")

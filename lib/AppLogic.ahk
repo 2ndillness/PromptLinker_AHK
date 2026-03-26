@@ -1,5 +1,5 @@
 StartLinking() {
-    global IsLinking, wv, MainGui, AppName, StartTime
+    global IsLinking, StartTime
     IsLinking := true
     ; HTML側の表示を更新
     MainGui.Title := AppName . " - Waiting for target window..."
@@ -13,7 +13,7 @@ StartLinking() {
 }
 
 CancelLinking(msg := "Cancelled") {
-    global IsLinking, MainGui, wv, AppName
+    global IsLinking
     IsLinking := false
     SetTimer(CheckActiveWindow, 0)
 
@@ -29,7 +29,7 @@ CancelLinking(msg := "Cancelled") {
 }
 
 CheckActiveWindow() {
-    global TargetHWND, TargetProcess, IsLinking, MainGui, AppName, StartTime
+    global IsLinking, TargetHWND, TargetProcess
     currentHWND := WinActive("A")
     if (currentHWND != 0 && currentHWND != MainGui.Hwnd) {
         SetTimer(CheckActiveWindow, 0)
@@ -60,7 +60,6 @@ CheckActiveWindow() {
  * @param {number} index プリセット番号 (1-3)
  */
 SaveWindowPreset(index) {
-    global MainGui, Settings, wv
     WinGetPos(&x, &y, &w, &h, "ahk_id " . MainGui.Hwnd)
 
     ; 座標データを保存（Mapとして保持し、Jxon_Dumpで保存可能な形式にする）
@@ -75,7 +74,6 @@ SaveWindowPreset(index) {
  * @param {number} index プリセット番号 (1-3)
  */
 ApplyWindowPreset(index) {
-    global MainGui, Settings, wv
     preset := Settings["Presets"][String(index)]
 
     if (preset == "" || !(preset is Map)) {
@@ -108,7 +106,6 @@ ApplyWindowPreset(index) {
 }
 
 ChangeFontSize(delta) {
-    global Settings, wv
     newSize := Settings["FontSize"] + delta
     if (newSize < 8)
         newSize := 8
@@ -119,7 +116,6 @@ ChangeFontSize(delta) {
 }
 
 SelectLogDir(*) {
-    global MainGui, Settings, wv
     ; ダイアログが背後に隠れないように、一時的にAlwaysOnTopを解除
     MainGui.Opt("-AlwaysOnTop")
     selDir := FileSelect("D", "*" . Settings["LogDir"], "Select Log Directory")
@@ -134,7 +130,6 @@ SelectLogDir(*) {
 }
 
 OpenLatestLog(*) {
-    global Settings, AppName, wv
     logFile := Settings["LogDir"]
         . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
     if FileExist(logFile) {
@@ -145,7 +140,6 @@ OpenLatestLog(*) {
 }
 
 ExecuteTransfer(text) {
-    global MainGui, wv, TargetHWND, Settings
     if (text == "" || TargetHWND == 0 || !WinExist("ahk_id " . TargetHWND)) {
         return
     }
@@ -190,7 +184,6 @@ ExecuteTransfer(text) {
 }
 
 SaveToLog(content) {
-    global Settings
     if !DirExist(Settings["LogDir"]) {
         DirCreate(Settings["LogDir"])
     }
@@ -205,7 +198,6 @@ SaveToLog(content) {
 }
 
 SaveAndExit(*) {
-    global Settings, SettingsFile
     try {
         f := FileOpen(SettingsFile, "w", "UTF-8")
         f.Write(Jxon_Dump(Settings, "  "))
@@ -215,7 +207,6 @@ SaveAndExit(*) {
 }
 
 LoadSettings() {
-    global Settings, SettingsFile
     if !FileExist(SettingsFile) {
         return
     }
@@ -249,7 +240,8 @@ LoadSettings() {
 global CurrentRestoreHotkey := ""
 
 UpdateRestoreHotkey(newKey) {
-    global CurrentRestoreHotkey, wv
+    global CurrentRestoreHotkey
+    HotIf() ; 常にグローバルなホットキーとして登録されるようコンテキストをリセット
     ; 以前のホットキーがあれば無効化
     if (CurrentRestoreHotkey != "") {
         try Hotkey(CurrentRestoreHotkey, "Off")
@@ -271,7 +263,6 @@ UpdateRestoreHotkey(newKey) {
 }
 
 RestoreWindow(hk) {
-    global MainGui
     if WinExist("ahk_id " . MainGui.Hwnd) {
         WinActivate("ahk_id " . MainGui.Hwnd)
     }
