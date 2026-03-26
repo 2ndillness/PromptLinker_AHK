@@ -18,9 +18,6 @@ if !DirExist(ResDir) {
 if !DirExist(ResDir "\assets\css") {
     DirCreate(ResDir "\assets\css")
 }
-if !DirExist(ResDir "\assets\icons") {
-    DirCreate(ResDir "\assets\icons")
-}
 if !DirExist(ResDir "\WebView2\32bit") {
     DirCreate(ResDir "\WebView2\32bit")
 }
@@ -38,16 +35,6 @@ FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
 
 FileInstall "assets\css\components.css", ResDir "\assets\css\components.css", 1
 FileInstall "assets\css\theme.css", ResDir "\assets\css\theme.css", 1
-
-FileInstall "assets\icons\arrow-left.svg", ResDir "\assets\icons\arrow-left.svg", 1
-FileInstall "assets\icons\chevron-down.svg", ResDir "\assets\icons\chevron-down.svg", 1
-FileInstall "assets\icons\file-text.svg", ResDir "\assets\icons\file-text.svg", 1
-FileInstall "assets\icons\folder.svg", ResDir "\assets\icons\folder.svg", 1
-FileInstall "assets\icons\folder-open.svg", ResDir "\assets\icons\folder-open.svg", 1
-FileInstall "assets\icons\link.svg", ResDir "\assets\icons\link.svg", 1
-FileInstall "assets\icons\move.svg", ResDir "\assets\icons\move.svg", 1
-FileInstall "assets\icons\save.svg", ResDir "\assets\icons\save.svg", 1
-FileInstall "assets\icons\settings.svg", ResDir "\assets\icons\settings.svg", 1
 
 FileInstall "lib\WebView2\32bit\WebView2Loader.dll", ResDir
     . "\WebView2\32bit\WebView2Loader.dll", 1
