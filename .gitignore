@@ -1,2 +1,22 @@
+# IDE / Editor
 .vscode/
+.history/
+*.log
+
+# Gemini CLI / Task related
 .gemini/
+
+# AHK / Build
+*.exe
+*.bin
+*.upx
+
+# App Data (Local execution)
+settings.json
+logs/
+.write_test
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+.DS_Store
