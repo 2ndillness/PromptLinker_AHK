@@ -78,7 +78,11 @@ if FileExist(PortableFile) {
         try {
             DirCreate(DataDir)
         } catch {
-            MsgBox("データディレクトリの作成に失敗しました。`nパス: " DataDir, "Error", 48)
+            MsgBox(
+                "データディレクトリの作成に失敗しました。`nパス: " DataDir,
+                "Error",
+                48
+            )
         }
     }
 }

@@ -64,7 +64,9 @@ SaveWindowPreset(index) {
     WinGetPos(&x, &y, &w, &h, "ahk_id " . MainGui.Hwnd)
 
     ; 座標データとツールバーの状態を保存
-    presetData := Map("x", x, "y", y, "w", w, "h", h, "isToolbarHidden", IsToolbarHidden)
+    presetData := Map(
+        "x", x, "y", y, "w", w, "h", h, "isToolbarHidden", IsToolbarHidden
+    )
     Settings["Presets"][String(index)] := presetData
 
     wv.PostWebMessageAsString("notify:success:Preset " . index . " Saved!")
