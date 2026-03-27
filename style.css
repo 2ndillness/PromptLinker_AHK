@@ -3,7 +3,7 @@
 @import url("assets/css/components.css");
 
 #link-btn {
-  min-width: 100px; /* 120pxから短縮 */
+  width: 120px;
 }
 #settings-btn {
   width: 34px;
