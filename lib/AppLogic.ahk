@@ -63,8 +63,8 @@ CheckActiveWindow() {
 SaveWindowPreset(index) {
     WinGetPos(&x, &y, &w, &h, "ahk_id " . MainGui.Hwnd)
 
-    ; 座標データを保存（Mapとして保持し、Jxon_Dumpで保存可能な形式にする）
-    presetData := Map("x", x, "y", y, "w", w, "h", h)
+    ; 座標データとツールバーの状態を保存
+    presetData := Map("x", x, "y", y, "w", w, "h", h, "isToolbarHidden", IsToolbarHidden)
     Settings["Presets"][String(index)] := presetData
 
     wv.PostWebMessageAsString("notify:success:Preset " . index . " Saved!")
@@ -106,6 +106,13 @@ ApplyWindowPreset(index) {
     }
 
     MainGui.Move(preset["x"], preset["y"], preset["w"], preset["h"])
+
+    ; ツールバーの状態を復元
+    if (preset.Has("isToolbarHidden")) {
+        global IsToolbarHidden := preset["isToolbarHidden"]
+        wv.PostWebMessageAsString(IsToolbarHidden ? "hideToolbar" : "showToolbar")
+    }
+
     wv.PostWebMessageAsString("notify:info:Preset " . index . " Applied")
     WinActivate("ahk_id " . MainGui.Hwnd)
     wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")

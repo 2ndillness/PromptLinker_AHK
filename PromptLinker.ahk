@@ -90,6 +90,7 @@ global MainGui := ""
 global wvc := ""
 global wv := ""
 global StartTime := 0
+global IsToolbarHidden := false
 ; 設定マップの初期値
 global Settings := Map(
     "FontSize", 14,
@@ -156,7 +157,14 @@ Loop 3 {
     Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
     Hotkey("+!" A_Index, (hk) => SaveWindowPreset(Integer(SubStr(hk, -1))))
 }
+Hotkey("!Up", (*) => SetToolbarState(true))
+Hotkey("!Down", (*) => SetToolbarState(false))
 HotIf() ; コンテキストをリセット
+
+SetToolbarState(hide) {
+    global IsToolbarHidden := hide
+    wv.PostWebMessageAsString(hide ? "hideToolbar" : "showToolbar")
+}
 
 try {
     subDir := (A_PtrSize = 8 ? "64bit" : "32bit")

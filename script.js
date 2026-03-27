@@ -233,6 +233,10 @@ window.chrome.webview.addEventListener("message", (event) => {
     const type = parts[1] || "info";
     const text = parts.slice(2).join(":");
     showToast(text, type);
+  } else if (msg === "hideToolbar") {
+    document.querySelector(".toolbar").classList.add("collapsed");
+  } else if (msg === "showToolbar") {
+    document.querySelector(".toolbar").classList.remove("collapsed");
   }
 });
 
