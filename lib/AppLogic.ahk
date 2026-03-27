@@ -128,6 +128,21 @@ SelectLogDir(*) {
     ; AlwaysOnTopを再設定
     MainGui.Opt("+AlwaysOnTop")
     if (selDir != "") {
+        ; 書き込み権限テスト
+        testFile := selDir "\.write_test"
+        try {
+            FileAppend("", testFile)
+            FileDelete(testFile)
+        } catch {
+            MsgBox(
+                "このディレクトリには書き込み権限がありません。`n" .
+                "別の場所を選択してください。",
+                "Permission Error",
+                48
+            )
+            return
+        }
+
         Settings["LogDir"] := selDir
         ; JS側の表示を更新（バックスラッシュをエスケープして渡す）
         escapedPath := StrReplace(selDir, "\", "\\")
@@ -139,7 +154,11 @@ OpenLatestLog(*) {
     logFile := Settings["LogDir"]
         . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
     if FileExist(logFile) {
-        Run(logFile)
+        try {
+            Run(logFile)
+        } catch {
+            wv.PostWebMessageAsString("notify:error:Failed to open log file.")
+        }
     } else {
         wv.PostWebMessageAsString("notify:error:No log file found for today.")
     }
@@ -191,7 +210,12 @@ ExecuteTransfer(text) {
 
 SaveToLog(content) {
     if !DirExist(Settings["LogDir"]) {
-        DirCreate(Settings["LogDir"])
+        try {
+            DirCreate(Settings["LogDir"])
+        } catch {
+            wv.PostWebMessageAsString("notify:error:Failed to create log directory.")
+            return
+        }
     }
     fileName := Settings["LogDir"]
         . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
@@ -200,14 +224,23 @@ SaveToLog(content) {
     logEntry := "[" . FormatTime(, "HH:mm:ss") . "]`r`n"
         . cleanContent
         . "`r`n------------------------------`r`n"
-    FileAppend(logEntry, fileName, "UTF-8")
+    try {
+        FileAppend(logEntry, fileName, "UTF-8")
+    } catch as err {
+        wv.PostWebMessageAsString("notify:error:Log Write Failed: " err.Message)
+    }
 }
 
 SaveAndExit(*) {
     try {
+        if !DirExist(DataDir) && !FileExist(PortableFile) {
+            DirCreate(DataDir)
+        }
         f := FileOpen(SettingsFile, "w", "UTF-8")
         f.Write(Jxon_Dump(Settings, "  "))
         f.Close()
+    } catch as err {
+        MsgBox("設定の保存に失敗しました。`n" err.Message, "Error", 48)
     }
     ExitApp()
 }

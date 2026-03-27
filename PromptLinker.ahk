@@ -45,7 +45,44 @@ FileInstall "lib\WebView2\64bit\WebView2Loader.dll", ResDir
 ; 初期設定・変数定義
 ; ==============================================================================
 global AppName := "Prompt Linker"
-global SettingsFile := A_ScriptDir "\settings.json"
+global DataDir := A_AppData "\" StrReplace(AppName, " ", "_")
+global PortableFile := A_ScriptDir "\settings.json"
+
+; 書き込み権限テスト
+IsScriptDirWritable() {
+    testFile := A_ScriptDir "\.write_test"
+    try {
+        FileAppend("", testFile)
+        FileDelete(testFile)
+        return true
+    } catch {
+        return false
+    }
+}
+
+; 設定ファイルのパス決定ロジック
+; 1. 既に設定ファイルがあるならそれを使う
+; 2. ない場合、実行ファイルと同じ場所が書き込み可能ならそこを使う
+; 3. 書き込み不可（Program Files等）なら AppData を使う
+if FileExist(PortableFile) {
+    global SettingsFile := PortableFile
+    global UsePortable := true
+} else if IsScriptDirWritable() {
+    global SettingsFile := PortableFile
+    global UsePortable := true
+} else {
+    global SettingsFile := DataDir "\settings.json"
+    global UsePortable := false
+    ; AppDataディレクトリの作成
+    if !DirExist(DataDir) {
+        try {
+            DirCreate(DataDir)
+        } catch {
+            MsgBox("データディレクトリの作成に失敗しました。`nパス: " DataDir, "Error", 48)
+        }
+    }
+}
+
 global TargetHWND := 0
 global IsLinking := false
 global TargetProcess := ""
@@ -58,7 +95,7 @@ global Settings := Map(
     "FontSize", 14,
     "MinimizeAfter", false,
     "SaveLog", false,
-    "LogDir", A_ScriptDir "\logs",
+    "LogDir", (UsePortable ? A_ScriptDir "\logs" : DataDir "\logs"),
     "TargetAction", "Enter",
     "SubmitDelay", 400,
     "RestoreHotkey", "^!l",
@@ -93,8 +130,16 @@ Gui_Size(thisGui, minMax, width, height) {
 ; ==============================================================================
 LoadSettings()
 
-if !DirExist(Settings["LogDir"]) {
-    DirCreate(Settings["LogDir"])
+; ログディレクトリの作成
+if Settings["SaveLog"] && !DirExist(Settings["LogDir"]) {
+    try {
+        DirCreate(Settings["LogDir"])
+    } catch {
+        Settings["LogDir"] := DataDir "\logs"
+        if !DirExist(Settings["LogDir"]) {
+            DirCreate(Settings["LogDir"])
+        }
+    }
 }
 
 MainGui := Gui("+AlwaysOnTop +Resize +MinSize450x150", AppName . " - Unlinked")
