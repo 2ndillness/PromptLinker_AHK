@@ -12,8 +12,6 @@
 }
 
 #settings-view {
-  padding: 10px 15px;
-  background-color: var(--bg-color);
   font-size: 13px;
 }
 .settings-header {
@@ -143,6 +141,7 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-gutter: stable;
   box-sizing: border-box;
   padding: 10px 15px;
   background-color: var(--bg-color);
