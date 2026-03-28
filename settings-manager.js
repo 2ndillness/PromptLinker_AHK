@@ -43,6 +43,23 @@ const HOTKEY_BLACKLIST = [
   "+!3",
   "!Up",
   "!Down",
+  // 新規追加予定のショートカット
+  "!l",
+  "!Enter",
+  "^!Enter",
+  "+!Enter",
+  "!p",
+  "![",
+  "!]",
+  "!j",
+  "!t",
+  "!-",
+  "!=",
+  "!+",
+  "!m",
+  "!s",
+  "!o",
+  "!v",
 ];
 let recordingTimeout = null;
 

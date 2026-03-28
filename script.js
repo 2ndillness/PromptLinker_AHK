@@ -33,13 +33,21 @@ function sendMsg(msg) {
 
 /**
  * 設定画面の表示切り替え
+ * @param {boolean|null} forceState 強制的に設定画面を表示(true)か非表示(false)か
  */
-function toggleSetView() {
+function toggleSetView(forceState = null) {
   const mainView = document.getElementById("main-view");
   const setView = document.getElementById("settings-view");
-  mainView.classList.toggle("hidden");
-  setView.classList.toggle("hidden");
-  if (!mainView.classList.contains("hidden")) {
+
+  const isOpeningSettings =
+    forceState !== null ? forceState : setView.classList.contains("hidden");
+
+  if (isOpeningSettings) {
+    mainView.classList.add("hidden");
+    setView.classList.remove("hidden");
+  } else {
+    mainView.classList.remove("hidden");
+    setView.classList.add("hidden");
     textArea.focus();
   }
 }
@@ -77,3 +85,23 @@ window.chrome.webview.addEventListener("message", (event) => {
     document.querySelector(".toolbar").classList.remove("collapsed");
   }
 });
+
+/**
+ * AHK側からの操作をUIコンポーネントに反映させる
+ */
+function updateUI(key, value) {
+  switch (key) {
+    case "SaveLog":
+      document.getElementById("save-log-check").checked = value;
+      break;
+    case "MinimizeOption":
+      document.getElementById("minimize-option-check").checked = value;
+      break;
+    case "TriggerKey":
+      document.getElementById("trigger-key").value = value;
+      break;
+    case "TargetAction":
+      document.getElementById("target-action").value = value;
+      break;
+  }
+}

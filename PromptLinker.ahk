@@ -174,6 +174,31 @@ Loop 3 {
 }
 Hotkey("!Up", (*) => SetToolbarState(true))
 Hotkey("!Down", (*) => SetToolbarState(false))
+
+; アプリ操作用ショートカット
+Hotkey("!l", (*) => (IsLinking ? CancelLinking() : StartLinking()))
+Hotkey("!j", OpenSettings)
+Hotkey("!o", OpenLogDir)
+Hotkey("!v", OpenLatestLog)
+
+; 表示切り替え
+Hotkey("![", (*) => wv.ExecuteScriptAsync("toggleSetView(false)"))
+Hotkey("!]", (*) => wv.ExecuteScriptAsync("toggleSetView(true)"))
+
+; フォントサイズ変更
+Hotkey("!-", (*) => ChangeFontSize(-1))
+Hotkey("!=", (*) => ChangeFontSize(1))
+
+; 設定トグル
+Hotkey("!s", (*) => ToggleSetting("SaveLog"))
+Hotkey("!m", (*) => ToggleSetting("MinimizeOption"))
+Hotkey("!t", ToggleTriggerKey)
+
+; TargetAction 変更
+Hotkey("!p", (*) => UpdateTargetAction("Paste Only"))
+Hotkey("!Enter", (*) => UpdateTargetAction("Enter"))
+Hotkey("^!Enter", (*) => UpdateTargetAction("Ctrl + Enter"))
+Hotkey("+!Enter", (*) => UpdateTargetAction("Shift + Enter"))
 HotIf() ; コンテキストをリセット
 
 try {
@@ -283,4 +308,32 @@ OnWebMsg(sender, args) {
     } else if (SubStr(msg, 1, 11) == "savePreset:") {
         SaveWindowPreset(Integer(SubStr(msg, 12)))
     }
+}
+
+; 設定値をトグルしてJS側に通知する共通関数
+ToggleSetting(key) {
+    global Settings, wv
+    Settings[key] := !Settings[key]
+    valStr := Settings[key] ? "true" : "false"
+    wv.ExecuteScriptAsync("updateUI('" key "', " valStr ");")
+    SaveSettings()
+    wv.PostWebMessageAsString("notify:success:" . key . " updated")
+}
+
+ToggleTriggerKey(*) {
+    global Settings, wv
+    current := Settings["TriggerKey"]
+    newVal := (current == "Ctrl + Enter") ? "Shift + Enter" : "Ctrl + Enter"
+    Settings["TriggerKey"] := newVal
+    wv.ExecuteScriptAsync("updateUI('TriggerKey', '" newVal "');")
+    SaveSettings()
+    wv.PostWebMessageAsString("notify:success:Trigger: " . newVal)
+}
+
+UpdateTargetAction(action) {
+    global Settings, wv
+    Settings["TargetAction"] := action
+    wv.ExecuteScriptAsync("updateUI('TargetAction', '" action "');")
+    SaveSettings()
+    wv.PostWebMessageAsString("notify:success:Action: " . action)
 }
