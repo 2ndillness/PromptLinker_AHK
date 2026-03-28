@@ -185,6 +185,12 @@ Hotkey("!v", OpenLatestLog)
 Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))   ; 次のビューへ
 Hotkey("^+Tab", (*) => wv.ExecuteScriptAsync("rotateView(-1)")) ; 前のビューへ
 
+; ダイレクトビュー切り替え
+Hotkey("^1", (*) => wv.ExecuteScriptAsync("showViewByIndex(0)"))
+Hotkey("^2", (*) => wv.ExecuteScriptAsync("showViewByIndex(1)"))
+Hotkey("^3", (*) => wv.ExecuteScriptAsync("showViewByIndex(2)"))
+Hotkey("F1", (*) => wv.ExecuteScriptAsync("toggleHelp()"))
+
 ; フォントサイズ変更
 Hotkey("!-", (*) => ChangeFontSize(-1))
 Hotkey("!=", (*) => ChangeFontSize(1))
@@ -227,10 +233,8 @@ settingsJson := Jxon_Dump(Settings)
 wv.AddScriptToExecuteOnDocumentCreatedAsync(
     "window.ahkSettings = " . settingsJson . ";"
 )
-
-; 展開した一時フォルダ内のHTMLをロード
+; 展開した一時フォルダ内のHTMLをロード (直接パスが最も高速)
 htmlPath := "file:///" . StrReplace(ResDir, "\", "/") . "/ui.html"
-
 wv.add_WebMessageReceived(OnWebMsg)
 wv.add_PermissionRequested(OnPermissionRequested)
 wv.Navigate(htmlPath)

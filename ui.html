@@ -210,7 +210,105 @@
           </button>
         </div>
       </div>
+
+      <!-- ヘルプ画面 -->
+      <div id="help-view" class="hidden scrollable-view">
+        <div class="settings-header">
+          <button class="back-btn" onclick="showView('main-view')">
+            <span class="icon-placeholder" data-icon="arrow-left"></span>
+            Back
+          </button>
+          <h3>Shortcut Keys</h3>
+        </div>
+
+        <div class="help-content">
+          <div class="help-section">
+            <h4>Navigation</h4>
+            <div class="help-grid">
+              <div class="help-item"><kbd>F1</kbd></div>
+              <div>Show/Hide Help</div>
+              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>Tab</kbd></div>
+              <div>Rotate Views (Main ↔ Settings ↔ Help)</div>
+              <div class="help-item">
+                <kbd>Ctrl</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
+              <div>Direct View Switch</div>
+              <div class="help-item"><kbd>Esc</kbd></div>
+              <div>Back to Main View</div>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <h4>Core Actions</h4>
+            <div class="help-grid">
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>L</kbd></div>
+              <div>Link / Unlink Target Window</div>
+              <div class="help-item">
+                <kbd>Ctrl/Shift</kbd>+<kbd>Enter</kbd>
+              </div>
+              <div>Transfer Text (Trigger)</div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>Up/Down</kbd></div>
+              <div>Show/Hide Toolbar</div>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <h4>Target Action Settings</h4>
+            <div class="help-grid">
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>Enter</kbd></div>
+              <div>Set Action: Enter</div>
+              <div class="help-item">
+                <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd>
+              </div>
+              <div>Set Action: Ctrl+Enter</div>
+              <div class="help-item">
+                <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd>
+              </div>
+              <div>Set Action: Shift+Enter</div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>P</kbd></div>
+              <div>Set Action: Paste Only</div>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <h4>Presets</h4>
+            <div class="help-grid">
+              <div class="help-item">
+                <kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
+              <div>Apply Window Preset</div>
+              <div class="help-item">
+                <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
+              <div>Save Window Preset</div>
+            </div>
+          </div>
+
+          <div class="help-section">
+            <h4>Application Control</h4>
+            <div class="help-grid">
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>J</kbd></div>
+              <div>Open Settings View</div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>S</kbd></div>
+              <div>Toggle Save Log</div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>M</kbd></div>
+              <div>Toggle Minimize Option</div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>T</kbd></div>
+              <div>Toggle Trigger Key</div>
+              <div class="help-item">
+                <kbd>Alt</kbd>+<kbd>-</kbd> / <kbd>=</kbd>
+              </div>
+              <div>Change Font Size</div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>O</kbd></div>
+              <div>Open Log Directory</div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>V</kbd></div>
+              <div>View Latest Log</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
     <!-- 右クリックメニュー -->
     <div id="context-menu" class="context-menu">
       <div class="menu-item" onclick="runEditorCommand('cut')">Cut</div>
@@ -221,7 +319,6 @@
         Select All
       </div>
     </div>
-
     <div id="toast-container" class="toast-container"></div>
 
     <script src="icons.js"></script>

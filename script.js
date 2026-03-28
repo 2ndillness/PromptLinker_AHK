@@ -35,7 +35,7 @@ function sendMsg(msg) {
  * 表示ビューの切り替え管理
  * 将来的にログ画面を追加する場合は、この配列に ID を追加するだけで対応可能です。
  */
-const APP_VIEWS = ["main-view", "settings-view"];
+const APP_VIEWS = ["main-view", "settings-view", "help-view"];
 
 /**
  * 指定されたビューを表示し、他を非表示にする
@@ -81,6 +81,45 @@ function rotateView(direction) {
     (currentIndex + direction + APP_VIEWS.length) % APP_VIEWS.length;
   showView(APP_VIEWS[nextIndex]);
 }
+
+/**
+ * インデックス指定でビューを切り替える (Ctrl+1, 2... 用)
+ * @param {number} index ビューのインデックス
+ */
+function showViewByIndex(index) {
+  if (index >= 0 && index < APP_VIEWS.length) {
+    showView(APP_VIEWS[index]);
+  }
+}
+
+/**
+ * ヘルプモーダルの表示切り替え
+ * @param {boolean|null} forceState 強制指定
+ */
+function toggleHelp(forceState = null) {
+  const helpView = document.getElementById("help-view");
+  if (!helpView) return;
+
+  const isOpening =
+    forceState !== null ? forceState : helpView.classList.contains("hidden");
+
+  showView(isOpening ? "help-view" : "main-view");
+}
+
+/**
+ * グローバルキーイベント (Escキーなどの共通処理)
+ */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    // メイン画面以外が表示されているなら、メインに戻る
+    const isMainVisible = !document
+      .getElementById("main-view")
+      .classList.contains("hidden");
+    if (!isMainVisible) {
+      showView("main-view");
+    }
+  }
+});
 
 /**
  * イベントリスナー

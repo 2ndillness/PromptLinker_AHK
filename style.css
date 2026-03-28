@@ -135,7 +135,7 @@
   overflow: hidden;
 }
 
-#settings-view {
+.scrollable-view {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -143,6 +143,44 @@
   overflow-y: auto;
   overflow-x: hidden;
   box-sizing: border-box;
+  padding: 10px 15px;
+  background-color: var(--bg-color);
+}
+
+.help-content {
+  padding-bottom: 20px;
+}
+
+.help-section {
+  margin-bottom: 20px;
+}
+
+.help-section h4 {
+  color: var(--accent-color);
+  margin: 0 0 10px 0;
+  font-size: 0.95em;
+  border-bottom: 1px solid var(--border-dark);
+  padding-bottom: 4px;
+}
+
+.help-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 15px;
+  font-size: 0.85em;
+  align-items: center;
+}
+
+.help-item kbd {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: var(--font-mono);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+  min-width: 20px;
+  display: inline-block;
+  text-align: center;
 }
 
 .hidden {
