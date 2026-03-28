@@ -59,38 +59,6 @@ textArea.addEventListener("keydown", (e) => {
   }
 });
 
-textArea.addEventListener("contextmenu", (e) => {
-  e.preventDefault();
-
-  // 位置計算のために一旦表示（非可視）
-  contextMenu.style.visibility = "hidden";
-  contextMenu.style.display = "block";
-
-  const menuWidth = contextMenu.offsetWidth;
-  const menuHeight = contextMenu.offsetHeight;
-  const winWidth = window.innerWidth;
-  const winHeight = window.innerHeight;
-
-  let x = e.clientX;
-  let y = e.clientY;
-
-  if (x + menuWidth > winWidth) x -= menuWidth;
-  if (y + menuHeight > winHeight) y -= menuHeight;
-
-  if (x < 0) x = 0;
-  if (y < 0) y = 0;
-
-  contextMenu.style.left = x + "px";
-  contextMenu.style.top = y + "px";
-  contextMenu.style.visibility = "visible";
-});
-
-window.addEventListener("click", (e) => {
-  if (!contextMenu.contains(e.target)) {
-    contextMenu.style.display = "none";
-  }
-});
-
 /**
  * AHKからのメッセージを受信
  */
@@ -109,42 +77,3 @@ window.chrome.webview.addEventListener("message", (event) => {
     document.querySelector(".toolbar").classList.remove("collapsed");
   }
 });
-
-/**
- * テキスト編集コマンドの実行
- * @param {string} cmd
- */
-async function execCmd(cmd) {
-  textArea.focus();
-  const start = textArea.selectionStart;
-  const end = textArea.selectionEnd;
-  const selectedText = textArea.value.substring(start, end);
-
-  try {
-    switch (cmd) {
-      case "cut":
-        if (start !== end) {
-          await navigator.clipboard.writeText(selectedText);
-          textArea.setRangeText("", start, end, "end");
-          textArea.dispatchEvent(new Event("input"));
-        }
-        break;
-      case "copy":
-        if (start !== end) {
-          await navigator.clipboard.writeText(selectedText);
-        }
-        break;
-      case "paste":
-        const text = await navigator.clipboard.readText();
-        textArea.setRangeText(text, start, end, "end");
-        textArea.dispatchEvent(new Event("input"));
-        break;
-      case "selectAll":
-        textArea.select();
-        break;
-    }
-  } catch (err) {
-    console.error(`${cmd} failed: `, err);
-  }
-  contextMenu.style.display = "none";
-}
