@@ -95,6 +95,7 @@ if FileExist(PortableFile) {
 
 global TargetHWND := 0
 global IsLinking := false
+global IsRecordingHotkey := false
 global TargetProcess := ""
 global MainGui := ""
 global wvc := ""
@@ -166,7 +167,7 @@ MainGui.OnEvent("Close", SaveAndExit)
 SetFocusHotkey(Settings["FocusHotkey"])
 
 ; プリセット用ホットキー(このアプリにフォーカスがある時のみ有効に制限)
-HotIf((*) => WinActive("ahk_id " MainGui.Hwnd))
+HotIf((*) => WinActive("ahk_id " MainGui.Hwnd) && !IsRecordingHotkey)
 Loop 3 {
     Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
     Hotkey("+!" A_Index, (hk) => SaveWindowPreset(Integer(SubStr(hk, -1))))
@@ -256,6 +257,9 @@ OnWebMsg(sender, args) {
             ; ホットキーの設定変更であれば即時反映
             if (key == "FocusHotkey") {
                 SetFocusHotkey(Settings[key])
+                ; JS側の同期を行いロールバックを防ぐ
+                syncScript := "window.ahkSettings.FocusHotkey = '" Settings[key] "';"
+                wv.ExecuteScriptAsync(syncScript)
             }
             SaveSettings() ; 即時保存を実行
         }
@@ -269,6 +273,10 @@ OnWebMsg(sender, args) {
         OpenSettings()
     } else if (msg == "viewLatestLog") {
         OpenLatestLog()
+    } else if (msg == "startRecording") {
+        IsRecordingHotkey := true
+    } else if (msg == "stopRecording") {
+        IsRecordingHotkey := false
     } else if (SubStr(msg, 1, 12) == "applyPreset:") {
         ApplyWindowPreset(Integer(SubStr(msg, 13)))
     } else if (SubStr(msg, 1, 11) == "savePreset:") {

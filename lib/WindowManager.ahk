@@ -52,7 +52,9 @@ CheckActiveWindow() {
  * ウィンドウ位置をプリセットに保存
  */
 SaveWindowPreset(index) {
-    global MainGui, IsToolbarHidden, Settings
+    global MainGui, IsToolbarHidden, Settings, IsRecordingHotkey
+    if (IsRecordingHotkey)
+        return
     WinGetPos(&x, &y, &w, &h, "ahk_id " . MainGui.Hwnd)
     presetData := Map(
         "x", x, "y", y, "w", w, "h", h, "isToolbarHidden", IsToolbarHidden
@@ -66,7 +68,9 @@ SaveWindowPreset(index) {
  * プリセットの座標を適用
  */
 ApplyWindowPreset(index) {
-    global Settings, MainGui, wv, IsToolbarHidden
+    global Settings, MainGui, wv, IsToolbarHidden, IsRecordingHotkey
+    if (IsRecordingHotkey)
+        return
     preset := Settings["Presets"][String(index)]
     if (preset == "" || !(preset is Map)) {
         wv.PostWebMessageAsString("notify:error:Preset " . index . " is empty.")
@@ -78,7 +82,7 @@ ApplyWindowPreset(index) {
     }
     MainGui.Move(preset["x"], preset["y"], preset["w"], preset["h"])
     if (preset.Has("isToolbarHidden")) {
-        global IsToolbarHidden := preset["isToolbarHidden"]
+        IsToolbarHidden := preset["isToolbarHidden"]
         wv.PostWebMessageAsString(IsToolbarHidden ? "hideToolbar" : "showToolbar")
     }
     wv.PostWebMessageAsString("notify:info:Preset " . index . " Applied")

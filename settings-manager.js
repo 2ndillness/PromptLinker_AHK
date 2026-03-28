@@ -3,6 +3,50 @@
  */
 
 /**
+ * 使用を制限するホットキーのリスト (AHK形式)
+ * 将来的にキーを増やす場合は、この配列に文字列を追加してください。
+ */
+const HOTKEY_BLACKLIST = [
+  // 一般的なアプリ操作 (Ctrl+C, V, A, Z, S, Fなど)
+  "^c",
+  "^v",
+  "^x",
+  "^a",
+  "^z",
+  "^y",
+  "^s",
+  "^f",
+  "^n",
+  "^w",
+  "^p",
+  // Windowsシステム操作 (Win+L, D, E, R, S, X, I, Tabなど)
+  "#l",
+  "#d",
+  "#e",
+  "#r",
+  "#s",
+  "#x",
+  "#i",
+  "#tab",
+  "!tab",
+  "!f4",
+  // 当アプリで使用済みのキー
+  // 送信トリガー
+  "^Enter",
+  "+Enter",
+  // プリセット・ツールバー (Alt+1-3, Shift+Alt+1-3, Alt+Up/Down)
+  "!1",
+  "!2",
+  "!3",
+  "+!1",
+  "+!2",
+  "+!3",
+  "!Up",
+  "!Down",
+];
+let recordingTimeout = null;
+
+/**
  * AHKからの設定をUIに反映
  */
 function initSettings(settings) {
@@ -19,6 +63,22 @@ function initSettings(settings) {
   if (hotkeyInput) {
     hotkeyInput.value = formatHotkey(settings.FocusHotkey || "^!f");
     hotkeyInput.onkeydown = handleHotkeyInput;
+
+    hotkeyInput.onfocus = () => {
+      sendMsg("startRecording");
+      hotkeyInput.classList.add("recording");
+      hotkeyInput.value = "Recording...";
+      // 10秒操作がなければ自動解除
+      recordingTimeout = setTimeout(() => hotkeyInput.blur(), 10000);
+    };
+
+    hotkeyInput.onblur = () => {
+      sendMsg("stopRecording");
+      hotkeyInput.classList.remove("recording");
+      if (recordingTimeout) clearTimeout(recordingTimeout);
+      // 現在の設定値に戻す
+      hotkeyInput.value = formatHotkey(window.ahkSettings.FocusHotkey);
+    };
   }
 }
 
@@ -63,6 +123,11 @@ function resetFocusHotkey() {
  */
 function handleHotkeyInput(e) {
   e.preventDefault();
+  if (e.key === "Escape") {
+    e.target.blur();
+    return;
+  }
+
   if (["Control", "Shift", "Alt", "Meta"].includes(e.key)) return;
 
   const parts = [];
@@ -94,6 +159,19 @@ function handleHotkeyInput(e) {
   }
 
   const ahkString = parts.join("") + key;
+
+  // ブラックリストチェック (大文字小文字を区別せず比較)
+  const isBlacklisted = HOTKEY_BLACKLIST.some(
+    (k) => k.toLowerCase() === ahkString.toLowerCase(),
+  );
+
+  if (isBlacklisted) {
+    showToast(`Hotkey "${formatHotkey(ahkString)}" is reserved.`, "error");
+    return;
+  }
+
   e.target.value = formatHotkey(ahkString);
+  window.ahkSettings.FocusHotkey = ahkString; // 即時同期してロールバックを防止
   sendMsg("updateSetting:FocusHotkey:" + ahkString);
+  e.target.blur(); // 入力完了時にフォーカスを外して確定させる
 }

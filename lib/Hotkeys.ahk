@@ -33,7 +33,9 @@ SetFocusHotkey(newKey) {
  * アプリケーションウィンドウをアクティブ化する
  */
 FocusApp(hk) {
-    global MainGui
+    global MainGui, IsRecordingHotkey
+    if (IsRecordingHotkey)
+        return
     if WinExist("ahk_id " . MainGui.Hwnd) {
         WinActivate("ahk_id " . MainGui.Hwnd)
     }

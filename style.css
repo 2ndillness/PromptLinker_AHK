@@ -64,7 +64,6 @@
 .input-group input {
   flex-grow: 1;
   min-width: 100px;
-  min-width: 0;
   background: var(--input-bg);
   border: 1px solid var(--border-color);
   color: var(--text-color);
@@ -74,6 +73,18 @@
 }
 .input-group input:read-only {
   color: var(--text-muted);
+}
+.hotkey-input {
+  width: 180px !important;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+}
+.hotkey-input.recording {
+  border-color: var(--accent-color) !important;
+  background-color: rgba(0, 120, 215, 0.1) !important;
+  color: var(--accent-color) !important;
+  font-weight: bold;
+  outline: none;
 }
 .input-group button {
   width: 38px;
