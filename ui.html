@@ -136,14 +136,14 @@
         </div>
 
         <div class="setting-row">
-          <label>After Minimize</label>
+          <label>Minimize Option</label>
           <label class="switch">
             <input
               type="checkbox"
-              id="minimize-after-check"
+              id="minimize-option-check"
               onchange="
                 sendMsg(
-                  'updateSetting:MinimizeAfter:' + (this.checked ? '1' : '0'),
+                  'updateSetting:MinimizeOption:' + (this.checked ? '1' : '0'),
                 )
               "
             />

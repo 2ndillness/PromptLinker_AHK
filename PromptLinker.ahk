@@ -98,7 +98,7 @@ global IsToolbarHidden := false
 ; 設定マップの初期値
 global Settings := Map(
     "FontSize", 14,
-    "MinimizeAfter", false,
+    "MinimizeOption", false,
     "SaveLog", false,
     "LogDir", (UsePortable ? A_ScriptDir "\logs" : DataDir "\logs"),
     "TargetAction", "Enter",
@@ -242,7 +242,7 @@ OnWebMsg(sender, args) {
             key := parts[2], val := parts[3]
             if (key == "SaveLog") {
                 Settings[key] := (val == "1")
-            } else if (key == "MinimizeAfter") {
+            } else if (key == "MinimizeOption") {
                 Settings[key] := (val == "1")
             } else {
                 Settings[key] := val

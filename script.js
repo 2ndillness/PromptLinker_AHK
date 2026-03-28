@@ -53,8 +53,8 @@ function initSettings(settings) {
   document.getElementById("trigger-key").value =
     settings.TriggerKey || "Ctrl + Enter";
   updateFontSize(settings.FontSize);
-  document.getElementById("minimize-after-check").checked =
-    settings.MinimizeAfter;
+  document.getElementById("minimize-option-check").checked =
+    settings.MinimizeOption;
   document.getElementById("save-log-check").checked = settings.SaveLog;
   document.getElementById("log-dir-display").value = settings.LogDir;
 
