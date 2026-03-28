@@ -33,6 +33,7 @@ FileInstall "ui.html", ResDir "\ui.html", 1
 FileInstall "script.js", ResDir "\script.js", 1
 FileInstall "style.css", ResDir "\style.css", 1
 FileInstall "icons.js", ResDir "\icons.js", 1
+FileInstall "settings-manager.js", ResDir "\assets\js\settings-manager.js", 1
 FileInstall "ui-utils.js", ResDir "\assets\js\ui-utils.js", 1
 
 FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
