@@ -309,31 +309,3 @@ OnWebMsg(sender, args) {
         SaveWindowPreset(Integer(SubStr(msg, 12)))
     }
 }
-
-; 設定値をトグルしてJS側に通知する共通関数
-ToggleSetting(key) {
-    global Settings, wv
-    Settings[key] := !Settings[key]
-    valStr := Settings[key] ? "true" : "false"
-    wv.ExecuteScriptAsync("updateUI('" key "', " valStr ");")
-    SaveSettings()
-    wv.PostWebMessageAsString("notify:success:" . key . " updated")
-}
-
-ToggleTriggerKey(*) {
-    global Settings, wv
-    current := Settings["TriggerKey"]
-    newVal := (current == "Ctrl + Enter") ? "Shift + Enter" : "Ctrl + Enter"
-    Settings["TriggerKey"] := newVal
-    wv.ExecuteScriptAsync("updateUI('TriggerKey', '" newVal "');")
-    SaveSettings()
-    wv.PostWebMessageAsString("notify:success:Trigger: " . newVal)
-}
-
-UpdateTargetAction(action) {
-    global Settings, wv
-    Settings["TargetAction"] := action
-    wv.ExecuteScriptAsync("updateUI('TargetAction', '" action "');")
-    SaveSettings()
-    wv.PostWebMessageAsString("notify:success:Action: " . action)
-}

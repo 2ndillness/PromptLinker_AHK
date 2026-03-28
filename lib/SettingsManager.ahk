@@ -89,3 +89,41 @@ OpenSettings(*) {
         }
     }
 }
+
+/**
+ * 設定値をトグルしてJS側に通知する共通関数
+ * @param {string} key Settingsマップのキー
+ */
+ToggleSetting(key) {
+    global Settings, wv
+    Settings[key] := !Settings[key]
+    valStr := Settings[key] ? "true" : "false"
+    wv.ExecuteScriptAsync("updateUI('" key "', " valStr ");")
+    SaveSettings()
+    wv.PostWebMessageAsString("notify:success:" . key . " updated")
+}
+
+/**
+ * 送信トリガーキーをトグルする
+ */
+ToggleTriggerKey(*) {
+    global Settings, wv
+    current := Settings["TriggerKey"]
+    newVal := (current == "Ctrl + Enter") ? "Shift + Enter" : "Ctrl + Enter"
+    Settings["TriggerKey"] := newVal
+    wv.ExecuteScriptAsync("updateUI('TriggerKey', '" newVal "');")
+    SaveSettings()
+    wv.PostWebMessageAsString("notify:success:Trigger: " . newVal)
+}
+
+/**
+ * ターゲットアクションを更新する
+ * @param {string} action アクション名
+ */
+UpdateTargetAction(action) {
+    global Settings, wv
+    Settings["TargetAction"] := action
+    wv.ExecuteScriptAsync("updateUI('TargetAction', '" action "');")
+    SaveSettings()
+    wv.PostWebMessageAsString("notify:success:Action: " . action)
+}
