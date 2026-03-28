@@ -131,6 +131,7 @@ Gui_Size(thisGui, minMax, width, height) {
 #Include Lib\SettingsManager.ahk
 #Include Lib\WindowManager.ahk
 #Include Lib\AppLogic.ahk
+#Include Lib\LogHandler.ahk
 #Include Lib\Hotkeys.ahk
 
 ; ==============================================================================
