@@ -1,0 +1,110 @@
+; ウィンドウ管理ライブラリ
+
+/**
+ * ターゲットウィンドウのリンクを開始
+ */
+StartLinking() {
+    global IsLinking, StartTime, MainGui, AppName, wv
+    IsLinking := true
+    MainGui.Title := AppName . " - Waiting for target window..."
+    wv.PostWebMessageAsString("notify:info:Click Target Window...")
+    wv.ExecuteScriptAsync("updateBtn('Waiting...'); ")
+    StartTime := A_TickCount
+    SetTimer(CheckActiveWindow, 100)
+}
+
+/**
+ * リンク処理を中断
+ * @param {string} msg 通知メッセージ
+ */
+CancelLinking(msg := "Cancelled") {
+    global IsLinking, MainGui, AppName, wv
+    IsLinking := false
+    SetTimer(CheckActiveWindow, 0)
+    MainGui.Title := AppName " - Unlinked"
+    type := (msg == "Timeout") ? "error" : "info"
+    wv.PostWebMessageAsString("notify:" type ":" msg)
+    wv.ExecuteScriptAsync("updateBtn('Link Target'); ")
+}
+
+/**
+ * アクティブウィンドウを監視しリンクを確定
+ */
+CheckActiveWindow() {
+    global IsLinking, TargetHWND, TargetProcess, MainGui, AppName, wv, StartTime
+    currentHWND := WinActive("A")
+    if (currentHWND != 0 && currentHWND != MainGui.Hwnd) {
+        SetTimer(CheckActiveWindow, 0)
+        IsLinking := false
+        TargetHWND := currentHWND
+        TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
+        MainGui.Title := AppName . " - Linked: " . TargetProcess
+        wv.PostWebMessageAsString("notify:success:Linked: " . TargetProcess)
+        wv.ExecuteScriptAsync("updateBtn('Relink'); ")
+        WinActivate("ahk_id " . MainGui.Hwnd)
+        wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")
+    } else if (A_TickCount - StartTime > 10000) {
+        CancelLinking("Timeout")
+    }
+}
+
+/**
+ * ウィンドウ位置をプリセットに保存
+ */
+SaveWindowPreset(index) {
+    global MainGui, IsToolbarHidden, Settings
+    WinGetPos(&x, &y, &w, &h, "ahk_id " . MainGui.Hwnd)
+    presetData := Map(
+        "x", x, "y", y, "w", w, "h", h, "isToolbarHidden", IsToolbarHidden
+    )
+    Settings["Presets"][String(index)] := presetData
+    wv.PostWebMessageAsString("notify:success:Preset " . index . " Saved!")
+    SaveSettings()
+}
+
+/**
+ * プリセットの座標を適用
+ */
+ApplyWindowPreset(index) {
+    global Settings, MainGui, wv, IsToolbarHidden
+    preset := Settings["Presets"][String(index)]
+    if (preset == "" || !(preset is Map)) {
+        wv.PostWebMessageAsString("notify:error:Preset " . index . " is empty.")
+        return
+    }
+    if (!IsWindowVisible(preset["x"], preset["y"])) {
+        preset["x"] := 100
+        preset["y"] := 100
+    }
+    MainGui.Move(preset["x"], preset["y"], preset["w"], preset["h"])
+    if (preset.Has("isToolbarHidden")) {
+        global IsToolbarHidden := preset["isToolbarHidden"]
+        wv.PostWebMessageAsString(IsToolbarHidden ? "hideToolbar" : "showToolbar")
+    }
+    wv.PostWebMessageAsString("notify:info:Preset " . index . " Applied")
+    WinActivate("ahk_id " . MainGui.Hwnd)
+    wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")
+}
+
+/**
+ * 指定座標がモニター内にあるか確認
+ */
+IsWindowVisible(x, y) {
+    visible := false
+    Loop MonitorGetCount() {
+        MonitorGetWorkArea(A_Index, &l, &t, &r, &b)
+        if (x >= l && x < r && y >= t && y < b) {
+            visible := true
+            break
+        }
+    }
+    return visible
+}
+
+/**
+ * ツールバーの表示状態を切り替え
+ */
+SetToolbarState(hide) {
+    global IsToolbarHidden := hide, wv
+    wv.PostWebMessageAsString(hide ? "hideToolbar" : "showToolbar")
+}

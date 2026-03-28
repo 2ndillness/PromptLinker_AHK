@@ -128,6 +128,8 @@ Gui_Size(thisGui, minMax, width, height) {
 ; ==============================================================================
 #Include Lib\WebView2\WebView2.ahk
 #Include Lib\_JXON.ahk
+#Include Lib\SettingsManager.ahk
+#Include Lib\WindowManager.ahk
 #Include Lib\AppLogic.ahk
 #Include Lib\Hotkeys.ahk
 
@@ -165,11 +167,6 @@ Loop 3 {
 Hotkey("!Up", (*) => SetToolbarState(true))
 Hotkey("!Down", (*) => SetToolbarState(false))
 HotIf() ; コンテキストをリセット
-
-SetToolbarState(hide) {
-    global IsToolbarHidden := hide
-    wv.PostWebMessageAsString(hide ? "hideToolbar" : "showToolbar")
-}
 
 try {
     subDir := (A_PtrSize = 8 ? "64bit" : "32bit")
