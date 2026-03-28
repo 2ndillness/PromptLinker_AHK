@@ -103,7 +103,7 @@ global Settings := Map(
     "LogDir", (UsePortable ? A_ScriptDir "\logs" : DataDir "\logs"),
     "TargetAction", "Enter",
     "SubmitDelay", 400,
-    "RestoreHotkey", "^!l",
+    "FocusHotkey", "^!f",
     "TriggerKey", "Ctrl + Enter",
     "Presets", Map("1", "", "2", "", "3", "")
 )
@@ -152,8 +152,8 @@ MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
 
-; 復元ホットキーは常にグローバル
-UpdateRestoreHotkey(Settings["RestoreHotkey"])
+; フォーカス用ホットキーは常にグローバル
+SetFocusHotkey(Settings["FocusHotkey"])
 
 ; プリセット用ホットキー(このアプリにフォーカスがある時のみ有効に制限)
 HotIf((*) => WinActive("ahk_id " MainGui.Hwnd))
@@ -249,9 +249,10 @@ OnWebMsg(sender, args) {
             }
 
             ; ホットキーの設定変更であれば即時反映
-            if (key == "RestoreHotkey") {
-                UpdateRestoreHotkey(Settings[key])
+            if (key == "FocusHotkey") {
+                SetFocusHotkey(Settings[key])
             }
+            SaveSettings() ; 即時保存を実行
         }
     } else if (SubStr(msg, 1, 15) == "changeFontSize:") {
         ChangeFontSize(Integer(SubStr(msg, 16)))

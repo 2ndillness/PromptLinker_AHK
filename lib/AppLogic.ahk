@@ -70,6 +70,7 @@ SaveWindowPreset(index) {
     Settings["Presets"][String(index)] := presetData
 
     wv.PostWebMessageAsString("notify:success:Preset " . index . " Saved!")
+    SaveSettings()
 }
 
 /**
@@ -128,6 +129,7 @@ ChangeFontSize(delta) {
         newSize := 40
     Settings["FontSize"] := newSize
     wv.ExecuteScriptAsync("updateFontSize(" . newSize . ");")
+    SaveSettings()
 }
 
 SelectLogDir(*) {
@@ -156,6 +158,7 @@ SelectLogDir(*) {
         ; JS側の表示を更新（バックスラッシュをエスケープして渡す）
         escapedPath := StrReplace(selDir, "\", "\\")
         wv.ExecuteScriptAsync("updateLogDir('" . escapedPath . "');")
+        SaveSettings()
     }
 }
 
@@ -240,17 +243,24 @@ SaveToLog(content) {
     }
 }
 
-SaveAndExit(*) {
+SaveSettings() {
+    ; グローバル変数を参照していることを明示（リンターの警告抑制と安全のため）
+    global Settings, SettingsFile, DataDir, PortableFile, wv
     try {
         if !DirExist(DataDir) && !FileExist(PortableFile) {
             DirCreate(DataDir)
         }
-        f := FileOpen(SettingsFile, "w", "UTF-8")
-        f.Write(Jxon_Dump(Settings, "  "))
-        f.Close()
+        if (f := FileOpen(SettingsFile, "w", "UTF-8")) {
+            f.Write(Jxon_Dump(Settings, "  "))
+            f.Close()
+        }
     } catch as err {
-        MsgBox("設定の保存に失敗しました。`n" err.Message, "Error", 48)
+        wv.PostWebMessageAsString("notify:error:Save Failed: " err.Message)
     }
+}
+
+SaveAndExit(*) {
+    SaveSettings()
     ExitApp()
 }
 
@@ -285,32 +295,32 @@ LoadSettings() {
     }
 }
 
-global CurrentRestoreHotkey := ""
+global CurrentFocusHotkey := ""
 
-UpdateRestoreHotkey(newKey) {
-    global CurrentRestoreHotkey
-    HotIf() ; 常にグローバルなホットキーとして登録されるようコンテキストをリセット
+SetFocusHotkey(newKey) {
+    global CurrentFocusHotkey
+    HotIf() ; グローバル登録のためコンテキストをリセット
     ; 以前のホットキーがあれば無効化
-    if (CurrentRestoreHotkey != "") {
-        try Hotkey(CurrentRestoreHotkey, "Off")
+    if (CurrentFocusHotkey != "") {
+        try Hotkey(CurrentFocusHotkey, "Off")
     }
 
     ; 新しいホットキーを登録 (空文字の場合は登録解除のみ)
     if (newKey != "") {
         try {
-            Hotkey(newKey, RestoreWindow, "On")
-            CurrentRestoreHotkey := newKey
+            Hotkey(newKey, FocusApp, "On")
+            CurrentFocusHotkey := newKey
         } catch as err {
             ; 登録失敗（システム予約キーや構文エラー）の場合
             wv.PostWebMessageAsString(
                 "notify:error:Hotkey Registration Failed: " . newKey
             )
-            CurrentRestoreHotkey := ""
+            CurrentFocusHotkey := ""
         }
     }
 }
 
-RestoreWindow(hk) {
+FocusApp(hk) {
     if WinExist("ahk_id " . MainGui.Hwnd) {
         WinActivate("ahk_id " . MainGui.Hwnd)
     }

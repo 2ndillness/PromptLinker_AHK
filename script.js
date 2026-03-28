@@ -60,7 +60,7 @@ function initSettings(settings) {
 
   const hotkeyInput = document.getElementById("hotkey-input");
   if (hotkeyInput) {
-    hotkeyInput.value = formatHotkey(settings.RestoreHotkey || "^!l");
+    hotkeyInput.value = formatHotkey(settings.FocusHotkey || "^!f");
     hotkeyInput.onkeydown = handleHotkeyInput;
   }
 }
@@ -95,13 +95,13 @@ function formatHotkey(ahkKey) {
 /**
  * ホットキーをデフォルト値にリセット
  */
-function resetHotkey() {
-  const defaultHotkey = "^!l";
+function resetFocusHotkey() {
+  const defaultHotkey = "^!f";
   const hotkeyInput = document.getElementById("hotkey-input");
   if (hotkeyInput) {
     const formatted = formatHotkey(defaultHotkey);
     hotkeyInput.value = formatted;
-    sendMsg("updateSetting:RestoreHotkey:" + defaultHotkey);
+    sendMsg("updateSetting:FocusHotkey:" + defaultHotkey);
     showToast("Shortcut reset to default: " + formatted, "success");
   }
 }
@@ -287,7 +287,7 @@ function handleHotkeyInput(e) {
 
   const ahkString = parts.join("") + key;
   e.target.value = formatHotkey(ahkString);
-  sendMsg("updateSetting:RestoreHotkey:" + ahkString);
+  sendMsg("updateSetting:FocusHotkey:" + ahkString);
 }
 
 /**
