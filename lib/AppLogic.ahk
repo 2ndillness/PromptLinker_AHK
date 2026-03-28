@@ -2,13 +2,13 @@
  * ターゲットウィンドウへテキストを転送し、設定に応じたアクションを実行する
  */
 ExecuteTransfer(text) {
-    global TargetHWND, Settings, MainGui, wv
+    global TargetHWND, TargetProcess, Settings, MainGui, wv
     if (text == "" || TargetHWND == 0 || !WinExist("ahk_id " . TargetHWND)) {
         return
     }
 
     if (Settings["SaveLog"]) {
-        SaveToLog(text)
+        SaveToLog(text, TargetProcess)
     }
 
     A_Clipboard := text

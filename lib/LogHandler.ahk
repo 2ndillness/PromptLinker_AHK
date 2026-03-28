@@ -34,7 +34,7 @@ SelectLogDir(*) {
 OpenLatestLog(*) {
     global Settings, wv
     logFile := Settings["LogDir"]
-        . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
+        . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".jsonl"
     if FileExist(logFile) {
         try {
             Run(logFile)
@@ -66,8 +66,9 @@ OpenLogDir(*) {
 /**
  * 指定された内容をログファイルに追記する
  * @param {string} content 保存するテキスト
+ * @param {string} target ターゲットプロセス名
  */
-SaveToLog(content) {
+SaveToLog(content, target := "Unknown") {
     global Settings, wv
     if !DirExist(Settings["LogDir"]) {
         try {
@@ -79,14 +80,18 @@ SaveToLog(content) {
     }
 
     fileName := Settings["LogDir"]
-        . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
+        . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".jsonl"
 
-    ; 改行コードの正規化 (`r`n に統一)
-    clean := StrReplace(StrReplace(content, "`r`n", "`n"), "`r", "`n")
-    clean := StrReplace(clean, "`n", "`r`n")
+    ; JSONオブジェクトの構築
+    logObj := Map(
+        "timestamp", FormatTime(, "yyyy-MM-ddTHH:mm:ss"),
+        "target", target,
+        "length", StrLen(content),
+        "content", content
+    )
 
-    logEntry := "[" . FormatTime(, "HH:mm:ss") . "]`r`n"
-        . clean . "`r`n------------------------------`r`n"
+    ; JSONLとして1行で書き出し
+    logEntry := Jxon_Dump(logObj) . "`n"
 
     try {
         FileAppend(logEntry, fileName, "UTF-8")
