@@ -18,6 +18,9 @@ if !DirExist(ResDir) {
 if !DirExist(ResDir "\assets\css") {
     DirCreate(ResDir "\assets\css")
 }
+if !DirExist(ResDir "\assets\js") {
+    DirCreate(ResDir "\assets\js")
+}
 if !DirExist(ResDir "\WebView2\32bit") {
     DirCreate(ResDir "\WebView2\32bit")
 }
@@ -30,6 +33,7 @@ FileInstall "ui.html", ResDir "\ui.html", 1
 FileInstall "script.js", ResDir "\script.js", 1
 FileInstall "style.css", ResDir "\style.css", 1
 FileInstall "icons.js", ResDir "\icons.js", 1
+FileInstall "ui-utils.js", ResDir "\assets\js\ui-utils.js", 1
 
 FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
 

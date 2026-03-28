@@ -23,7 +23,7 @@ SelectLogDir(*) {
 
         Settings["LogDir"] := selDir
         escapedPath := StrReplace(selDir, "\", "\\")
-        wv.ExecuteScriptAsync("updateLogDir('" . escapedPath . "');")
+        wv.ExecuteScriptAsync("updateLogDirectory('" . escapedPath . "');")
         SaveSettings()
     }
 }

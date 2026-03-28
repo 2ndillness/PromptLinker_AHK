@@ -8,7 +8,7 @@ StartLinking() {
     IsLinking := true
     MainGui.Title := AppName . " - Waiting for target window..."
     wv.PostWebMessageAsString("notify:info:Click Target Window...")
-    wv.ExecuteScriptAsync("updateBtn('Waiting...'); ")
+    wv.ExecuteScriptAsync("updateLinkButton('Waiting...'); ")
     StartTime := A_TickCount
     SetTimer(CheckActiveWindow, 100)
 }
@@ -24,7 +24,7 @@ CancelLinking(msg := "Cancelled") {
     MainGui.Title := AppName " - Unlinked"
     type := (msg == "Timeout") ? "error" : "info"
     wv.PostWebMessageAsString("notify:" type ":" msg)
-    wv.ExecuteScriptAsync("updateBtn('Link Target'); ")
+    wv.ExecuteScriptAsync("updateLinkButton('Link Target'); ")
 }
 
 /**
@@ -40,7 +40,7 @@ CheckActiveWindow() {
         TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
         MainGui.Title := AppName . " - Linked: " . TargetProcess
         wv.PostWebMessageAsString("notify:success:Linked: " . TargetProcess)
-        wv.ExecuteScriptAsync("updateBtn('Relink'); ")
+        wv.ExecuteScriptAsync("updateLinkButton('Relink'); ")
         WinActivate("ahk_id " . MainGui.Hwnd)
         wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")
     } else if (A_TickCount - StartTime > 10000) {

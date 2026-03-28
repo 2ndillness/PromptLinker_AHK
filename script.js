@@ -23,29 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /**
- * 全アイコンのレンダリング
- */
-function renderIcons() {
-  const placeholders = document.querySelectorAll(".icon-placeholder");
-  placeholders.forEach((el) => {
-    const iconName = el.getAttribute("data-icon");
-    if (ICONS[iconName]) {
-      el.innerHTML = ICONS[iconName];
-    }
-  });
-}
-
-/**
- * 特定のアイコンを更新
- */
-function updateIcon(el, iconName) {
-  if (ICONS[iconName]) {
-    el.innerHTML = ICONS[iconName];
-    el.setAttribute("data-icon", iconName);
-  }
-}
-
-/**
  * AHKからの設定をUIに反映
  */
 function initSettings(settings) {
@@ -116,30 +93,6 @@ function sendMsg(msg) {
 }
 
 /**
- * Linkボタンのテキスト更新
- */
-function updateBtn(text) {
-  const btn = document.getElementById("link-btn");
-  const textEl = btn.querySelector(".btn-text");
-  if (textEl) textEl.innerText = text;
-}
-
-/**
- * フォントサイズの更新
- */
-function updateFontSize(size) {
-  document.getElementById("font-size-val").innerText = size;
-  textArea.style.fontSize = size + "px";
-}
-
-/**
- * ログディレクトリ表示の更新
- */
-function updateLogDir(path) {
-  document.getElementById("log-dir-display").value = path;
-}
-
-/**
  * 設定画面の表示切り替え
  */
 function toggleSetView() {
@@ -198,28 +151,6 @@ window.addEventListener("click", (e) => {
     contextMenu.style.display = "none";
   }
 });
-
-/**
- * トースト通知の表示
- * @param {string} msg
- * @param {string} type 'info' | 'error' | 'success'
- */
-function showToast(msg, type = "info") {
-  const container = document.getElementById("toast-container");
-  const toast = document.createElement("div");
-  toast.className = `toast ${type}`;
-  toast.innerText = msg;
-
-  container.appendChild(toast);
-
-  // 3秒後に削除
-  setTimeout(() => {
-    toast.style.opacity = "0";
-    toast.style.transform = "translateY(-20px)";
-    toast.style.transition = "all 0.3s ease-in";
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
 
 /**
  * AHKからのメッセージを受信
