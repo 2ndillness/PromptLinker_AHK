@@ -69,7 +69,11 @@ function initSettings(settings) {
       hotkeyInput.classList.add("recording");
       hotkeyInput.value = "Recording...";
       // 10秒操作がなければ自動解除
-      recordingTimeout = setTimeout(() => hotkeyInput.blur(), 10000);
+      recordingTimeout = setTimeout(() => {
+        // タイムアウト時にエラーとして通知
+        showToast("Recording timed out.", "error");
+        hotkeyInput.blur();
+      }, 10000);
     };
 
     hotkeyInput.onblur = () => {
@@ -170,8 +174,10 @@ function handleHotkeyInput(e) {
     return;
   }
 
-  e.target.value = formatHotkey(ahkString);
+  const formatted = formatHotkey(ahkString);
+  e.target.value = formatted;
   window.ahkSettings.FocusHotkey = ahkString; // 即時同期してロールバックを防止
   sendMsg("updateSetting:FocusHotkey:" + ahkString);
+  showToast(`Hotkey updated: ${formatted}`, "success");
   e.target.blur(); // 入力完了時にフォーカスを外して確定させる
 }
