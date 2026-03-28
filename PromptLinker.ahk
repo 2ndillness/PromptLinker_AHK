@@ -232,6 +232,7 @@ OnPermissionRequested(sender, args) {
     args.Handled := 1
 }
 OnWebMsg(sender, args) {
+    global IsRecordingHotkey
     msg := args.TryGetWebMessageAsString()
 
     if (msg == "toggleLink") {

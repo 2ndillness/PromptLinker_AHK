@@ -171,9 +171,9 @@ input:checked + .slider:before {
   transform: translateX(20px);
 }
 .explanation {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-muted);
-  margin-right: 10px;
+  margin-right: 6px;
   display: flex;
   align-items: center;
 }

@@ -4,7 +4,7 @@
  * ターゲットウィンドウのリンクを開始
  */
 StartLinking() {
-    global IsLinking, StartTime, MainGui, AppName, wv
+    global IsLinking, StartTime, MainGui, AppName, wv, IsRecordingHotkey
     IsLinking := true
     MainGui.Title := AppName . " - Waiting for target window..."
     wv.PostWebMessageAsString("notify:info:Click Target Window...")
@@ -109,6 +109,9 @@ IsWindowVisible(x, y) {
  * ツールバーの表示状態を切り替え
  */
 SetToolbarState(hide) {
-    global IsToolbarHidden := hide, wv
+    global IsToolbarHidden, wv, IsRecordingHotkey
+    if (IsRecordingHotkey)
+        return
+    IsToolbarHidden := hide
     wv.PostWebMessageAsString(hide ? "hideToolbar" : "showToolbar")
 }
