@@ -63,6 +63,9 @@
           <button id="settings-btn" onclick="toggleSetView()" title="Settings">
             <span class="icon-placeholder" data-icon="settings"></span>
           </button>
+          <button id="help-btn" onclick="toggleHelp()" title="Help (F1)">
+            <span class="icon-placeholder" data-icon="help-circle"></span>
+          </button>
         </div>
 
         <textarea id="main-textarea"></textarea>
@@ -206,7 +209,7 @@
           </button>
           <button onclick="sendMsg('viewLatestLog')">
             <span class="icon-placeholder" data-icon="file-text"></span>
-            View Log
+            View Latest Log
           </button>
         </div>
       </div>
@@ -288,7 +291,7 @@
             <h4>Application Control</h4>
             <div class="help-grid">
               <div class="help-item"><kbd>Alt</kbd>+<kbd>J</kbd></div>
-              <div>Open Settings View</div>
+              <div>Open settings.json</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>S</kbd></div>
               <div>Toggle Save Log</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>M</kbd></div>

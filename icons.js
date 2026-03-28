@@ -78,6 +78,14 @@ const ICONS = {
       <line x1="16" y1="17" x2="8" y2="17"></line>
       <polyline points="10 9 9 9 8 9"></polyline>
     </svg>`,
+  "help-circle": `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round"
+      stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+    </svg>`,
   "chevron-down": `
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
       stroke="currentColor" stroke-width="3" stroke-linecap="round"
