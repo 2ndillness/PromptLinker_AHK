@@ -129,6 +129,7 @@ Gui_Size(thisGui, minMax, width, height) {
 #Include Lib\WebView2\WebView2.ahk
 #Include Lib\_JXON.ahk
 #Include Lib\AppLogic.ahk
+#Include Lib\Hotkeys.ahk
 
 ; ==============================================================================
 ; アプリケーションの初期化

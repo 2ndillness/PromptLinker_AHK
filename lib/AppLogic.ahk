@@ -320,38 +320,6 @@ LoadSettings() {
     }
 }
 
-global CurrentFocusHotkey := ""
-
-SetFocusHotkey(newKey) {
-    global CurrentFocusHotkey
-    HotIf() ; グローバル登録のためコンテキストをリセット
-    ; 以前のホットキーがあれば無効化
-    if (CurrentFocusHotkey != "") {
-        try Hotkey(CurrentFocusHotkey, "Off")
-    }
-
-    ; 新しいホットキーを登録 (空文字の場合は登録解除のみ)
-    if (newKey != "") {
-        try {
-            Hotkey(newKey, FocusApp, "On")
-            CurrentFocusHotkey := newKey
-        } catch as err {
-            ; 登録失敗（システム予約キーや構文エラー）の場合
-            wv.PostWebMessageAsString(
-                "notify:error:Hotkey Registration Failed: " . newKey
-            )
-            CurrentFocusHotkey := ""
-        }
-    }
-}
-
-FocusApp(hk) {
-    global MainGui
-    if WinExist("ahk_id " . MainGui.Hwnd) {
-        WinActivate("ahk_id " . MainGui.Hwnd)
-    }
-}
-
 OpenLogDir(*) {
     global Settings, wv
     path := Settings["LogDir"]
