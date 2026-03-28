@@ -260,6 +260,8 @@ OnWebMsg(sender, args) {
         SelectLogDir()
     } else if (msg == "openLogDir") {
         Run(Settings["LogDir"])
+    } else if (msg == "openSettings") {
+        OpenSettings()
     } else if (msg == "viewLatestLog") {
         OpenLatestLog()
     } else if (SubStr(msg, 1, 12) == "applyPreset:") {

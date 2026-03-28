@@ -31,6 +31,19 @@
   margin-right: 15px;
 }
 
+.head-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  transition: color 0.2s;
+}
+.head-icon-btn:hover {
+  color: var(--accent-color);
+}
+
 .num-control button {
   width: 30px;
   padding: 0;

@@ -259,6 +259,23 @@ SaveSettings() {
     }
 }
 
+OpenSettings(*) {
+    global SettingsFile, wv
+    SaveSettings() ; 最新の状態を書き出してから開く
+    if !FileExist(SettingsFile)
+        return
+
+    try {
+        Run(SettingsFile) ; 関連付けられたエディタで開く
+    } catch {
+        try {
+            Run("notepad.exe " . SettingsFile) ; 失敗時はメモ帳
+        } catch as err {
+            wv.PostWebMessageAsString("notify:error:Open Failed")
+        }
+    }
+}
+
 SaveAndExit(*) {
     SaveSettings()
     ExitApp()
