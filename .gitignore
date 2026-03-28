@@ -3,9 +3,6 @@
 .history/
 *.log
 
-# Gemini CLI / Task related
-.gemini/
-
 # AHK / Build
 *.exe
 *.bin

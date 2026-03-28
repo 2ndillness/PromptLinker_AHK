@@ -32,24 +32,54 @@ function sendMsg(msg) {
 }
 
 /**
+ * 表示ビューの切り替え管理
+ * 将来的にログ画面を追加する場合は、この配列に ID を追加するだけで対応可能です。
+ */
+const APP_VIEWS = ["main-view", "settings-view"];
+
+/**
+ * 指定されたビューを表示し、他を非表示にする
+ * @param {string} targetId 表示する要素のID
+ */
+function showView(targetId) {
+  APP_VIEWS.forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (id === targetId) {
+      el.classList.remove("hidden");
+      if (id === "main-view") textArea.focus();
+    } else {
+      el.classList.add("hidden");
+    }
+  });
+}
+
+/**
  * 設定画面の表示切り替え
  * @param {boolean|null} forceState 強制的に設定画面を表示(true)か非表示(false)か
  */
 function toggleSetView(forceState = null) {
-  const mainView = document.getElementById("main-view");
-  const setView = document.getElementById("settings-view");
-
   const isOpeningSettings =
-    forceState !== null ? forceState : setView.classList.contains("hidden");
+    forceState !== null
+      ? forceState
+      : document.getElementById("settings-view").classList.contains("hidden");
 
-  if (isOpeningSettings) {
-    mainView.classList.add("hidden");
-    setView.classList.remove("hidden");
-  } else {
-    mainView.classList.remove("hidden");
-    setView.classList.add("hidden");
-    textArea.focus();
-  }
+  showView(isOpeningSettings ? "settings-view" : "main-view");
+}
+
+/**
+ * ビューを順番に切り替える (Ctrl+Tab 用)
+ * @param {number} direction 1: 次へ, -1: 前へ
+ */
+function rotateView(direction) {
+  const currentIndex = APP_VIEWS.findIndex(
+    (id) => !document.getElementById(id).classList.contains("hidden"),
+  );
+  // 負の数に対応したループ計算
+  const nextIndex =
+    (currentIndex + direction + APP_VIEWS.length) % APP_VIEWS.length;
+  showView(APP_VIEWS[nextIndex]);
 }
 
 /**

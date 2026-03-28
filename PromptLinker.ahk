@@ -182,8 +182,8 @@ Hotkey("!o", OpenLogDir)
 Hotkey("!v", OpenLatestLog)
 
 ; 表示切り替え
-Hotkey("![", (*) => wv.ExecuteScriptAsync("toggleSetView(false)"))
-Hotkey("!]", (*) => wv.ExecuteScriptAsync("toggleSetView(true)"))
+Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))   ; 次のビューへ
+Hotkey("^+Tab", (*) => wv.ExecuteScriptAsync("rotateView(-1)")) ; 前のビューへ
 
 ; フォントサイズ変更
 Hotkey("!-", (*) => ChangeFontSize(-1))
