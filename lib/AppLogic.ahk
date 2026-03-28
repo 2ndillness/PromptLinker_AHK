@@ -1,5 +1,5 @@
 StartLinking() {
-    global IsLinking, StartTime
+    global IsLinking, StartTime, MainGui, AppName, wv
     IsLinking := true
     ; HTML側の表示を更新
     MainGui.Title := AppName . " - Waiting for target window..."
@@ -13,7 +13,7 @@ StartLinking() {
 }
 
 CancelLinking(msg := "Cancelled") {
-    global IsLinking
+    global IsLinking, MainGui, AppName, wv
     IsLinking := false
     SetTimer(CheckActiveWindow, 0)
 
@@ -29,7 +29,7 @@ CancelLinking(msg := "Cancelled") {
 }
 
 CheckActiveWindow() {
-    global IsLinking, TargetHWND, TargetProcess
+    global IsLinking, TargetHWND, TargetProcess, MainGui, AppName, wv, StartTime
     currentHWND := WinActive("A")
     if (currentHWND != 0 && currentHWND != MainGui.Hwnd) {
         SetTimer(CheckActiveWindow, 0)
@@ -61,6 +61,7 @@ CheckActiveWindow() {
  * @param {number} index プリセット番号 (1-3)
  */
 SaveWindowPreset(index) {
+    global MainGui, IsToolbarHidden, Settings
     WinGetPos(&x, &y, &w, &h, "ahk_id " . MainGui.Hwnd)
 
     ; 座標データとツールバーの状態を保存
@@ -78,6 +79,7 @@ SaveWindowPreset(index) {
  * @param {number} index プリセット番号 (1-3)
  */
 ApplyWindowPreset(index) {
+    global Settings, MainGui, wv
     preset := Settings["Presets"][String(index)]
 
     if (preset == "" || !(preset is Map)) {
@@ -122,6 +124,7 @@ ApplyWindowPreset(index) {
 }
 
 ChangeFontSize(delta) {
+    global Settings, wv
     newSize := Settings["FontSize"] + delta
     if (newSize < 8)
         newSize := 8
@@ -133,6 +136,7 @@ ChangeFontSize(delta) {
 }
 
 SelectLogDir(*) {
+    global MainGui, Settings, wv
     ; ダイアログが背後に隠れないように、一時的にAlwaysOnTopを解除
     MainGui.Opt("-AlwaysOnTop")
     selDir := FileSelect("D", "*" . Settings["LogDir"], "Select Log Directory")
@@ -163,6 +167,7 @@ SelectLogDir(*) {
 }
 
 OpenLatestLog(*) {
+    global Settings, wv
     logFile := Settings["LogDir"]
         . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".txt"
     if FileExist(logFile) {
@@ -177,6 +182,7 @@ OpenLatestLog(*) {
 }
 
 ExecuteTransfer(text) {
+    global TargetHWND, Settings, MainGui, wv
     if (text == "" || TargetHWND == 0 || !WinExist("ahk_id " . TargetHWND)) {
         return
     }
@@ -221,6 +227,7 @@ ExecuteTransfer(text) {
 }
 
 SaveToLog(content) {
+    global Settings, wv
     if !DirExist(Settings["LogDir"]) {
         try {
             DirCreate(Settings["LogDir"])
@@ -282,6 +289,7 @@ SaveAndExit(*) {
 }
 
 LoadSettings() {
+    global SettingsFile, Settings
     if !FileExist(SettingsFile) {
         return
     }
@@ -338,7 +346,22 @@ SetFocusHotkey(newKey) {
 }
 
 FocusApp(hk) {
+    global MainGui
     if WinExist("ahk_id " . MainGui.Hwnd) {
         WinActivate("ahk_id " . MainGui.Hwnd)
+    }
+}
+
+OpenLogDir(*) {
+    global Settings, wv
+    path := Settings["LogDir"]
+    if DirExist(path) {
+        try {
+            Run(path)
+        } catch {
+            wv.PostWebMessageAsString("notify:error:Open Failed")
+        }
+    } else {
+        wv.PostWebMessageAsString("notify:error:Folder not found")
     }
 }

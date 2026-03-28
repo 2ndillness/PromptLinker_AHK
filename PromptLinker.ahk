@@ -259,7 +259,7 @@ OnWebMsg(sender, args) {
     } else if (msg == "selectLogDir") {
         SelectLogDir()
     } else if (msg == "openLogDir") {
-        Run(Settings["LogDir"])
+        OpenLogDir()
     } else if (msg == "openSettings") {
         OpenSettings()
     } else if (msg == "viewLatestLog") {
