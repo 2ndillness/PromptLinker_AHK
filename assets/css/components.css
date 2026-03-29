@@ -1,4 +1,16 @@
 /* コンポーネントのスタイル */
+.icon-img {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* 12pxサイズのアイコン用（chevron-downなど） */
+[data-icon="chevron-down"] .icon-img {
+  width: 12px;
+  height: 12px;
+}
+
 button,
 .select-wrapper {
   background-color: var(--input-bg);

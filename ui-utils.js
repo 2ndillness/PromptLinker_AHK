@@ -10,7 +10,7 @@ function renderIcons() {
   placeholders.forEach((el) => {
     const iconName = el.getAttribute("data-icon");
     if (ICONS[iconName]) {
-      el.innerHTML = ICONS[iconName];
+      el.innerHTML = `<img src="assets/icons/${ICONS[iconName]}.svg" class="icon-img">`;
     }
   });
 }
@@ -20,7 +20,7 @@ function renderIcons() {
  */
 function updateIcon(el, iconName) {
   if (ICONS[iconName]) {
-    el.innerHTML = ICONS[iconName];
+    el.innerHTML = `<img src="assets/icons/${ICONS[iconName]}.svg" class="icon-img">`;
     el.setAttribute("data-icon", iconName);
   }
 }
