@@ -298,6 +298,8 @@ wvc.Fill()
 OnNavigationCompleted(sender, args) {
     ; 初期スロットおよびアクション情報の同期
     SyncSlotsToJS()
+    ; ターゲット監視タイマー開始 (1秒ごと)
+    SetTimer(MonitorTargetStatus, 1000)
 }
 
 OnPermissionRequested(sender, args) {

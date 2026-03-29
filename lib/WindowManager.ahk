@@ -22,7 +22,7 @@ CancelLinking(msg := "Cancelled") {
     IsLinking := false
     SetTimer(CheckActiveWindow, 0)
     MainGui.Title := AppName " - Unlinked"
-    type := (msg == "Timeout") ? "error" : "info"
+    type := (msg == "Timeout") ? "error" : "warning"
     wv.PostWebMessageAsString("notify:" type ":" msg)
     wv.ExecuteScriptAsync("updateLinkButton('Link Target'); ")
 }

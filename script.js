@@ -159,7 +159,11 @@ function selectAction(action, e) {
  */
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    // メニューが開いていれば閉じる
+    // ホットキー入力欄にフォーカスがある時は、グローバルな遷移をさせない
+    const hotkeyInput = document.getElementById("hotkey-input");
+    if (hotkeyInput && document.activeElement === hotkeyInput) {
+      return;
+    }
     const targetMenu = document.getElementById("target-menu");
     const actionMenu = document.getElementById("action-menu");
     if (!targetMenu.classList.contains("hidden")) {

@@ -158,8 +158,9 @@ function resetFocusHotkey() {
  */
 function handleHotkeyInput(e) {
   e.preventDefault();
-  if (e.key === "Escape") {
+  if (e.key === "Delete") {
     e.target.blur();
+    showToast("Hotkey recording cancelled.", "warning");
     return;
   }
 

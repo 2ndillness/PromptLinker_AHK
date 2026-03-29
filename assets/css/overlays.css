@@ -76,6 +76,9 @@
 .toast.success {
   border-left-color: var(--success-color);
 }
+.toast.warning {
+  border-left-color: var(--warning-color);
+}
 @keyframes toast-in {
   from {
     transform: translateY(20px);

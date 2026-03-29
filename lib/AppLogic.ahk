@@ -147,6 +147,35 @@ SyncSlotsToJS() {
     wv.ExecuteScriptAsync("updateTargetSlots(" . jsonStr . ");")
 }
 
+/**
+ * ターゲットスロットの存在を監視し、閉じられた場合はクリアする
+ */
+MonitorTargetStatus() {
+    global TargetSlots, CurrentSlotIndex, TargetHWND, TargetProcess, MainGui, AppName, wv
+    changed := false
+
+    for index, slot in TargetSlots {
+        if (slot.hwnd != 0 && !WinExist("ahk_id " . slot.hwnd)) {
+            slot.hwnd := 0
+            slot.exe := ""
+            changed := true
+
+            ; 現在選択中のスロットが閉じられた場合
+            if (index == CurrentSlotIndex) {
+                TargetHWND := 0
+                TargetProcess := ""
+                MainGui.Title := AppName . " - Unlinked"
+                wv.ExecuteScriptAsync("updateLinkButton('Link Target');")
+                wv.ExecuteScriptAsync("updateUI('TargetAction', 'Enter');")
+            }
+        }
+    }
+
+    if (changed) {
+        SyncSlotsToJS()
+    }
+}
+
 SaveAndExit(*) {
     SaveSettings()
     ExitApp()
