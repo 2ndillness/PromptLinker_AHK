@@ -44,6 +44,11 @@ FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
 
 FileInstall "assets\css\components.css", ResDir "\assets\css\components.css", 1
 FileInstall "assets\css\theme.css", ResDir "\assets\css\theme.css", 1
+FileInstall "assets\css\layout.css", ResDir "\assets\css\layout.css", 1
+FileInstall "assets\css\forms.css", ResDir "\assets\css\forms.css", 1
+FileInstall "assets\css\overlays.css", ResDir "\assets\css\overlays.css", 1
+FileInstall "assets\css\forms.css", ResDir "\assets\css\forms.css", 1
+FileInstall "assets\css\overlays.css", ResDir "\assets\css\overlays.css", 1
 
 ; アイコンファイルの展開
 FileInstall "assets\icons\link.svg", ResDir "\assets\icons\link.svg", 1

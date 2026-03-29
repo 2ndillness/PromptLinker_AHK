@@ -1,0 +1,88 @@
+/* メニューと通知のスタイル */
+.context-menu,
+.dropdown-menu,
+#action-menu,
+#trigger-menu {
+  display: none;
+  position: absolute;
+  z-index: 1000;
+  background-color: var(--menu-bg);
+  border: 1px solid var(--menu-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  padding: 4px 0;
+  border-radius: var(--border-radius-lg);
+}
+
+.dropdown-menu:not(.hidden),
+#action-menu:not(.hidden),
+#trigger-menu:not(.hidden) {
+  display: block;
+}
+#action-menu:not(.hidden),
+#trigger-menu:not(.hidden) {
+  display: block;
+}
+.menu-item,
+.target-item,
+.action-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 12px;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  color: var(--text-color);
+  transition: background 0.2s;
+}
+.menu-item:hover,
+.target-item:hover,
+.action-item:hover {
+  background-color: var(--hover-bg);
+}
+.separator {
+  height: 1px;
+  background-color: var(--border-dark);
+  margin: 4px 0;
+}
+
+/* 通知 (Toast) */
+.toast-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.toast {
+  background-color: var(--menu-bg);
+  color: var(--text-color);
+  border: 1px solid var(--menu-border);
+  border-left: 4px solid var(--accent-color);
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  font-size: var(--font-size-main);
+  min-width: 200px;
+  max-width: 400px;
+  pointer-events: auto;
+  animation: toast-in 0.3s ease-out;
+}
+.toast.error {
+  border-left-color: var(--error-color);
+}
+.toast.success {
+  border-left-color: var(--success-color);
+}
+@keyframes toast-in {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

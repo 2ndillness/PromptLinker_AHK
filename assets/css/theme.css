@@ -28,6 +28,16 @@
 
   /* フォントとその他 */
   --font-family: "Segoe UI", "Meiryo", sans-serif;
+
+  /* サイズと余白の基準 */
+  --font-size-main: 14px;
+  --font-size-sm: 11px;
+  --font-size-xs: 10px;
+  --border-radius: 3px;
+  --border-radius-lg: 4px;
+  --spacing-sm: 5px;
+  --spacing-md: 10px;
+  --spacing-lg: 15px;
 }
 
 body {
@@ -51,7 +61,7 @@ textarea {
   border: none;
   border-top: 1px solid var(--border-dark);
   padding: 10px;
-  font-size: 16px;
+  font-size: 16px; /* エディタ部分は視認性重視で固定 */
   font-family: var(--font-family);
   resize: none;
   outline: none;

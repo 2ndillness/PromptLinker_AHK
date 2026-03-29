@@ -1,0 +1,131 @@
+/* レイアウトと構造のスタイル */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px 8px;
+  gap: 6px;
+  max-width: 500px;
+  background-color: var(--bg-color);
+  transition:
+    max-height 0.2s cubic-bezier(0.33, 1, 0.68, 1),
+    padding 0.2s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.15s ease-out;
+  overflow: visible;
+  max-height: 30px;
+  opacity: 1;
+  will-change: max-height, opacity, padding;
+}
+
+.toolbar.collapsed {
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+/* メインツールバーのプリセット呼び出しボタン */
+.main-presets {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+.preset-call-btn {
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  padding: 0 !important;
+  font-size: var(--font-size-sm);
+  border-radius: var(--border-radius-lg);
+}
+
+#content-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#main-view {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
+.scrollable-view {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  background-color: var(--bg-color);
+}
+
+/* ヘルプ画面固有のレイアウト */
+.help-content {
+  padding-bottom: 20px;
+}
+.help-section {
+  margin-bottom: 20px;
+}
+.help-section h4 {
+  color: var(--accent-color);
+  margin: 0 0 10px 0;
+  font-size: 0.95em;
+  border-bottom: 1px solid var(--border-dark);
+  padding-bottom: 4px;
+}
+.help-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 15px;
+  font-size: 0.85em;
+  align-items: center;
+}
+.help-item kbd {
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-family: var(--font-mono);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+  min-width: 20px;
+  display: inline-block;
+  text-align: center;
+}
+
+/* 設定画面の行レイアウト */
+.setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+.setting-row label {
+  white-space: nowrap;
+}
+.preset-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.explanation {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+  margin-right: 6px;
+  display: flex;
+  align-items: center;
+}
+
+/* ユーティリティ */
+.hidden {
+  display: none !important;
+}
