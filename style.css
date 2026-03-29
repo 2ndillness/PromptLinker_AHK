@@ -26,7 +26,7 @@
 .dropdown-menu {
   top: 25px;
   left: 0;
-  min-width: 144px;
+  min-width: 142px;
 }
 .target-item {
   gap: 8px;
@@ -58,9 +58,10 @@
   position: relative;
   display: flex;
   align-items: center;
+  margin-left: 12px;
 }
 .target-action-btn {
-  width: 105px;
+  width: 120px;
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
   color: var(--text-color);
@@ -71,15 +72,14 @@
   flex-grow: 1;
   text-align: left;
 }
-.action-chevron {
-  color: var(--text-muted);
-}
+
 #action-menu {
-  min-width: 105px;
+  min-width: 118px;
 }
 .target-action-btn:hover {
   background-color: var(--hover-bg);
 }
+
 #settings-btn,
 #help-btn {
   width: 26px;
@@ -89,6 +89,10 @@
 #settings-view,
 #help-view {
   font-size: var(--font-size-main);
+}
+
+#trigger-menu {
+  min-width: 118px;
 }
 
 .input-group.expand {
@@ -120,4 +124,22 @@
   display: flex;
   justify-content: flex-end;
   gap: 15px;
+}
+
+/** ツールバーのボタン群レイアウト */
+/* プリセットボタンセット */
+.main-presets {
+  margin-left: 25px;
+}
+/* Traget Action */
+#action-select {
+  margin-left: 25px;
+}
+/* 設定ボタン */
+#settings-btn {
+  margin-left: 20px;
+}
+/* ヘルプボタン */
+#help-btn {
+  margin-left: 8px;
 }

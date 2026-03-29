@@ -35,7 +35,6 @@ if !DirExist(ResDir "\WebView2\64bit") {
 FileInstall "ui.html", ResDir "\ui.html", 1
 FileInstall "script.js", ResDir "\script.js", 1
 FileInstall "style.css", ResDir "\style.css", 1
-FileInstall "icons.js", ResDir "\icons.js", 1
 FileInstall "editor-manager.js", ResDir "\assets\js\editor-manager.js", 1
 FileInstall "settings-manager.js", ResDir "\assets\js\settings-manager.js", 1
 FileInstall "ui-utils.js", ResDir "\assets\js\ui-utils.js", 1
@@ -55,7 +54,6 @@ FileInstall "assets\icons\link.svg", ResDir "\assets\icons\link.svg", 1
 FileInstall "assets\icons\settings.svg", ResDir "\assets\icons\settings.svg", 1
 FileInstall "assets\icons\folder.svg", ResDir "\assets\icons\folder.svg", 1
 FileInstall "assets\icons\arrow-left.svg", ResDir "\assets\icons\arrow-left.svg", 1
-FileInstall "assets\icons\move.svg", ResDir "\assets\icons\move.svg", 1
 FileInstall "assets\icons\folder-open.svg", ResDir "\assets\icons\folder-open.svg", 1
 FileInstall "assets\icons\save.svg", ResDir "\assets\icons\save.svg", 1
 FileInstall "assets\icons\file-text.svg", ResDir "\assets\icons\file-text.svg", 1
