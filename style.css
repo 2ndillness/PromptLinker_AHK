@@ -15,14 +15,14 @@
 }
 .chevron-btn {
   width: 24px !important;
-  height: 30px;
+  height: 26px;
   padding: 0;
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
 .dropdown-menu {
   position: absolute;
-  top: 32px;
+  top: 25px;
   left: 0;
   background-color: var(--menu-bg);
   border: 1px solid var(--menu-border);
@@ -73,7 +73,7 @@
   align-items: center;
 }
 .target-action-btn {
-  width: 115px;
+  width: 105px;
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
   color: var(--text-color);
@@ -88,7 +88,7 @@
   color: var(--text-muted);
 }
 #action-menu {
-  min-width: 115px;
+  min-width: 105px;
 }
 .target-action-btn:hover {
   background-color: var(--hover-bg);
@@ -103,24 +103,28 @@
 }
 #settings-btn,
 #help-btn {
-  width: 34px;
+  width: 26px;
   padding: 0;
 }
 
-#settings-view {
-  font-size: 13px;
+#settings-view,
+#help-view {
+  font-size: 14px;
 }
-.settings-header {
+.settings-header,
+.help-header {
   display: flex;
   align-items: center;
   margin-bottom: 12px;
   border-bottom: 1px solid var(--border-dark);
   padding-bottom: 10px;
 }
-.settings-header h3 {
+.settings-header h3,
+.help-header h3 {
   margin: 0;
   color: var(--accent-color);
   flex-grow: 1;
+  font-size: 1.15em;
 }
 .back-btn {
   margin-right: 15px;
@@ -199,13 +203,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 4px 10px;
-  gap: 8px;
+  padding: 2px 8px;
+  gap: 6px;
+  max-width: 500px;
   background-color: var(--bg-color);
-  transition: all 0.3s ease-in-out;
+  transition:
+    max-height 0.2s cubic-bezier(0.33, 1, 0.68, 1),
+    padding 0.2s cubic-bezier(0.33, 1, 0.68, 1),
+    opacity 0.15s ease-out;
   overflow: visible;
-  max-height: 100px;
+  max-height: 30px;
   opacity: 1;
+  will-change: max-height, opacity, padding;
 }
 
 .toolbar.collapsed {
