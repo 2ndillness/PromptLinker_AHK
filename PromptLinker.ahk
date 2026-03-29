@@ -241,6 +241,12 @@ try {
 }
 
 wv := wvc.CoreWebView2
+; ホワイトフラッシュ対策: WebView2の背景を透明(0)にし、GUIの背景色(1e1e1e)を表示させる
+try {
+    wvc.DefaultBackgroundColor := 0
+} catch {
+}
+
 wv.Settings.AreDefaultContextMenusEnabled := false
 wv.Settings.IsZoomControlEnabled := false
 
@@ -248,10 +254,12 @@ settingsJson := Jxon_Dump(Settings)
 wv.AddScriptToExecuteOnDocumentCreatedAsync(
     "window.ahkSettings = " . settingsJson . ";"
 )
-; 展開した一時フォルダ内のHTMLをロード (直接パスが最も高速)
+; 展開した一時フォルダ内のHTMLをロード
 htmlPath := "file:///" . StrReplace(ResDir, "\", "/") . "/ui.html"
 wv.add_WebMessageReceived(OnWebMsg)
 wv.add_PermissionRequested(OnPermissionRequested)
+
+; 読み込み完了後に表示するためのイベント（オプションだが、今回はShowのタイミングで制御）
 wv.Navigate(htmlPath)
 
 DwmSetDarkMode(hwnd) {
@@ -261,12 +269,14 @@ DwmSetDarkMode(hwnd) {
         , "Ptr", hwnd, "Int", 20
         , "Ptr", val, "Int", 4)
 }
-MainGui.Show("w500 h400")
 
+; GUIを表示する前にダークモード属性を適用
 DwmSetDarkMode(MainGui.Hwnd)
+
+; 画面を表示
+MainGui.Show("w500 h400")
 wvc.IsVisible := true
 wvc.Fill()
-
 ; ==============================================================================
 ; メインスレッド用関数
 ; ==============================================================================
