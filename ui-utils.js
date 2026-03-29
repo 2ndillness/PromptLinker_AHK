@@ -3,29 +3,6 @@
  */
 
 /**
- * 全アイコンのレンダリング
- */
-function renderIcons() {
-  const placeholders = document.querySelectorAll(".icon-placeholder");
-  placeholders.forEach((el) => {
-    const iconName = el.getAttribute("data-icon");
-    if (ICONS[iconName]) {
-      el.innerHTML = `<img src="assets/icons/${ICONS[iconName]}.svg" class="icon-img">`;
-    }
-  });
-}
-
-/**
- * 特定のアイコンを更新
- */
-function updateIcon(el, iconName) {
-  if (ICONS[iconName]) {
-    el.innerHTML = `<img src="assets/icons/${ICONS[iconName]}.svg" class="icon-img">`;
-    el.setAttribute("data-icon", iconName);
-  }
-}
-
-/**
  * Linkボタンのテキスト更新
  */
 function updateLinkButton(text) {

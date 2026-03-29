@@ -15,7 +15,11 @@
           <!-- リンクボタン（スプリットボタン） -->
           <div class="split-button" id="link-split-btn">
             <button id="link-btn" onclick="sendMsg('toggleLink')">
-              <span class="icon-placeholder" data-icon="link"></span>
+              <img
+                src="assets/icons/link.svg"
+                class="icon-img"
+                data-icon="link"
+              />
               <span class="btn-text">Link Target</span>
             </button>
             <button
@@ -23,7 +27,11 @@
               onclick="toggleTargetMenu(event)"
               title="Target Slots"
             >
-              <span class="icon-placeholder" data-icon="chevron-down"></span>
+              <img
+                src="assets/icons/chevron-down.svg"
+                class="icon-img"
+                data-icon="chevron-down"
+              />
             </button>
             <div id="target-menu" class="dropdown-menu hidden">
               <!-- JSで動的に生成 -->
@@ -62,10 +70,11 @@
               title="Target Action"
             >
               <span id="target-action-label" class="btn-text">Enter</span>
-              <span
-                class="icon-placeholder action-chevron"
+              <img
+                src="assets/icons/chevron-down.svg"
+                class="icon-img action-chevron"
                 data-icon="chevron-down"
-              ></span>
+              />
             </button>
             <div id="action-menu" class="dropdown-menu hidden">
               <div class="action-item" onclick="selectAction('Enter', event)">
@@ -92,10 +101,18 @@
             </div>
           </div>
           <button id="settings-btn" onclick="toggleSetView()" title="Settings">
-            <span class="icon-placeholder" data-icon="settings"></span>
+            <img
+              src="assets/icons/settings.svg"
+              class="icon-img"
+              data-icon="settings"
+            />
           </button>
           <button id="help-btn" onclick="toggleHelp()" title="Help (F1)">
-            <span class="icon-placeholder" data-icon="help-circle"></span>
+            <img
+              src="assets/icons/help-circle.svg"
+              class="icon-img"
+              data-icon="help-circle"
+            />
           </button>
         </div>
 
@@ -106,7 +123,11 @@
       <div id="settings-view" class="hidden scrollable-view">
         <div class="settings-header">
           <button class="back-btn" onclick="toggleSetView()">
-            <span class="icon-placeholder" data-icon="arrow-left"></span>
+            <img
+              src="assets/icons/arrow-left.svg"
+              class="icon-img"
+              data-icon="arrow-left"
+            />
             Back
           </button>
           <h3>Settings</h3>
@@ -115,7 +136,11 @@
             onclick="sendMsg('openSettings')"
             title="Open settings.json"
           >
-            <span class="icon-placeholder" data-icon="file-text"></span>
+            <img
+              src="assets/icons/file-text.svg"
+              class="icon-img"
+              data-icon="file-text"
+            />
           </button>
         </div>
 
@@ -128,7 +153,11 @@
               onclick="sendMsg('savePreset:1')"
               title="Save  to Preset 1"
             >
-              <span class="icon-placeholder" data-icon="save"></span>
+              <img
+                src="assets/icons/save.svg"
+                class="icon-img"
+                data-icon="save"
+              />
               <span class="preset-label">Preset 1</span>
             </button>
             <button
@@ -136,7 +165,11 @@
               onclick="sendMsg('savePreset:2')"
               title="Save  to Preset 2"
             >
-              <span class="icon-placeholder" data-icon="save"></span>
+              <img
+                src="assets/icons/save.svg"
+                class="icon-img"
+                data-icon="save"
+              />
               <span class="preset-label">Preset 2</span>
             </button>
             <button
@@ -144,7 +177,11 @@
               onclick="sendMsg('savePreset:3')"
               title="Save  to Preset 3"
             >
-              <span class="icon-placeholder" data-icon="save"></span>
+              <img
+                src="assets/icons/save.svg"
+                class="icon-img"
+                data-icon="save"
+              />
               <span class="preset-label">Preset 3</span>
             </button>
           </div>
@@ -160,10 +197,11 @@
               style="width: 130px"
             >
               <span id="trigger-key-label" class="btn-text">Ctrl + Enter</span>
-              <span
-                class="icon-placeholder action-chevron"
+              <img
+                src="assets/icons/chevron-down.svg"
+                class="icon-img action-chevron"
                 data-icon="chevron-down"
-              ></span>
+              />
             </button>
             <div
               id="trigger-menu"
@@ -237,7 +275,11 @@
               readonly
             />
             <button onclick="resetFocusHotkey()" title="Reset to Default">
-              <span class="icon-placeholder" data-icon="arrow-left"></span>
+              <img
+                src="assets/icons/arrow-left.svg"
+                class="icon-img"
+                data-icon="arrow-left"
+              />
             </button>
           </div>
         </div>
@@ -247,18 +289,30 @@
           <div class="input-group expand">
             <input type="text" id="log-dir-display" readonly value="C:\..." />
             <button onclick="sendMsg('selectLogDir')" title="Browse...">
-              <span class="icon-placeholder" data-icon="folder"></span>
+              <img
+                src="assets/icons/folder.svg"
+                class="icon-img"
+                data-icon="folder"
+              />
             </button>
           </div>
         </div>
 
         <div class="action-row">
           <button onclick="sendMsg('openLogDir')">
-            <span class="icon-placeholder" data-icon="folder-open"></span>
+            <img
+              src="assets/icons/folder-open.svg"
+              class="icon-img"
+              data-icon="folder-open"
+            />
             Open Folder
           </button>
           <button onclick="sendMsg('viewLatestLog')">
-            <span class="icon-placeholder" data-icon="file-text"></span>
+            <img
+              src="assets/icons/file-text.svg"
+              class="icon-img"
+              data-icon="file-text"
+            />
             View Latest Log
           </button>
         </div>
@@ -268,7 +322,11 @@
       <div id="help-view" class="hidden scrollable-view">
         <div class="settings-header">
           <button class="back-btn" onclick="showView('main-view')">
-            <span class="icon-placeholder" data-icon="arrow-left"></span>
+            <img
+              src="assets/icons/arrow-left.svg"
+              class="icon-img"
+              data-icon="arrow-left"
+            />
             Back
           </button>
           <h3>Shortcut Keys</h3>
@@ -376,7 +434,6 @@
     </div>
     <div id="toast-container" class="toast-container"></div>
 
-    <script src="icons.js"></script>
     <script src="assets/js/ui-utils.js"></script>
     <script src="assets/js/settings-manager.js"></script>
     <script src="assets/js/editor-manager.js"></script>

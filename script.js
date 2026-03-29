@@ -8,7 +8,6 @@ const contextMenu = document.getElementById("context-menu");
  * 初期化処理
  */
 document.addEventListener("DOMContentLoaded", () => {
-  renderIcons();
   if (window.ahkSettings) {
     initSettings(window.ahkSettings);
   }

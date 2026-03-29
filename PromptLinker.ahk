@@ -273,7 +273,6 @@ wv.add_WebMessageReceived(OnWebMsg)
 wv.add_PermissionRequested(OnPermissionRequested)
 wv.add_NavigationCompleted(OnNavigationCompleted)
 
-; 読み込み完了後に表示するためのイベント（オプションだが、今回はShowのタイミングで制御）
 wv.Navigate(htmlPath)
 
 DwmSetDarkMode(hwnd) {
