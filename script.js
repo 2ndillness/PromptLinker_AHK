@@ -14,12 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   textArea.focus();
 
-  // セレクトボックスのアニメーション用
-  const select = document.getElementById("target-action");
-  const wrapper = select.parentElement;
-  select.addEventListener("focus", () => wrapper.classList.add("active"));
-  select.addEventListener("blur", () => wrapper.classList.remove("active"));
-  select.addEventListener("change", () => select.blur()); // 選択したら閉じる
+  // セレクトボックスのアニメーション（不要になったため削除）
 });
 
 /**
@@ -107,10 +102,80 @@ function toggleHelp(forceState = null) {
 }
 
 /**
+ * ターゲットメニューの表示切り替え
+ */
+function toggleTargetMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById("target-menu");
+  menu.classList.toggle("hidden");
+
+  // メニューが開いた時、外側クリックで閉じるようにする
+  if (!menu.classList.contains("hidden")) {
+    const closeMenu = (event) => {
+      if (!menu.contains(event.target)) {
+        menu.classList.add("hidden");
+        document.removeEventListener("click", closeMenu);
+      }
+    };
+    setTimeout(() => {
+      document.addEventListener("click", closeMenu);
+    }, 10);
+  }
+}
+
+/**
+ * ターゲットアクションメニューの表示切り替え
+ */
+function toggleActionMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById("action-menu");
+  menu.classList.toggle("hidden");
+
+  if (!menu.classList.contains("hidden")) {
+    const closeActionMenu = (event) => {
+      if (!menu.contains(event.target)) {
+        menu.classList.add("hidden");
+        document.removeEventListener("click", closeActionMenu);
+      }
+    };
+    setTimeout(() => {
+      document.addEventListener("click", closeActionMenu);
+    }, 10);
+  }
+}
+
+/**
+ * ターゲットアクションを選択
+ */
+function selectAction(action, e) {
+  if (e) e.stopPropagation();
+  document.getElementById("target-action-label").innerText = action;
+  document.getElementById("action-menu").classList.add("hidden");
+  sendMsg("updateSetting:TargetAction:" + action);
+}
+
+/**
  * グローバルキーイベント (Escキーなどの共通処理)
  */
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
+    // メニューが開いていれば閉じる
+    const targetMenu = document.getElementById("target-menu");
+    const actionMenu = document.getElementById("action-menu");
+    if (!targetMenu.classList.contains("hidden")) {
+      targetMenu.classList.add("hidden");
+      return;
+    }
+    if (actionMenu && !actionMenu.classList.contains("hidden")) {
+      actionMenu.classList.add("hidden");
+      return;
+    }
+    const triggerMenu = document.getElementById("trigger-menu");
+    if (triggerMenu && !triggerMenu.classList.contains("hidden")) {
+      triggerMenu.classList.add("hidden");
+      return;
+    }
+
     // メイン画面以外が表示されているなら、メインに戻る
     const isMainVisible = !document
       .getElementById("main-view")
@@ -122,10 +187,49 @@ document.addEventListener("keydown", (e) => {
 });
 
 /**
+ * Trigger Key メニューの表示切り替え
+ */
+function toggleTriggerMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById("trigger-menu");
+  menu.classList.toggle("hidden");
+
+  if (!menu.classList.contains("hidden")) {
+    const closeTriggerMenu = (event) => {
+      if (!menu.contains(event.target)) {
+        menu.classList.add("hidden");
+        document.removeEventListener("click", closeTriggerMenu);
+      }
+    };
+    setTimeout(() => {
+      document.addEventListener("click", closeTriggerMenu);
+    }, 10);
+  }
+}
+
+/**
+ * Trigger Key を選択
+ */
+function selectTrigger(trigger, e) {
+  if (e) e.stopPropagation();
+  document.getElementById("trigger-key-label").innerText = trigger;
+  document.getElementById("trigger-menu").classList.add("hidden");
+  sendMsg("updateSetting:TriggerKey:" + trigger);
+}
+
+/**
  * イベントリスナー
  */
 textArea.addEventListener("keydown", (e) => {
-  const trigger = document.getElementById("trigger-key").value;
+  let trigger = "Ctrl + Enter";
+  const labelEl = document.getElementById("trigger-key-label");
+  if (labelEl) {
+    trigger = labelEl.innerText;
+  } else {
+    // 互換性フォールバック（もしDOMが無ければ）
+    const selEl = document.getElementById("trigger-key");
+    if (selEl) trigger = selEl.value;
+  }
   const isCtrlTrigger = trigger === "Ctrl + Enter" && e.ctrlKey && !e.shiftKey;
   const isShiftTrigger =
     trigger === "Shift + Enter" && e.shiftKey && !e.ctrlKey;
@@ -152,6 +256,9 @@ window.chrome.webview.addEventListener("message", (event) => {
     document.querySelector(".toolbar").classList.add("collapsed");
   } else if (msg === "showToolbar") {
     document.querySelector(".toolbar").classList.remove("collapsed");
+  } else if (msg.startsWith("updateTargetSlots:")) {
+    const slots = JSON.parse(msg.substring(18));
+    updateTargetSlots(slots);
   }
 });
 
@@ -167,10 +274,17 @@ function updateUI(key, value) {
       document.getElementById("minimize-option-check").checked = value;
       break;
     case "TriggerKey":
-      document.getElementById("trigger-key").value = value;
+      const tLabel = document.getElementById("trigger-key-label");
+      if (tLabel) {
+        tLabel.innerText = value;
+      } else {
+        const tSel = document.getElementById("trigger-key");
+        if (tSel) tSel.value = value;
+      }
       break;
     case "TargetAction":
-      document.getElementById("target-action").value = value;
+      const label = document.getElementById("target-action-label");
+      if (label) label.innerText = value;
       break;
   }
 }

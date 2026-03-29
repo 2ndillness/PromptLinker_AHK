@@ -4,6 +4,102 @@
 
 #link-btn {
   width: 120px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+.split-button {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.chevron-btn {
+  width: 24px !important;
+  height: 30px;
+  padding: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  background-color: var(--menu-bg);
+  border: 1px solid var(--menu-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  min-width: 144px;
+  z-index: 1000;
+  border-radius: 4px;
+  padding: 4px 0;
+}
+.target-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 11px;
+  gap: 8px;
+  transition: background 0.2s;
+}
+.target-item:hover {
+  background-color: var(--hover-bg);
+}
+.target-item .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: transparent;
+}
+.target-item.active .status-dot {
+  background-color: var(--success-color);
+  box-shadow: 0 0 4px var(--success-color);
+}
+.target-item .slot-num {
+  color: var(--text-muted);
+  font-size: 10px;
+  min-width: 12px;
+}
+.target-item .exe-name {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* カスタム Target Action メニュー用 */
+.custom-select {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.target-action-btn {
+  width: 115px; /* メニューと合わせる */
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  justify-content: space-between; /* 文字は左、▼は右 */
+  padding: 5px 10px;
+}
+.target-action-btn .btn-text {
+  flex-grow: 1;
+  text-align: left;
+}
+.action-chevron {
+  color: var(--text-muted);
+}
+#action-menu {
+  min-width: 115px; /* ボタンの幅とドロップダウンメニューの幅を統一 */
+}
+.target-action-btn:hover {
+  background-color: var(--hover-bg);
+}
+.action-item {
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 11px;
+}
+.action-item:hover {
+  background-color: var(--hover-bg);
 }
 #settings-btn,
 #help-btn {
@@ -102,11 +198,12 @@
 .toolbar {
   display: flex;
   align-items: center;
+  justify-content: space-between; /* 余白を自動計算して均等に配置 */
   padding: 10px;
-  gap: 15px;
+  gap: 8px;
   background-color: var(--bg-color);
   transition: all 0.3s ease-in-out;
-  overflow: hidden;
+  overflow: visible; /* ドロップダウンメニューが隠れないようにする */
   max-height: 100px; /* 十分な高さを確保 */
   opacity: 1;
 }
@@ -117,6 +214,7 @@
   padding-bottom: 0;
   opacity: 0;
   pointer-events: none;
+  overflow: hidden;
 }
 
 #content-area {

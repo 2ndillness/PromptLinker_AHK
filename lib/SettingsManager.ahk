@@ -124,6 +124,10 @@ UpdateTargetAction(action) {
     global Settings, wv
     Settings["TargetAction"] := action
     wv.ExecuteScriptAsync("updateUI('TargetAction', '" action "');")
+    
+    ; スロット側のアクションも同期
+    UpdateSlotAction(action)
+    
     SaveSettings()
     wv.PostWebMessageAsString("notify:success:Action: " . action)
 }

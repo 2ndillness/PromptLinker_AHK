@@ -31,7 +31,7 @@ CancelLinking(msg := "Cancelled") {
  * アクティブウィンドウを監視しリンクを確定
  */
 CheckActiveWindow() {
-    global IsLinking, TargetHWND, TargetProcess, MainGui, AppName, wv, StartTime
+    global IsLinking, TargetHWND, TargetProcess, MainGui, AppName, wv, StartTime, Settings
     currentHWND := WinActive("A")
     if (currentHWND != 0 && currentHWND != MainGui.Hwnd) {
         SetTimer(CheckActiveWindow, 0)
@@ -39,6 +39,10 @@ CheckActiveWindow() {
         TargetHWND := currentHWND
         TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
         MainGui.Title := AppName . " - Linked: " . TargetProcess
+        
+        ; スロットに追加
+        AddTargetSlot(TargetHWND, TargetProcess, Settings["TargetAction"])
+        
         wv.PostWebMessageAsString("notify:success:Linked: " . TargetProcess)
         wv.ExecuteScriptAsync("updateLinkButton('Relink'); ")
         WinActivate("ahk_id " . MainGui.Hwnd)
@@ -57,7 +61,9 @@ SaveWindowPreset(index) {
         return
     WinGetPos(&x, &y, &w, &h, "ahk_id " . MainGui.Hwnd)
     presetData := Map(
-        "x", x, "y", y, "w", w, "h", h, "isToolbarHidden", IsToolbarHidden
+        "x", x, "y", y, "w", w, "h", h, 
+        "isToolbarHidden", IsToolbarHidden,
+        "action", Settings["TargetAction"]
     )
     Settings["Presets"][String(index)] := presetData
     wv.PostWebMessageAsString("notify:success:Preset " . index . " Saved!")
@@ -85,6 +91,12 @@ ApplyWindowPreset(index) {
         IsToolbarHidden := preset["isToolbarHidden"]
         wv.PostWebMessageAsString(IsToolbarHidden ? "hideToolbar" : "showToolbar")
     }
+    
+    ; ターゲットアクションの復元
+    if (preset.Has("action")) {
+        UpdateTargetAction(preset["action"])
+    }
+    
     wv.PostWebMessageAsString("notify:info:Preset " . index . " Applied")
     WinActivate("ahk_id " . MainGui.Hwnd)
     wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")

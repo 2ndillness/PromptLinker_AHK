@@ -199,17 +199,18 @@ input:checked + .slider:before {
   border: 1px solid var(--menu-border);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   padding: 4px 0;
-  min-width: 130px;
-  border-radius: 3px;
+  min-width: 115px; /* Target Action と同じ幅に統一 */
+  border-radius: 4px;
 }
 .menu-item {
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 5px 12px;
+  font-size: 11px; /* 他のアイテムと統一 */
   cursor: pointer;
   color: var(--text-color);
+  transition: background 0.2s;
 }
 .menu-item:hover {
-  background-color: var(--select-bg);
+  background-color: var(--hover-bg);
 }
 .separator {
   height: 1px;

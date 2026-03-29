@@ -117,6 +117,12 @@ global wvc := ""
 global wv := ""
 global StartTime := 0
 global IsToolbarHidden := false
+
+; ターゲットスロット管理
+global CurrentSlotIndex := 1
+global TargetSlots := [{ hwnd: 0, exe: "", action: "" }, { hwnd: 0, exe: "", action: "" }, { hwnd: 0, exe: "", action: "" }
+]
+
 ; 設定マップの初期値
 global Settings := Map(
     "FontSize", 14,
@@ -200,10 +206,12 @@ Hotkey("!v", OpenLatestLog)
 Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))   ; 次のビューへ
 Hotkey("^+Tab", (*) => wv.ExecuteScriptAsync("rotateView(-1)")) ; 前のビューへ
 
-; ダイレクトビュー切り替え
-Hotkey("^1", (*) => wv.ExecuteScriptAsync("showViewByIndex(0)"))
-Hotkey("^2", (*) => wv.ExecuteScriptAsync("showViewByIndex(1)"))
-Hotkey("^3", (*) => wv.ExecuteScriptAsync("showViewByIndex(2)"))
+; ターゲットスロット切り替え
+Hotkey("^1", (*) => SwitchTargetSlot(1))
+Hotkey("^2", (*) => SwitchTargetSlot(2))
+Hotkey("^3", (*) => SwitchTargetSlot(3))
+Hotkey("^,", (*) => wv.ExecuteScriptAsync("toggleSetView(true)"))
+
 Hotkey("F1", (*) => wv.ExecuteScriptAsync("toggleHelp()"))
 
 ; フォントサイズ変更
@@ -258,6 +266,7 @@ wv.AddScriptToExecuteOnDocumentCreatedAsync(
 htmlPath := "file:///" . StrReplace(ResDir, "\", "/") . "/ui.html"
 wv.add_WebMessageReceived(OnWebMsg)
 wv.add_PermissionRequested(OnPermissionRequested)
+wv.add_NavigationCompleted(OnNavigationCompleted)
 
 ; 読み込み完了後に表示するためのイベント（オプションだが、今回はShowのタイミングで制御）
 wv.Navigate(htmlPath)
@@ -280,6 +289,11 @@ wvc.Fill()
 ; ==============================================================================
 ; メインスレッド用関数
 ; ==============================================================================
+
+OnNavigationCompleted(sender, args) {
+    ; 初期スロットおよびアクション情報の同期
+    SyncSlotsToJS()
+}
 
 OnPermissionRequested(sender, args) {
     args.State := 1
@@ -336,5 +350,7 @@ OnWebMsg(sender, args) {
         ApplyWindowPreset(Integer(SubStr(msg, 13)))
     } else if (SubStr(msg, 1, 11) == "savePreset:") {
         SaveWindowPreset(Integer(SubStr(msg, 12)))
+    } else if (SubStr(msg, 1, 17) == "switchTargetSlot:") {
+        SwitchTargetSlot(Integer(SubStr(msg, 18)))
     }
 }

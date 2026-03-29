@@ -12,11 +12,23 @@
       <div id="main-view">
         <!-- ツールバー -->
         <div class="toolbar">
-          <!-- リンクボタン -->
-          <button id="link-btn" onclick="sendMsg('toggleLink')">
-            <span class="icon-placeholder" data-icon="link"></span>
-            <span class="btn-text">Link Target</span>
-          </button>
+          <!-- リンクボタン（スプリットボタン） -->
+          <div class="split-button" id="link-split-btn">
+            <button id="link-btn" onclick="sendMsg('toggleLink')">
+              <span class="icon-placeholder" data-icon="link"></span>
+              <span class="btn-text">Link Target</span>
+            </button>
+            <button
+              class="chevron-btn"
+              onclick="toggleTargetMenu(event)"
+              title="Target Slots"
+            >
+              <span class="icon-placeholder" data-icon="chevron-down"></span>
+            </button>
+            <div id="target-menu" class="dropdown-menu hidden">
+              <!-- JSで動的に生成 -->
+            </div>
+          </div>
           <!-- メイン画面用プリセット呼び出しボタン -->
           <div class="main-presets">
             <button
@@ -42,23 +54,18 @@
             </button>
           </div>
 
-          <!-- ドロップダウンメニュー -->
-          <div class="select-wrapper">
-            <select
-              id="target-action"
-              onchange="sendMsg('updateSetting:TargetAction:' + this.value)"
-              title="Target Action"
-            >
-              <option value="Enter">Enter</option>
-              <option value="Ctrl + Enter">Ctrl + Enter</option>
-              <option value="Shift + Enter">Shift + Enter</option>
-              <option value="Paste Only">Paste Only</option>
-            </select>
-            <span
-              class="icon-placeholder select-arrow"
-              data-icon="chevron-down"
-            >
-            </span>
+          <!-- Target Action カスタムドロップダウン -->
+          <div class="custom-select" id="action-select">
+            <button class="target-action-btn" onclick="toggleActionMenu(event)" title="Target Action">
+              <span id="target-action-label" class="btn-text">Enter</span>
+              <span class="icon-placeholder action-chevron" data-icon="chevron-down"></span>
+            </button>
+            <div id="action-menu" class="dropdown-menu hidden">
+              <div class="action-item" onclick="selectAction('Enter', event)">Enter</div>
+              <div class="action-item" onclick="selectAction('Ctrl + Enter', event)">Ctrl + Enter</div>
+              <div class="action-item" onclick="selectAction('Shift + Enter', event)">Shift + Enter</div>
+              <div class="action-item" onclick="selectAction('Paste Only', event)">Paste Only</div>
+            </div>
           </div>
           <button id="settings-btn" onclick="toggleSetView()" title="Settings">
             <span class="icon-placeholder" data-icon="settings"></span>
@@ -121,18 +128,15 @@
 
         <div class="setting-row">
           <label>Trigger Key</label>
-          <div class="select-wrapper mini">
-            <select
-              id="trigger-key"
-              onchange="sendMsg('updateSetting:TriggerKey:' + this.value)"
-            >
-              <option value="Ctrl + Enter">Ctrl + Enter</option>
-              <option value="Shift + Enter">Shift + Enter</option>
-            </select>
-            <span
-              class="icon-placeholder select-arrow"
-              data-icon="chevron-down"
-            ></span>
+          <div class="custom-select" id="trigger-key-select">
+            <button class="target-action-btn" onclick="toggleTriggerMenu(event)" title="Trigger Key" style="width: 130px;">
+              <span id="trigger-key-label" class="btn-text">Ctrl + Enter</span>
+              <span class="icon-placeholder action-chevron" data-icon="chevron-down"></span>
+            </button>
+            <div id="trigger-menu" class="dropdown-menu hidden" style="min-width: 130px;">
+              <div class="action-item" onclick="selectTrigger('Ctrl + Enter', event)">Ctrl + Enter</div>
+              <div class="action-item" onclick="selectTrigger('Shift + Enter', event)">Shift + Enter</div>
+            </div>
           </div>
         </div>
 
@@ -235,7 +239,9 @@
               <div class="help-item">
                 <kbd>Ctrl</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
               </div>
-              <div>Direct View Switch</div>
+              <div>Switch Target Slot</div>
+              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>,</kbd></div>
+              <div>Open Settings</div>
               <div class="help-item"><kbd>Esc</kbd></div>
               <div>Back to Main View</div>
             </div>

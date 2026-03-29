@@ -7,6 +7,11 @@
  * 将来的にキーを増やす場合は、この配列に文字列を追加してください。
  */
 const HOTKEY_BLACKLIST = [
+  // アプリ専用 (Ctrl+1~3: ターゲット切替, Ctrl+,: 設定)
+  "^1",
+  "^2",
+  "^3",
+  "^,",
   // 一般的なアプリ操作 (Ctrl+C, V, A, Z, S, Fなど)
   "^c",
   "^v",
@@ -71,9 +76,14 @@ let recordingTimeout = null;
  * AHKからの設定をUIに反映
  */
 function initSettings(settings) {
-  document.getElementById("target-action").value = settings.TargetAction;
-  document.getElementById("trigger-key").value =
-    settings.TriggerKey || "Ctrl + Enter";
+  const actionLabel = document.getElementById("target-action-label");
+  if (actionLabel) {
+    actionLabel.innerText = settings.TargetAction;
+  }
+  const triggerLabel = document.getElementById("trigger-key-label");
+  if (triggerLabel) {
+    triggerLabel.innerText = settings.TriggerKey || "Ctrl + Enter";
+  }
   updateFontSize(settings.FontSize);
   document.getElementById("minimize-option-check").checked =
     settings.MinimizeOption;

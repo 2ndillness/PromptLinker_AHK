@@ -52,6 +52,41 @@ function updateLogDirectory(path) {
 }
 
 /**
+ * ターゲットスロットの表示を更新
+ */
+function updateTargetSlots(slots) {
+  const menu = document.getElementById("target-menu");
+  if (!menu) return;
+
+  menu.innerHTML = "";
+  slots.forEach((slot) => {
+    const item = document.createElement("div");
+    item.className = "target-item" + (slot.active ? " active" : "");
+    item.onclick = (e) => {
+      e.stopPropagation();
+      sendMsg("switchTargetSlot:" + slot.index);
+      menu.classList.add("hidden");
+    };
+
+    const dot = document.createElement("span");
+    dot.className = "status-dot";
+
+    const num = document.createElement("span");
+    num.className = "slot-num";
+    num.innerText = slot.index;
+
+    const name = document.createElement("span");
+    name.className = "exe-name";
+    name.innerText = slot.exe;
+
+    item.appendChild(dot);
+    item.appendChild(num);
+    item.appendChild(name);
+    menu.appendChild(item);
+  });
+}
+
+/**
  * トースト通知の表示
  * @param {string} msg
  * @param {string} type 'info' | 'error' | 'success'
