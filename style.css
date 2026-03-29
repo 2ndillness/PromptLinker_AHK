@@ -73,11 +73,11 @@
   align-items: center;
 }
 .target-action-btn {
-  width: 115px; /* メニューと合わせる */
+  width: 115px;
   background-color: var(--input-bg);
   border: 1px solid var(--border-color);
   color: var(--text-color);
-  justify-content: space-between; /* 文字は左、▼は右 */
+  justify-content: space-between;
   padding: 5px 10px;
 }
 .target-action-btn .btn-text {
@@ -88,7 +88,7 @@
   color: var(--text-muted);
 }
 #action-menu {
-  min-width: 115px; /* ボタンの幅とドロップダウンメニューの幅を統一 */
+  min-width: 115px;
 }
 .target-action-btn:hover {
   background-color: var(--hover-bg);
@@ -198,13 +198,13 @@
 .toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 余白を自動計算して均等に配置 */
-  padding: 10px;
+  justify-content: space-between;
+  padding: 4px 10px;
   gap: 8px;
   background-color: var(--bg-color);
   transition: all 0.3s ease-in-out;
-  overflow: visible; /* ドロップダウンメニューが隠れないようにする */
-  max-height: 100px; /* 十分な高さを確保 */
+  overflow: visible;
+  max-height: 100px;
   opacity: 1;
 }
 

@@ -56,15 +56,39 @@
 
           <!-- Target Action カスタムドロップダウン -->
           <div class="custom-select" id="action-select">
-            <button class="target-action-btn" onclick="toggleActionMenu(event)" title="Target Action">
+            <button
+              class="target-action-btn"
+              onclick="toggleActionMenu(event)"
+              title="Target Action"
+            >
               <span id="target-action-label" class="btn-text">Enter</span>
-              <span class="icon-placeholder action-chevron" data-icon="chevron-down"></span>
+              <span
+                class="icon-placeholder action-chevron"
+                data-icon="chevron-down"
+              ></span>
             </button>
             <div id="action-menu" class="dropdown-menu hidden">
-              <div class="action-item" onclick="selectAction('Enter', event)">Enter</div>
-              <div class="action-item" onclick="selectAction('Ctrl + Enter', event)">Ctrl + Enter</div>
-              <div class="action-item" onclick="selectAction('Shift + Enter', event)">Shift + Enter</div>
-              <div class="action-item" onclick="selectAction('Paste Only', event)">Paste Only</div>
+              <div class="action-item" onclick="selectAction('Enter', event)">
+                Enter
+              </div>
+              <div
+                class="action-item"
+                onclick="selectAction('Ctrl + Enter', event)"
+              >
+                Ctrl + Enter
+              </div>
+              <div
+                class="action-item"
+                onclick="selectAction('Shift + Enter', event)"
+              >
+                Shift + Enter
+              </div>
+              <div
+                class="action-item"
+                onclick="selectAction('Paste Only', event)"
+              >
+                Paste Only
+              </div>
             </div>
           </div>
           <button id="settings-btn" onclick="toggleSetView()" title="Settings">
@@ -129,13 +153,35 @@
         <div class="setting-row">
           <label>Trigger Key</label>
           <div class="custom-select" id="trigger-key-select">
-            <button class="target-action-btn" onclick="toggleTriggerMenu(event)" title="Trigger Key" style="width: 130px;">
+            <button
+              class="target-action-btn"
+              onclick="toggleTriggerMenu(event)"
+              title="Trigger Key"
+              style="width: 130px"
+            >
               <span id="trigger-key-label" class="btn-text">Ctrl + Enter</span>
-              <span class="icon-placeholder action-chevron" data-icon="chevron-down"></span>
+              <span
+                class="icon-placeholder action-chevron"
+                data-icon="chevron-down"
+              ></span>
             </button>
-            <div id="trigger-menu" class="dropdown-menu hidden" style="min-width: 130px;">
-              <div class="action-item" onclick="selectTrigger('Ctrl + Enter', event)">Ctrl + Enter</div>
-              <div class="action-item" onclick="selectTrigger('Shift + Enter', event)">Shift + Enter</div>
+            <div
+              id="trigger-menu"
+              class="dropdown-menu hidden"
+              style="min-width: 130px"
+            >
+              <div
+                class="action-item"
+                onclick="selectTrigger('Ctrl + Enter', event)"
+              >
+                Ctrl + Enter
+              </div>
+              <div
+                class="action-item"
+                onclick="selectTrigger('Shift + Enter', event)"
+              >
+                Shift + Enter
+              </div>
             </div>
           </div>
         </div>

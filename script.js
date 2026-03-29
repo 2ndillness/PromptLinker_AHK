@@ -28,7 +28,7 @@ function sendMsg(msg) {
 
 /**
  * 表示ビューの切り替え管理
- * 将来的にログ画面を追加する場合は、この配列に ID を追加するだけで対応可能です。
+ * 将来的にログ画面を追加する場合は、この配列に ID を追加
  */
 const APP_VIEWS = ["main-view", "settings-view", "help-view"];
 
