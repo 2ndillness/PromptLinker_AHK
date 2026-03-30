@@ -251,6 +251,8 @@ function toggleTriggerMenu(e) {
 function selectTrigger(trigger, e) {
   if (e) e.stopPropagation();
   document.getElementById("trigger-key-label").innerText = trigger;
+  const mShortcut = document.getElementById("menu-transfer-shortcut");
+  if (mShortcut) mShortcut.innerText = trigger;
   document.getElementById("trigger-menu").classList.add("hidden");
   sendMsg("updateSetting:TriggerKey:" + trigger);
 }
@@ -320,6 +322,11 @@ function updateUI(key, value) {
       } else {
         const tSel = document.getElementById("trigger-key");
         if (tSel) tSel.value = value;
+      }
+      // コンテキストメニューのショートカット表示も更新
+      const mShortcut = document.getElementById("menu-transfer-shortcut");
+      if (mShortcut) {
+        mShortcut.innerText = value;
       }
       break;
     case "TargetAction":

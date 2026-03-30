@@ -6,10 +6,11 @@
   display: none;
   position: absolute;
   z-index: 1000;
+  min-width: 128px; /* 128pxに固定 */
   background-color: var(--menu-bg);
   border: 1px solid var(--menu-border);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  padding: 4px 0;
+  padding: 2px 0;
   border-radius: var(--border-radius-lg);
 }
 
@@ -27,7 +28,7 @@
 .action-item {
   display: flex;
   align-items: center;
-  padding: 5px 12px;
+  padding: 3px 6px; /* 12pxから6pxへ圧縮 */
   font-size: var(--font-size-sm);
   cursor: pointer;
   color: var(--text-color);
@@ -41,7 +42,7 @@
 .separator {
   height: 1px;
   background-color: var(--border-dark);
-  margin: 4px 0;
+  margin: 2px 0;
 }
 
 /* 通知 (Toast) */

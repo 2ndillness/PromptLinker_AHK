@@ -333,6 +333,20 @@
 
         <div class="help-content">
           <div class="help-section">
+            <h4>Mouse Operations</h4>
+            <div class="help-grid">
+              <div class="help-item">Right-click Toolbar</div>
+              <div>Hide Toolbar</div>
+
+              <div class="help-item">Click Top Border</div>
+              <div>Show Toolbar</div>
+
+              <div class="help-item">Right-click Editor</div>
+              <div>Context Menu (Transfer/Edit)</div>
+            </div>
+          </div>
+
+          <div class="help-section">
             <h4>Navigation</h4>
             <div class="help-grid">
               <div class="help-item"><kbd>F1</kbd></div>
@@ -439,6 +453,10 @@
 
     <!-- 右クリックメニュー -->
     <div id="context-menu" class="context-menu">
+      <div class="menu-item" onclick="runEditorCommand('transfer')">
+        Transfer<span class="shortcut" id="menu-transfer-shortcut">Ctrl+Enter</span>
+      </div>
+      <div class="separator"></div>
       <div class="menu-item" onclick="runEditorCommand('cut')">Cut</div>
       <div class="menu-item" onclick="runEditorCommand('copy')">Copy</div>
       <div class="menu-item" onclick="runEditorCommand('paste')">Paste</div>

@@ -294,6 +294,9 @@ OnWebMsg(sender, args) {
             else
                 Settings[k] := v
 
+            ; 設定変更をUIに反映
+            wv.ExecuteScriptAsync("updateUI('" k "', '" v "');")
+
             if (k == "FocusHotkey") {
                 SetFocusHotkey(Settings[k])
                 wv.ExecuteScriptAsync(

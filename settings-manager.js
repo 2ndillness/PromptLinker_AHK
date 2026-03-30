@@ -76,6 +76,10 @@ function initSettings(settings) {
   if (triggerLabel) {
     triggerLabel.innerText = settings.TriggerKey || "Ctrl + Enter";
   }
+  const mShortcut = document.getElementById("menu-transfer-shortcut");
+  if (mShortcut) {
+    mShortcut.innerText = settings.TriggerKey || "Ctrl + Enter";
+  }
   updateFontSize(settings.FontSize);
   document.getElementById("minimize-option-check").checked =
     settings.MinimizeOption;

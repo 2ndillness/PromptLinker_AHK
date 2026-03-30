@@ -81,6 +81,13 @@
   background-color: var(--hover-bg);
 }
 
+.menu-item .shortcut {
+  margin-left: auto;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  padding-left: 4px; /* 10pxから4pxへ圧縮 */
+}
+
 #settings-btn,
 #help-btn {
   width: 26px;
