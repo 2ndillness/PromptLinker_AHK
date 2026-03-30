@@ -13,7 +13,42 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   textArea.focus();
 
-  // セレクトボックスのアニメーション（不要になったため削除）
+  // ツールバーの右クリックで格納
+  const toolbar = document.querySelector(".toolbar");
+  toolbar.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    if (!toolbar.classList.contains("collapsed")) {
+      sendMsg("toggleToolbar");
+      // 格納後に入力フォーカスを維持
+      setTimeout(() => textArea.focus(), 50);
+    }
+  });
+
+  // ツールバーのクリック (隠れている時は再表示)
+  toolbar.addEventListener("click", () => {
+    if (toolbar.classList.contains("collapsed")) {
+      sendMsg("toggleToolbar");
+    }
+  });
+
+  // textarea 上端クリックでツールバー再表示
+  textArea.addEventListener("click", (e) => {
+    if (toolbar.classList.contains("collapsed") && e.offsetY <= 5) {
+      sendMsg("toggleToolbar");
+    }
+  });
+
+  // 上端付近での視覚フィードバック (5pxに戻す)
+  textArea.addEventListener("mousemove", (e) => {
+    if (toolbar.classList.contains("collapsed") && e.offsetY <= 5) {
+      textArea.classList.add("at-top");
+    } else {
+      textArea.classList.remove("at-top");
+    }
+  });
+  textArea.addEventListener("mouseleave", () => {
+    textArea.classList.remove("at-top");
+  });
 });
 
 /**

@@ -44,16 +44,16 @@ FileInstall "assets\css\overlays.css", ResDir "\assets\css\overlays.css", 1
 FileInstall "assets\icons\link.svg", ResDir "\assets\icons\link.svg", 1
 FileInstall "assets\icons\settings.svg", ResDir "\assets\icons\settings.svg", 1
 FileInstall "assets\icons\folder.svg", ResDir "\assets\icons\folder.svg", 1
-FileInstall "assets\icons\arrow-left.svg", 
+FileInstall "assets\icons\arrow-left.svg",
     ResDir "\assets\icons\arrow-left.svg", 1
-FileInstall "assets\icons\folder-open.svg", 
+FileInstall "assets\icons\folder-open.svg",
     ResDir "\assets\icons\folder-open.svg", 1
 FileInstall "assets\icons\save.svg", ResDir "\assets\icons\save.svg", 1
-FileInstall "assets\icons\file-text.svg", 
+FileInstall "assets\icons\file-text.svg",
     ResDir "\assets\icons\file-text.svg", 1
-FileInstall "assets\icons\help-circle.svg", 
+FileInstall "assets\icons\help-circle.svg",
     ResDir "\assets\icons\help-circle.svg", 1
-FileInstall "assets\icons\chevron-down.svg", 
+FileInstall "assets\icons\chevron-down.svg",
     ResDir "\assets\icons\chevron-down.svg", 1
 FileInstall "lib\WebView2\32bit\WebView2Loader.dll",
     ResDir "\WebView2\32bit\WebView2Loader.dll", 1
@@ -306,6 +306,8 @@ OnWebMsg(sender, args) {
         OpenSettings()
     } else if (msg == "viewLatestLog") {
         OpenLatestLog()
+    } else if (msg == "toggleToolbar") {
+        SetToolbarState(!IsToolbarHidden)
     } else if (msg == "startRecording") {
         IsRecordingHotkey := true
     } else if (msg == "stopRecording") {
