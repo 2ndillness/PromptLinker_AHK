@@ -89,7 +89,9 @@ SaveToLog(content, target := "Unknown") {
         try {
             DirCreate(logPath)
         } catch as err {
-            wv.PostWebMessageAsString("notify:error:Failed to create log directory: " . logPath . "`nReason: " . err.Message)
+            wv.PostWebMessageAsString(
+                "notify:error:Failed to create log directory: "
+                . logPath . "`nReason: " . err.Message)
             return
         }
     }
@@ -111,6 +113,8 @@ SaveToLog(content, target := "Unknown") {
     try {
         FileAppend(logEntry, fileName, "UTF-8")
     } catch as err {
-        wv.PostWebMessageAsString("notify:error:Log Write Failed to: " . fileName . "`nReason: " . err.Message)
+        wv.PostWebMessageAsString(
+            "notify:error:Log Write Failed to: "
+            . fileName . "`nReason: " . err.Message)
     }
 }

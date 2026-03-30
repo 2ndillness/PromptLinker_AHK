@@ -200,8 +200,9 @@ Hotkey("^+Tab", (*) => wv.ExecuteScriptAsync("rotateView(-1)"))
 Hotkey("^1", (*) => SwitchTargetSlot(1))
 Hotkey("^2", (*) => SwitchTargetSlot(2))
 Hotkey("^3", (*) => SwitchTargetSlot(3))
-Hotkey("^,", (*) => wv.ExecuteScriptAsync("toggleSetView(true)"))
 
+; ビューダイレクト指定
+Hotkey("^,", (*) => wv.ExecuteScriptAsync("toggleSetView(true)"))
 Hotkey("F1", (*) => wv.ExecuteScriptAsync("toggleHelp()"))
 
 ; フォントサイズ変更

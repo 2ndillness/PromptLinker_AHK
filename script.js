@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 上端付近での視覚フィードバック (5pxに戻す)
+  // 上端付近での視覚フィードバック
   textArea.addEventListener("mousemove", (e) => {
     if (toolbar.classList.contains("collapsed") && e.offsetY <= 5) {
       textArea.classList.add("at-top");
@@ -122,7 +122,7 @@ function showViewByIndex(index) {
 }
 
 /**
- * ヘルプモーダルの表示切り替え
+ * ヘルプ画面表示切り替え
  * @param {boolean|null} forceState 強制指定
  */
 function toggleHelp(forceState = null) {

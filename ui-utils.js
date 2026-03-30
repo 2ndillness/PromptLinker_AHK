@@ -66,7 +66,7 @@ function updateTargetSlots(slots) {
 /**
  * トースト通知の表示
  * @param {string} msg
- * @param {string} type 'info' | 'error' | 'success'
+ * @param {string} type 'info' | 'error' | 'warning' |'success'
  */
 function showToast(msg, type = "info") {
   const container = document.getElementById("toast-container");
