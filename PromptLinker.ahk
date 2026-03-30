@@ -41,12 +41,20 @@ FileInstall "assets\css\forms.css", ResDir "\assets\css\forms.css", 1
 FileInstall "assets\css\overlays.css", ResDir "\assets\css\overlays.css", 1
 
 ; アイコンファイルの展開
-icons := ["link", "settings", "folder", "arrow-left", "folder-open",
-    "save", "file-text", "help-circle", "chevron-down"]
-for i in icons {
-    FileInstall "assets\icons\" i ".svg", ResDir "\assets\icons\" i ".svg", 1
-}
-
+FileInstall "assets\icons\link.svg", ResDir "\assets\icons\link.svg", 1
+FileInstall "assets\icons\settings.svg", ResDir "\assets\icons\settings.svg", 1
+FileInstall "assets\icons\folder.svg", ResDir "\assets\icons\folder.svg", 1
+FileInstall "assets\icons\arrow-left.svg", 
+    ResDir "\assets\icons\arrow-left.svg", 1
+FileInstall "assets\icons\folder-open.svg", 
+    ResDir "\assets\icons\folder-open.svg", 1
+FileInstall "assets\icons\save.svg", ResDir "\assets\icons\save.svg", 1
+FileInstall "assets\icons\file-text.svg", 
+    ResDir "\assets\icons\file-text.svg", 1
+FileInstall "assets\icons\help-circle.svg", 
+    ResDir "\assets\icons\help-circle.svg", 1
+FileInstall "assets\icons\chevron-down.svg", 
+    ResDir "\assets\icons\chevron-down.svg", 1
 FileInstall "lib\WebView2\32bit\WebView2Loader.dll",
     ResDir "\WebView2\32bit\WebView2Loader.dll", 1
 FileInstall "lib\WebView2\64bit\WebView2Loader.dll",
@@ -100,7 +108,10 @@ global IsToolbarHidden := false
 
 ; ターゲットスロット管理
 global CurrentSlotIndex := 1
-global TargetSlots := [{ hwnd: 0, exe: "", action: "" }, { hwnd: 0, exe: "", action: "" }, { hwnd: 0, exe: "", action: "" }
+global TargetSlots := [
+    { hwnd: 0, exe: "", action: "" },
+    { hwnd: 0, exe: "", action: "" },
+    { hwnd: 0, exe: "", action: "" }
 ]
 
 ; 設定マップの初期値
