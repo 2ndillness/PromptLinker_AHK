@@ -84,16 +84,17 @@ OpenLogDir(*) {
  */
 SaveToLog(content, target := "Unknown") {
     global Settings, wv
-    if !DirExist(Settings["LogDir"]) {
+    logPath := Settings["LogDir"]
+    if !DirExist(logPath) {
         try {
-            DirCreate(Settings["LogDir"])
-        } catch {
-            wv.PostWebMessageAsString("notify:error:Failed to create log directory.")
+            DirCreate(logPath)
+        } catch as err {
+            wv.PostWebMessageAsString("notify:error:Failed to create log directory: " . logPath . "`nReason: " . err.Message)
             return
         }
     }
 
-    fileName := Settings["LogDir"]
+    fileName := logPath
         . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".jsonl"
 
     ; JSONオブジェクトの構築
@@ -110,6 +111,6 @@ SaveToLog(content, target := "Unknown") {
     try {
         FileAppend(logEntry, fileName, "UTF-8")
     } catch as err {
-        wv.PostWebMessageAsString("notify:error:Log Write Failed: " err.Message)
+        wv.PostWebMessageAsString("notify:error:Log Write Failed to: " . fileName . "`nReason: " . err.Message)
     }
 }

@@ -177,6 +177,12 @@ MonitorTargetStatus() {
 }
 
 SaveAndExit(*) {
+    global ResDir
     SaveSettings()
+    try {
+        if DirExist(ResDir) {
+            DirDelete(ResDir, 1) ; 再帰的に削除
+        }
+    }
     ExitApp()
 }

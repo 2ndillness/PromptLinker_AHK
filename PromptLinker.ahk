@@ -15,23 +15,16 @@ global ResDir := A_Temp "\PromptLinker_Resources"
 if !DirExist(ResDir) {
     DirCreate(ResDir)
 }
-if !DirExist(ResDir "\assets\css") {
-    DirCreate(ResDir "\assets\css")
-}
-if !DirExist(ResDir "\assets\js") {
-    DirCreate(ResDir "\assets\js")
-}
-if !DirExist(ResDir "\assets\icons") {
-    DirCreate(ResDir "\assets\icons")
-}
-if !DirExist(ResDir "\WebView2\32bit") {
-    DirCreate(ResDir "\WebView2\32bit")
-}
-if !DirExist(ResDir "\WebView2\64bit") {
-    DirCreate(ResDir "\WebView2\64bit")
+
+; サブフォルダの作成
+subDirs := ["assets\css", "assets\js", "assets\icons",
+    "WebView2\32bit", "WebView2\64bit"]
+for d in subDirs {
+    if !DirExist(ResDir "\" d)
+        DirCreate(ResDir "\" d)
 }
 
-; ファイルの展開 (コンパイル時のみEXEに埋め込まれ、実行時に展開される)
+; ファイルの展開 (実行時に展開)
 FileInstall "ui.html", ResDir "\ui.html", 1
 FileInstall "script.js", ResDir "\script.js", 1
 FileInstall "style.css", ResDir "\style.css", 1
@@ -46,24 +39,18 @@ FileInstall "assets\css\theme.css", ResDir "\assets\css\theme.css", 1
 FileInstall "assets\css\layout.css", ResDir "\assets\css\layout.css", 1
 FileInstall "assets\css\forms.css", ResDir "\assets\css\forms.css", 1
 FileInstall "assets\css\overlays.css", ResDir "\assets\css\overlays.css", 1
-FileInstall "assets\css\forms.css", ResDir "\assets\css\forms.css", 1
-FileInstall "assets\css\overlays.css", ResDir "\assets\css\overlays.css", 1
 
 ; アイコンファイルの展開
-FileInstall "assets\icons\link.svg", ResDir "\assets\icons\link.svg", 1
-FileInstall "assets\icons\settings.svg", ResDir "\assets\icons\settings.svg", 1
-FileInstall "assets\icons\folder.svg", ResDir "\assets\icons\folder.svg", 1
-FileInstall "assets\icons\arrow-left.svg", ResDir "\assets\icons\arrow-left.svg", 1
-FileInstall "assets\icons\folder-open.svg", ResDir "\assets\icons\folder-open.svg", 1
-FileInstall "assets\icons\save.svg", ResDir "\assets\icons\save.svg", 1
-FileInstall "assets\icons\file-text.svg", ResDir "\assets\icons\file-text.svg", 1
-FileInstall "assets\icons\help-circle.svg", ResDir "\assets\icons\help-circle.svg", 1
-FileInstall "assets\icons\chevron-down.svg", ResDir "\assets\icons\chevron-down.svg", 1
+icons := ["link", "settings", "folder", "arrow-left", "folder-open",
+    "save", "file-text", "help-circle", "chevron-down"]
+for i in icons {
+    FileInstall "assets\icons\" i ".svg", ResDir "\assets\icons\" i ".svg", 1
+}
 
-FileInstall "lib\WebView2\32bit\WebView2Loader.dll", ResDir
-    . "\WebView2\32bit\WebView2Loader.dll", 1
-FileInstall "lib\WebView2\64bit\WebView2Loader.dll", ResDir
-    . "\WebView2\64bit\WebView2Loader.dll", 1
+FileInstall "lib\WebView2\32bit\WebView2Loader.dll",
+    ResDir "\WebView2\32bit\WebView2Loader.dll", 1
+FileInstall "lib\WebView2\64bit\WebView2Loader.dll",
+    ResDir "\WebView2\64bit\WebView2Loader.dll", 1
 
 ; ==============================================================================
 ; 初期設定・変数定義
@@ -84,29 +71,19 @@ IsScriptDirWritable() {
     }
 }
 
-; 設定ファイルのパス決定ロジック
-; 1. 既に設定ファイルがあるならそれを使う
-; 2. ない場合、実行ファイルと同じ場所が書き込み可能ならそこを使う
-; 3. 書き込み不可（Program Files等）なら AppData を使う
-if FileExist(PortableFile) {
-    global SettingsFile := PortableFile
-    global UsePortable := true
-} else if IsScriptDirWritable() {
+; 設定ファイルのパス決定
+if FileExist(PortableFile) || IsScriptDirWritable() {
     global SettingsFile := PortableFile
     global UsePortable := true
 } else {
     global SettingsFile := DataDir "\settings.json"
     global UsePortable := false
-    ; AppDataディレクトリの作成
     if !DirExist(DataDir) {
         try {
             DirCreate(DataDir)
-        } catch {
-            MsgBox(
-                "データディレクトリの作成に失敗しました。`nパス: " DataDir,
-                "Error",
-                48
-            )
+        } catch as err {
+            MsgBox("データディレクトリ作成失敗: " DataDir "`n" err.Message,
+                "Error", 48)
         }
     }
 }
@@ -142,14 +119,9 @@ global Settings := Map(
 ; ==============================================================================
 ; コールバック関数
 ; ==============================================================================
-
 Gui_Size(thisGui, minMax, width, height) {
     global wvc
-    if (minMax == -1) {
-        return
-    }
-
-    if (IsSet(wvc) && wvc) {
+    if (minMax != -1 && IsSet(wvc) && wvc) {
         wvc.Fill()
     }
 }
@@ -176,21 +148,20 @@ if Settings["SaveLog"] && !DirExist(Settings["LogDir"]) {
         DirCreate(Settings["LogDir"])
     } catch {
         Settings["LogDir"] := DataDir "\logs"
-        if !DirExist(Settings["LogDir"]) {
+        if !DirExist(Settings["LogDir"])
             DirCreate(Settings["LogDir"])
-        }
     }
 }
 
-MainGui := Gui("+AlwaysOnTop +Resize +MinSize500x140", AppName . " - Unlinked")
+MainGui := Gui("+AlwaysOnTop +Resize +MinSize500x140", AppName " - Unlinked")
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
 
-; フォーカス用ホットキーは常にグローバル
+; フォーカス用ホットキー
 SetFocusHotkey(Settings["FocusHotkey"])
 
-; プリセット用ホットキー(このアプリにフォーカスがある時のみ有効に制限)
+; プリセット用ホットキー (当アプリ内のみ)
 HotIf((*) => WinActive("ahk_id " MainGui.Hwnd) && !IsRecordingHotkey)
 Loop 3 {
     Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
@@ -204,9 +175,9 @@ Hotkey("!j", OpenSettings)
 Hotkey("!d", OpenLogDir)
 Hotkey("!o", OpenLatestLog)
 
-; 表示切り替え
-Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))   ; 次のビューへ
-Hotkey("^+Tab", (*) => wv.ExecuteScriptAsync("rotateView(-1)")) ; 前のビューへ
+; 表示切り替え (ビュー巡回)
+Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))
+Hotkey("^+Tab", (*) => wv.ExecuteScriptAsync("rotateView(-1)"))
 
 ; ターゲットスロット切り替え
 Hotkey("^1", (*) => SwitchTargetSlot(1))
@@ -230,28 +201,20 @@ Hotkey("!p", (*) => UpdateTargetAction("Paste Only"))
 Hotkey("!Enter", (*) => UpdateTargetAction("Enter"))
 Hotkey("^!Enter", (*) => UpdateTargetAction("Ctrl + Enter"))
 Hotkey("+!Enter", (*) => UpdateTargetAction("Shift + Enter"))
-HotIf() ; コンテキストをリセット
+HotIf()
 
 try {
-    subDir := (A_PtrSize = 8 ? "64bit" : "32bit")
-    ; 展開したDLLのパスを指定
-    dllPath := ResDir "\WebView2\" subDir "\WebView2Loader.dll"
-
-    if !FileExist(dllPath) {
-        throw Error("WebView2Loader.dll が展開されていません。`nパス: " dllPath)
-    }
-
-    wvc := WebView2.Create(MainGui.Hwnd, , , , , , dllPath)
+    sub := (A_PtrSize = 8 ? "64bit" : "32bit")
+    dll := ResDir "\WebView2\" sub "\WebView2Loader.dll"
+    if !FileExist(dll)
+        throw Error("WebView2Loader.dll 欠損: " dll)
+    wvc := WebView2.Create(MainGui.Hwnd, , , , , , dll)
 } catch as err {
-    MsgBox(
-        "WebView2の初期化に失敗しました。`n" . err.Message,
-        "Error", 4096
-    )
+    MsgBox("WebView2初期化失敗:`n" err.Message, "Error", 4096)
     ExitApp
 }
 
 wv := wvc.CoreWebView2
-; ホワイトフラッシュ対策: WebView2の背景を透明(0)にし、GUIの背景色(1e1e1e)を表示させる
 try {
     wvc.DefaultBackgroundColor := 0
 } catch {
@@ -260,41 +223,35 @@ try {
 wv.Settings.AreDefaultContextMenusEnabled := false
 wv.Settings.IsZoomControlEnabled := false
 
-settingsJson := Jxon_Dump(Settings)
 wv.AddScriptToExecuteOnDocumentCreatedAsync(
-    "window.ahkSettings = " . settingsJson . ";"
+    "window.ahkSettings = " Jxon_Dump(Settings) ";"
 )
-; 展開した一時フォルダ内のHTMLをロード
-htmlPath := "file:///" . StrReplace(ResDir, "\", "/") . "/ui.html"
+
+; 展開フォルダ内のHTMLをロード
+uPath := "file:///" StrReplace(ResDir, "\", "/") "/ui.html"
 wv.add_WebMessageReceived(OnWebMsg)
 wv.add_PermissionRequested(OnPermissionRequested)
 wv.add_NavigationCompleted(OnNavigationCompleted)
+wv.Navigate(uPath)
 
-wv.Navigate(htmlPath)
-
+; ダークモード適用
 DwmSetDarkMode(hwnd) {
     val := Buffer(4, 0)
     NumPut("Int", 1, val)
-    DllCall("Dwmapi\DwmSetWindowAttribute"
-        , "Ptr", hwnd, "Int", 20
-        , "Ptr", val, "Int", 4)
+    DllCall("Dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "Int", 20,
+        "Ptr", val, "Int", 4)
 }
-
-; GUIを表示する前にダークモード属性を適用
 DwmSetDarkMode(MainGui.Hwnd)
 
-; 画面を表示
 MainGui.Show("w500 h400")
 wvc.IsVisible := true
 wvc.Fill()
+
 ; ==============================================================================
 ; メインスレッド用関数
 ; ==============================================================================
-
 OnNavigationCompleted(sender, args) {
-    ; 初期スロットおよびアクション情報の同期
     SyncSlotsToJS()
-    ; ターゲット監視タイマー開始 (1秒ごと)
     SetTimer(MonitorTargetStatus, 1000)
 }
 
@@ -302,38 +259,31 @@ OnPermissionRequested(sender, args) {
     args.State := 1
     args.Handled := 1
 }
+
 OnWebMsg(sender, args) {
     global IsRecordingHotkey
     msg := args.TryGetWebMessageAsString()
 
     if (msg == "toggleLink") {
-        if (IsLinking) {
-            CancelLinking()
-        } else {
-            StartLinking()
-        }
+        (IsLinking ? CancelLinking() : StartLinking())
     } else if (SubStr(msg, 1, 9) == "transfer:") {
         ExecuteTransfer(SubStr(msg, 10))
     } else if (SubStr(msg, 1, 14) == "updateSetting:") {
-        parts := StrSplit(msg, ":")
-        if (parts.Length >= 3) {
-            key := parts[2], val := parts[3]
-            if (key == "SaveLog") {
-                Settings[key] := (val == "1")
-            } else if (key == "MinimizeOption") {
-                Settings[key] := (val == "1")
-            } else {
-                Settings[key] := val
-            }
+        pts := StrSplit(msg, ":")
+        if (pts.Length >= 3) {
+            k := pts[2], v := pts[3]
+            if (k == "SaveLog" || k == "MinimizeOption")
+                Settings[k] := (v == "1")
+            else
+                Settings[k] := v
 
-            ; ホットキーの設定変更であれば即時反映
-            if (key == "FocusHotkey") {
-                SetFocusHotkey(Settings[key])
-                ; JS側の同期を行いロールバックを防ぐ
-                syncScript := "window.ahkSettings.FocusHotkey = '" Settings[key] "';"
-                wv.ExecuteScriptAsync(syncScript)
+            if (k == "FocusHotkey") {
+                SetFocusHotkey(Settings[k])
+                wv.ExecuteScriptAsync(
+                    "window.ahkSettings.FocusHotkey = '" Settings[k] "';"
+                )
             }
-            SaveSettings() ; 即時保存を実行
+            SaveSettings()
         }
     } else if (SubStr(msg, 1, 15) == "changeFontSize:") {
         ChangeFontSize(Integer(SubStr(msg, 16)))
