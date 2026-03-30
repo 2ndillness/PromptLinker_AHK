@@ -29,11 +29,12 @@
   min-width: 142px;
 }
 .target-item {
-  gap: 8px;
+  gap: 6px;
+  padding-left: 9px;
 }
 .target-item .status-dot {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background-color: transparent;
 }
@@ -44,7 +45,7 @@
 .target-item .slot-num {
   color: var(--text-muted);
   font-size: var(--font-size-xs);
-  min-width: 12px;
+  min-width: 8px;
 }
 .target-item .exe-name {
   flex-grow: 1;
@@ -88,7 +89,7 @@
 
 #settings-view,
 #help-view {
-  font-size: var(--font-size-main);
+  font-size: 14px;
 }
 
 #trigger-menu {

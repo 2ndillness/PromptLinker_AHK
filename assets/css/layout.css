@@ -85,9 +85,8 @@
 }
 .help-grid {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 8px 15px;
-  font-size: 0.85em;
+  grid-template-columns: 200px 1fr;
+  gap: 4px;
   align-items: center;
 }
 .help-item kbd {

@@ -11,6 +11,11 @@
   height: 12px;
 }
 
+/* 記号 */
+.symbol {
+  font-size: 18px;
+}
+
 button {
   background-color: var(--input-bg);
   color: var(--text-color);
