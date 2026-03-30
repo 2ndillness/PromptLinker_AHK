@@ -177,12 +177,14 @@ MonitorTargetStatus() {
 }
 
 SaveAndExit(*) {
-    global ResDir
+    global MainGui, wvc, wv
+    ; ウィンドウを即座に隠してユーザーに終了を印象付ける
+    MainGui.Hide()
     SaveSettings()
-    try {
-        if DirExist(ResDir) {
-            DirDelete(ResDir, 1) ; 再帰的に削除
-        }
-    }
+    
+    ; WebView2リソースの解放
+    wv := ""
+    wvc := ""
+    
     ExitApp()
 }

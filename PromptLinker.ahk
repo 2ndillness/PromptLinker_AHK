@@ -12,6 +12,12 @@
 ; リソースの展開処理 (単一EXE化用)
 ; ==============================================================================
 global ResDir := A_Temp "\PromptLinker_Resources"
+; 古いファイルがあれば一旦削除（終了時のディレイ解消のため、起動時に掃除を行う）
+if DirExist(ResDir) {
+    try {
+        DirDelete(ResDir, 1)
+    }
+}
 if !DirExist(ResDir) {
     DirCreate(ResDir)
 }
