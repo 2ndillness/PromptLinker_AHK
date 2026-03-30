@@ -29,20 +29,34 @@ SelectLogDir(*) {
 }
 
 /**
- * 本日のログファイルを外部エディタで開く
+ * 最新のログファイルを外部エディタで開く
  */
 OpenLatestLog(*) {
     global Settings, wv
-    logFile := Settings["LogDir"]
-        . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".jsonl"
-    if FileExist(logFile) {
+    logDir := Settings["LogDir"]
+    latestFile := ""
+
+    if !DirExist(logDir) {
+        wv.PostWebMessageAsString("notify:error:Log directory not found.")
+        return
+    }
+
+    ; history_YYYY-MM-DD.jsonl の形式なので名前順でループして最新を探す
+    Loop Files, logDir "\history_*.jsonl" {
+        if (latestFile == "" || StrCompare(A_LoopFileName, latestFile) > 0) {
+            latestFile := A_LoopFileName
+        }
+    }
+
+    if (latestFile != "") {
+        fullPath := logDir "\" latestFile
         try {
-            Run(logFile)
+            Run(fullPath)
         } catch {
             wv.PostWebMessageAsString("notify:error:Failed to open log file.")
         }
     } else {
-        wv.PostWebMessageAsString("notify:error:No log file found for today.")
+        wv.PostWebMessageAsString("notify:info:No log files found.")
     }
 }
 

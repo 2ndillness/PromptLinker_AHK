@@ -196,14 +196,13 @@ Loop 3 {
     Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
     Hotkey("+!" A_Index, (hk) => SaveWindowPreset(Integer(SubStr(hk, -1))))
 }
-Hotkey("!Up", (*) => SetToolbarState(true))
-Hotkey("!Down", (*) => SetToolbarState(false))
+Hotkey("!t", (*) => wv.PostWebMessageAsString("toggleToolbar"))
 
 ; アプリ操作用ショートカット
 Hotkey("!l", (*) => (IsLinking ? CancelLinking() : StartLinking()))
 Hotkey("!j", OpenSettings)
-Hotkey("!o", OpenLogDir)
-Hotkey("!v", OpenLatestLog)
+Hotkey("!d", OpenLogDir)
+Hotkey("!o", OpenLatestLog)
 
 ; 表示切り替え
 Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))   ; 次のビューへ
@@ -224,7 +223,7 @@ Hotkey("!=", (*) => ChangeFontSize(1))
 ; 設定トグル
 Hotkey("!s", (*) => ToggleSetting("SaveLog"))
 Hotkey("!m", (*) => ToggleSetting("MinimizeOption"))
-Hotkey("!t", ToggleTriggerKey)
+Hotkey("!k", ToggleTriggerKey)
 
 ; TargetAction 変更
 Hotkey("!p", (*) => UpdateTargetAction("Paste Only"))

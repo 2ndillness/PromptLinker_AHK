@@ -7,11 +7,6 @@
  * 将来的にキーを増やす場合は、この配列に文字列を追加してください。
  */
 const HOTKEY_BLACKLIST = [
-  // アプリ専用 (Ctrl+1~3: ターゲット切替, Ctrl+,: 設定)
-  "^1",
-  "^2",
-  "^3",
-  "^,",
   // 一般的なアプリ操作 (Ctrl+C, V, A, Z, S, Fなど)
   "^c",
   "^v",
@@ -36,19 +31,18 @@ const HOTKEY_BLACKLIST = [
   "!tab",
   "!f4",
   // 当アプリで使用済みのキー
-  // 送信トリガー
   "^Enter",
   "+Enter",
-  // プリセット・ツールバー (Alt+1-3, Shift+Alt+1-3, Alt+Up/Down)
+  "^1",
+  "^2",
+  "^3",
+  "^,",
   "!1",
   "!2",
   "!3",
   "+!1",
   "+!2",
   "+!3",
-  "!Up",
-  "!Down",
-  // 新規追加予定のショートカット
   "!l",
   "!Enter",
   "^!Enter",
@@ -56,19 +50,17 @@ const HOTKEY_BLACKLIST = [
   "!p",
   "^tab",
   "^+tab",
-  "^1",
-  "^2",
-  "^3",
   "f1",
   "!j",
   "!t",
+  "!k",
+  "!d",
   "!-",
   "!=",
   "!+",
   "!m",
   "!s",
   "!o",
-  "!v",
 ];
 let recordingTimeout = null;
 
@@ -149,7 +141,7 @@ function resetFocusHotkey() {
     const formatted = formatHotkey(defaultHotkey);
     hotkeyInput.value = formatted;
     sendMsg("updateSetting:FocusHotkey:" + defaultHotkey);
-    showToast("Shortcut reset to default: " + formatted, "success");
+    showToast("Hotkey reset to default: " + formatted, "success");
   }
 }
 

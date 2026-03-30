@@ -126,6 +126,11 @@
   gap: 15px;
 }
 
+#font-size-val {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 /** ツールバーのボタン群レイアウト */
 /* プリセットボタンセット */
 .main-presets {
