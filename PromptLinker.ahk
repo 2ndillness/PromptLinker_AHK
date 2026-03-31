@@ -172,8 +172,9 @@ if Settings["SaveLog"] && !DirExist(Settings["LogDir"]) {
     }
 }
 
-MainGui := Gui("+AlwaysOnTop +Resize +MinSize500x140",
-    AppName " - Unlinked")
+MainGui := Gui("+AlwaysOnTop +Resize +MinSize500x140"
+    , AppName " - Unlinked")
+
 
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
