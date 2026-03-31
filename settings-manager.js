@@ -4,7 +4,7 @@
 
 /**
  * 使用を制限するホットキーのリスト (AHK形式)
- * 将来的にキーを増やす場合は、この配列に文字列を追加してください。
+ * 将来的にキーを増やす場合は、この配列に文字列を追加
  */
 const HOTKEY_BLACKLIST = [
   // 一般的なアプリ操作 (Ctrl+C, V, A, Z, S, Fなど)
@@ -46,7 +46,6 @@ const HOTKEY_BLACKLIST = [
   "!1",
   "!2",
   "!3",
-
   "+!1",
   "+!2",
   "+!3",
@@ -70,7 +69,6 @@ const HOTKEY_BLACKLIST = [
   "!m",
   "!s",
   "!o",
-
 ];
 let recordingTimeout = null;
 

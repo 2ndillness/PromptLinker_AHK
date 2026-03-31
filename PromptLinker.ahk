@@ -118,7 +118,10 @@ global IsToolbarHidden := false
 
 ; ターゲットスロット管理
 global CurrentSlotIndex := 1
-global TargetSlots := [{ hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }
+global TargetSlots := [
+    { hwnd: 0, exe: "", action: "", locked: false },
+    { hwnd: 0, exe: "", action: "", locked: false },
+    { hwnd: 0, exe: "", action: "", locked: false }
 ]
 
 
