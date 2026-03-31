@@ -21,12 +21,11 @@ SetFocusHotkey(newKey) {
             Hotkey(newKey, FocusApp, "On")
             CurrentFocusHotkey := newKey
         } catch as err {
-            wv.PostWebMessageAsString(
-                "notify:error:Hotkey Registration Failed: " . newKey
-            )
+            wv.PostWebMessageAsString("notify:error:Hotkey Registration Failed: " newKey)
             CurrentFocusHotkey := ""
         }
     }
+
 }
 
 

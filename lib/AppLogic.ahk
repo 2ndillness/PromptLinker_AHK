@@ -44,10 +44,11 @@ ExecuteTransfer(text) {
         WinMinimize("ahk_id " . MainGui.Hwnd)
     } else {
         WinActivate("ahk_id " . MainGui.Hwnd)
-        wv.ExecuteScriptAsync(
-            "document.getElementById('main-textarea').focus();")
+        wv.ExecuteScriptAsync("document.getElementById('main-textarea')"
+            . ".focus();")
     }
 }
+
 
 
 /**
@@ -69,9 +70,10 @@ AddTargetSlot(hwnd, exe, action) {
     ; 1. 空きスロット（かつアンロック）を探す
     added := false
     for index, slot in TargetSlots {
-        if (!slot.locked && (slot.hwnd == 0 ||
-            !WinExist("ahk_id " . slot.hwnd))) {
+        if (!slot.locked && (slot.hwnd == 0
+            || !WinExist("ahk_id " . slot.hwnd))) {
             TargetSlots[index].hwnd := hwnd
+
             TargetSlots[index].exe := exe
             TargetSlots[index].action := action
 
@@ -91,6 +93,7 @@ AddTargetSlot(hwnd, exe, action) {
                     hwnd: hwnd, exe: exe, action: action, locked: false
                 }
                 CurrentSlotIndex := checkIdx
+
                 added := true
                 break
             }
@@ -119,17 +122,19 @@ SwitchTargetSlot(index) {
 
     slot := TargetSlots[index]
     if (slot.hwnd == 0) {
-        wv.PostWebMessageAsString(
-            "notify:error:Slot " . index . " is empty")
+        wv.PostWebMessageAsString("notify:error:Slot "
+            . index . " is empty")
         return
     }
 
 
+
     if (!WinExist("ahk_id " . slot.hwnd)) {
-        wv.PostWebMessageAsString(
-            "notify:error:Target window no longer exists")
+        wv.PostWebMessageAsString("notify:error:Target window "
+            . "no longer exists")
         slot.hwnd := 0
         slot.exe := ""
+
 
         SyncSlotsToJS()
         return
@@ -166,9 +171,10 @@ ToggleSlotLock(index) {
     slot.locked := !slot.locked
     SyncSlotsToJS()
     status := slot.locked ? "Locked" : "Unlocked"
-    wv.PostWebMessageAsString(
-        "notify:success:Slot " . index . " " . status)
+    wv.PostWebMessageAsString("notify:success:Slot "
+        . index . " " . status)
 }
+
 
 
 /**
@@ -182,10 +188,11 @@ ClearTargetSlot(index) {
 
     slot := TargetSlots[index]
     if (slot.hwnd == 0) {
-        wv.PostWebMessageAsString(
-            "notify:warning:Slot " . index . " is already empty")
+        wv.PostWebMessageAsString("notify:warning:Slot "
+            . index . " is already empty")
         return
     }
+
 
 
     ; ロックされている場合はクリアさせない
@@ -234,6 +241,7 @@ SyncSlotsToJS() {
         locked := slot.locked ? "true" : "false"
         jsonStr .= '{"index":' index ',"exe":"' exeName
             . '","active":' active ',"locked":' locked '}'
+
         if (index < 3)
             jsonStr .= ","
 

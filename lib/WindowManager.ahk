@@ -14,6 +14,7 @@ StartLinking() {
 }
 
 
+
 /**
  * リンク処理を中断
  * @param {string} msg 通知メッセージ
@@ -38,19 +39,19 @@ CheckActiveWindow() {
         SetTimer(CheckActiveWindow, 0)
         IsLinking := false
         TargetHWND := currentHWND
-        TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
-        MainGui.Title := AppName . " - Linked: " . TargetProcess
+        TargetProcess := WinGetProcessName("ahk_id " TargetHWND)
+        MainGui.Title := AppName " - Linked: " TargetProcess
 
 
         ; スロットに追加
-        AddTargetSlot(TargetHWND, TargetProcess,
-            Settings["TargetAction"])
+        AddTargetSlot(TargetHWND, TargetProcess
+            , Settings["TargetAction"])
 
-        wv.PostWebMessageAsString("notify:success:Linked: " . TargetProcess)
+        wv.PostWebMessageAsString("notify:success:Linked: " TargetProcess)
         wv.ExecuteScriptAsync("updateLinkButton('Relink'); ")
-        WinActivate("ahk_id " . MainGui.Hwnd)
-        wv.ExecuteScriptAsync(
-            "document.getElementById('main-textarea').focus();")
+        WinActivate("ahk_id " MainGui.Hwnd)
+        wv.ExecuteScriptAsync("document.getElementById('main-textarea')"
+            . ".focus();")
     } else if (A_TickCount - StartTime > 10000) {
 
         CancelLinking("Timeout")
@@ -96,9 +97,10 @@ ApplyWindowPreset(index) {
     MainGui.Move(preset["x"], preset["y"], preset["w"], preset["h"])
     if (preset.Has("isToolbarHidden")) {
         IsToolbarHidden := preset["isToolbarHidden"]
-        wv.PostWebMessageAsString(
-            IsToolbarHidden ? "hideToolbar" : "showToolbar")
+        wv.PostWebMessageAsString(IsToolbarHidden ? "hideToolbar" 
+            : "showToolbar")
     }
+
 
 
     ; ターゲットアクションの復元
@@ -108,9 +110,10 @@ ApplyWindowPreset(index) {
 
     wv.PostWebMessageAsString("notify:info:Preset " . index . " Applied")
     WinActivate("ahk_id " . MainGui.Hwnd)
-    wv.ExecuteScriptAsync(
-        "document.getElementById('main-textarea').focus();")
+    wv.ExecuteScriptAsync("document.getElementById('main-textarea')"
+        . ".focus();")
 }
+
 
 
 /**
