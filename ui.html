@@ -329,7 +329,7 @@
             />
             Back
           </button>
-          <h3>Hot Keys</h3>
+          <h3>Help</h3>
         </div>
 
         <div class="help-content">
@@ -361,6 +361,17 @@
               </div>
               <div>Switch Target Slot</div>
 
+              <div class="help-item">
+                <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
+              <div>Lock / Unlock Slot (Toggle)</div>
+
+              <div class="help-item">
+                <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
+              <div>Clear Slot</div>
+
+
               <div class="help-item"><kbd>Ctrl</kbd>+<kbd>,</kbd></div>
               <div>Show Settings View</div>
 
@@ -376,7 +387,7 @@
             <h4>Core Actions</h4>
             <div class="help-grid">
               <div class="help-item"><kbd>Alt</kbd>+<kbd>L</kbd></div>
-              <div>Link / Unlink Target Window</div>
+              <div>Link / Cancel Target Window</div>
 
               <div class="help-item">
                 <kbd>Ctrl/Shift</kbd>+<kbd>Enter</kbd>
@@ -426,6 +437,9 @@
             <div class="help-grid">
               <div class="help-item"><kbd>Alt</kbd>+<kbd>J</kbd></div>
               <div>Open settings.json</div>
+              
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>R</kbd></div>
+              <div>Reset Focus Hotkey to Default</div>
 
               <div class="help-item"><kbd>Alt</kbd>+<kbd>S</kbd></div>
               <div>Toggle Save Log</div>
@@ -444,8 +458,12 @@
               <div class="help-item"><kbd>Alt</kbd>+<kbd>D</kbd></div>
               <div>Open Log Directory</div>
 
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>B</kbd></div>
+              <div>Browse Log Directory (Select Folder)</div>
+
               <div class="help-item"><kbd>Alt</kbd>+<kbd>O</kbd></div>
               <div>Open Latest Log</div>
+
             </div>
           </div>
         </div>
@@ -472,11 +490,17 @@
 
     <!-- スロット用右クリックメニュー -->
     <div id="slot-context-menu" class="context-menu">
-      <div id="menu-lock-btn" class="menu-item" onclick="handleSlotAction('lock')">
+      <div
+        id="menu-lock-btn"
+        class="menu-item"
+        onclick="handleSlotAction('lock')"
+      >
         Lock / Unlock
       </div>
       <div class="separator"></div>
-      <div class="menu-item" onclick="handleSlotAction('clear')">Clear Slot</div>
+      <div class="menu-item" onclick="handleSlotAction('clear')">
+        Clear Slot
+      </div>
     </div>
 
     <script src="assets/js/ui-utils.js"></script>

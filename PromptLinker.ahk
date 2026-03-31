@@ -114,10 +114,7 @@ global IsToolbarHidden := false
 
 ; ターゲットスロット管理
 global CurrentSlotIndex := 1
-global TargetSlots := [
-    { hwnd: 0, exe: "", action: "", locked: false },
-    { hwnd: 0, exe: "", action: "", locked: false },
-    { hwnd: 0, exe: "", action: "", locked: false }
+global TargetSlots := [{ hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }
 ]
 
 ; 設定マップの初期値
@@ -188,11 +185,18 @@ Hotkey("!t", (*) => wv.PostWebMessageAsString("toggleToolbar"))
 
 ; アプリ操作用ショートカット
 Hotkey("!l", (*) => (IsLinking ? CancelLinking() : StartLinking()))
-Hotkey("!+l", (*) => ToggleSlotLock(CurrentSlotIndex))
-Hotkey("!+Del", (*) => ClearTargetSlot(CurrentSlotIndex))
+Loop 3 {
+    Hotkey("^+" . A_Index, (hk) => ToggleSlotLock(Integer(SubStr(hk, -1))))
+    Hotkey("^!" . A_Index, (hk) => ClearTargetSlot(Integer(SubStr(hk, -1))))
+}
+
+
 Hotkey("!j", OpenSettings)
+Hotkey("!r", (*) => wv.ExecuteScriptAsync("resetFocusHotkey();"))
 Hotkey("!d", OpenLogDir)
+Hotkey("!b", SelectLogDir)
 Hotkey("!o", OpenLatestLog)
+
 
 ; 表示切り替え (ビュー巡回)
 Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))
