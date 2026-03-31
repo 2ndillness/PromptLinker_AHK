@@ -64,21 +64,37 @@ AddTargetSlot(hwnd, exe, action) {
         }
     }
 
-    ; 空きスロットを探す
+    ; 1. 空きスロット（かつアンロック）を探す
     added := false
     for index, slot in TargetSlots {
-        if (slot.hwnd == 0 || !WinExist("ahk_id " . slot.hwnd)) {
-            TargetSlots[index] := {hwnd: hwnd, exe: exe, action: action}
+        if (!slot.locked && (slot.hwnd == 0 || !WinExist("ahk_id " . slot.hwnd))) {
+            TargetSlots[index].hwnd := hwnd
+            TargetSlots[index].exe := exe
+            TargetSlots[index].action := action
             CurrentSlotIndex := index
             added := true
             break
         }
     }
 
-    ; 空きがなければ現在の次（FIFO風）に上書き
+    ; 2. 空きがなければ「現在の次」から順にアンロックなスロットを探して上書き
     if (!added) {
-        CurrentSlotIndex := Mod(CurrentSlotIndex, 3) + 1
-        TargetSlots[CurrentSlotIndex] := {hwnd: hwnd, exe: exe, action: action}
+        checkIdx := CurrentSlotIndex
+        Loop 3 {
+            checkIdx := Mod(checkIdx, 3) + 1
+            if (!TargetSlots[checkIdx].locked) {
+                TargetSlots[checkIdx] := {hwnd: hwnd, exe: exe, action: action, locked: false}
+                CurrentSlotIndex := checkIdx
+                added := true
+                break
+            }
+        }
+    }
+
+    ; 3. 全てロックされている場合
+    if (!added) {
+        wv.PostWebMessageAsString("notify:warning:All slots are locked")
+        return
     }
 
     SyncSlotsToJS()
@@ -122,6 +138,63 @@ SwitchTargetSlot(index) {
 }
 
 /**
+ * スロットのロック状態を切り替える
+ */
+ToggleSlotLock(index) {
+    global TargetSlots, wv
+    if (index < 1 || index > 3) {
+        return
+    }
+    
+    slot := TargetSlots[index]
+    if (slot.hwnd == 0) {
+        wv.PostWebMessageAsString("notify:warning:Slot " . index . " is empty")
+        return
+    }
+
+    slot.locked := !slot.locked
+    SyncSlotsToJS()
+    status := slot.locked ? "Locked" : "Unlocked"
+    wv.PostWebMessageAsString("notify:success:Slot " . index . " " . status)
+}
+
+/**
+ * スロットをクリア（アンリンク）する
+ */
+ClearTargetSlot(index) {
+    global TargetSlots, CurrentSlotIndex, TargetHWND, TargetProcess, MainGui, AppName, wv
+    if (index < 1 || index > 3) {
+        return
+    }
+
+    slot := TargetSlots[index]
+    if (slot.hwnd == 0) {
+        wv.PostWebMessageAsString("notify:warning:Slot " . index . " is already empty")
+        return
+    }
+
+    ; ロックされている場合はクリアさせない（ユーザーに解除を促す）
+    if (slot.locked) {
+        wv.PostWebMessageAsString("notify:warning:Unlock slot " . index . " first")
+        return
+    }
+
+    slot.hwnd := 0
+    slot.exe := ""
+    
+    ; 現在選択中のスロットをクリアした場合の処理
+    if (index == CurrentSlotIndex) {
+        TargetHWND := 0
+        TargetProcess := ""
+        MainGui.Title := AppName . " - Unlinked"
+        wv.ExecuteScriptAsync("updateLinkButton('Link Target');")
+    }
+
+    SyncSlotsToJS()
+    wv.PostWebMessageAsString("notify:success:Slot " . index . " Cleared")
+}
+
+/**
  * 現在のスロットのアクションを更新
  */
 UpdateSlotAction(action) {
@@ -141,7 +214,8 @@ SyncSlotsToJS() {
     for index, slot in TargetSlots {
         exeName := slot.exe ? slot.exe : "(Empty)"
         active := (index == CurrentSlotIndex) ? "true" : "false"
-        jsonStr .= '{"index":' index ',"exe":"' exeName '","active":' active '}'
+        locked := slot.locked ? "true" : "false"
+        jsonStr .= '{"index":' index ',"exe":"' exeName '","active":' active ',"locked":' locked '}'
         if (index < 3)
             jsonStr .= ","
     }

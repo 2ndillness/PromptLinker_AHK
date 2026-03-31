@@ -305,6 +305,44 @@ window.chrome.webview.addEventListener("message", (event) => {
 });
 
 /**
+ * スロット用コンテキストメニューの制御
+ */
+let currentContextSlot = null;
+
+function showSlotContextMenu(e, index) {
+  e.preventDefault();
+  e.stopPropagation();
+  currentContextSlot = index;
+
+  const menu = document.getElementById("slot-context-menu");
+  menu.style.display = "block";
+  menu.style.left = e.clientX + "px";
+  menu.style.top = e.clientY + "px";
+
+  // 他のメニューを閉じる
+  document.getElementById("context-menu").style.display = "none";
+}
+
+function handleSlotAction(action) {
+  if (currentContextSlot === null) return;
+
+  if (action === "lock") {
+    sendMsg("toggleSlotLock:" + currentContextSlot);
+  } else if (action === "clear") {
+    sendMsg("clearTargetSlot:" + currentContextSlot);
+  }
+
+  document.getElementById("slot-context-menu").style.display = "none";
+  currentContextSlot = null;
+}
+
+// 共通のクリック処理でメニューを閉じる
+window.addEventListener("click", () => {
+  const slotMenu = document.getElementById("slot-context-menu");
+  if (slotMenu) slotMenu.style.display = "none";
+});
+
+/**
  * AHK側からの操作をUIコンポーネントに反映させる
  */
 function updateUI(key, value) {

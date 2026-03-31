@@ -57,10 +57,10 @@ FileInstall "assets\icons\folder-open.svg",
 FileInstall "assets\icons\save.svg", ResDir "\assets\icons\save.svg", 1
 FileInstall "assets\icons\file-text.svg",
     ResDir "\assets\icons\file-text.svg", 1
-FileInstall "assets\icons\help-circle.svg",
-    ResDir "\assets\icons\help-circle.svg", 1
+FileInstall "assets\icons\help-circle.svg", ResDir "\assets\icons\help-circle.svg", 1
 FileInstall "assets\icons\chevron-down.svg",
     ResDir "\assets\icons\chevron-down.svg", 1
+FileInstall "assets\icons\lock.svg", ResDir "\assets\icons\lock.svg", 1
 FileInstall "lib\WebView2\32bit\WebView2Loader.dll",
     ResDir "\WebView2\32bit\WebView2Loader.dll", 1
 FileInstall "lib\WebView2\64bit\WebView2Loader.dll",
@@ -115,9 +115,9 @@ global IsToolbarHidden := false
 ; ターゲットスロット管理
 global CurrentSlotIndex := 1
 global TargetSlots := [
-    { hwnd: 0, exe: "", action: "" },
-    { hwnd: 0, exe: "", action: "" },
-    { hwnd: 0, exe: "", action: "" }
+    { hwnd: 0, exe: "", action: "", locked: false },
+    { hwnd: 0, exe: "", action: "", locked: false },
+    { hwnd: 0, exe: "", action: "", locked: false }
 ]
 
 ; 設定マップの初期値
@@ -188,6 +188,8 @@ Hotkey("!t", (*) => wv.PostWebMessageAsString("toggleToolbar"))
 
 ; アプリ操作用ショートカット
 Hotkey("!l", (*) => (IsLinking ? CancelLinking() : StartLinking()))
+Hotkey("!+l", (*) => ToggleSlotLock(CurrentSlotIndex))
+Hotkey("!+Del", (*) => ClearTargetSlot(CurrentSlotIndex))
 Hotkey("!j", OpenSettings)
 Hotkey("!d", OpenLogDir)
 Hotkey("!o", OpenLatestLog)
@@ -328,5 +330,9 @@ OnWebMsg(sender, args) {
         SaveWindowPreset(Integer(SubStr(msg, 12)))
     } else if (SubStr(msg, 1, 17) == "switchTargetSlot:") {
         SwitchTargetSlot(Integer(SubStr(msg, 18)))
+    } else if (SubStr(msg, 1, 15) == "toggleSlotLock:") {
+        ToggleSlotLock(Integer(SubStr(msg, 16)))
+    } else if (SubStr(msg, 1, 16) == "clearTargetSlot:") {
+        ClearTargetSlot(Integer(SubStr(msg, 17)))
     }
 }

@@ -50,10 +50,13 @@ function updateTargetSlots(slots) {
       (slot.active ? " active" : "") +
       (isEmpty ? " is-empty" : "");
 
-    item.onclick = (e) => {      e.stopPropagation();
+    item.onclick = (e) => {
+      e.stopPropagation();
       sendMsg("switchTargetSlot:" + slot.index);
       menu.classList.add("hidden");
     };
+
+    item.oncontextmenu = (e) => showSlotContextMenu(e, slot.index);
 
     const dot = document.createElement("span");
     dot.className = "status-dot";
@@ -69,6 +72,14 @@ function updateTargetSlots(slots) {
     item.appendChild(dot);
     item.appendChild(num);
     item.appendChild(name);
+
+    if (slot.locked) {
+      const lock = document.createElement("img");
+      lock.src = "assets/icons/lock.svg";
+      lock.className = "lock-icon";
+      item.appendChild(lock);
+    }
+
     menu.appendChild(item);
   });
 }

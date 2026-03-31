@@ -470,6 +470,15 @@
     </div>
     <div id="toast-container" class="toast-container"></div>
 
+    <!-- スロット用右クリックメニュー -->
+    <div id="slot-context-menu" class="context-menu">
+      <div id="menu-lock-btn" class="menu-item" onclick="handleSlotAction('lock')">
+        Lock / Unlock
+      </div>
+      <div class="separator"></div>
+      <div class="menu-item" onclick="handleSlotAction('clear')">Clear Slot</div>
+    </div>
+
     <script src="assets/js/ui-utils.js"></script>
     <script src="assets/js/settings-manager.js"></script>
     <script src="assets/js/editor-manager.js"></script>
