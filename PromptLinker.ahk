@@ -12,8 +12,9 @@
 ; リソースの展開処理 (単一EXE化用)
 ; ==============================================================================
 global ResDir := A_Temp "\PromptLinker_Resources"
-; 古いファイルがあれば一旦削除（終了時のディレイ解消のため、起動時に掃除を行う）
+; 古いファイルがあれば一旦削除（起動時に掃除を行う）
 if DirExist(ResDir) {
+
     try {
         DirDelete(ResDir, 1)
     }
@@ -57,7 +58,9 @@ FileInstall "assets\icons\folder-open.svg",
 FileInstall "assets\icons\save.svg", ResDir "\assets\icons\save.svg", 1
 FileInstall "assets\icons\file-text.svg",
     ResDir "\assets\icons\file-text.svg", 1
-FileInstall "assets\icons\help-circle.svg", ResDir "\assets\icons\help-circle.svg", 1
+FileInstall "assets\icons\help-circle.svg",
+    ResDir "\assets\icons\help-circle.svg", 1
+
 FileInstall "assets\icons\chevron-down.svg",
     ResDir "\assets\icons\chevron-down.svg", 1
 FileInstall "assets\icons\lock.svg", ResDir "\assets\icons\lock.svg", 1
@@ -102,6 +105,7 @@ if FileExist(PortableFile) || IsScriptDirWritable() {
     }
 }
 
+
 global TargetHWND := 0
 global IsLinking := false
 global IsRecordingHotkey := false
@@ -116,6 +120,7 @@ global IsToolbarHidden := false
 global CurrentSlotIndex := 1
 global TargetSlots := [{ hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }
 ]
+
 
 ; 設定マップの初期値
 global Settings := Map(
@@ -167,7 +172,9 @@ if Settings["SaveLog"] && !DirExist(Settings["LogDir"]) {
     }
 }
 
-MainGui := Gui("+AlwaysOnTop +Resize +MinSize500x140", AppName " - Unlinked")
+MainGui := Gui("+AlwaysOnTop +Resize +MinSize500x140",
+    AppName " - Unlinked")
+
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
@@ -186,8 +193,10 @@ Hotkey("!t", (*) => wv.PostWebMessageAsString("toggleToolbar"))
 ; アプリ操作用ショートカット
 Hotkey("!l", (*) => (IsLinking ? CancelLinking() : StartLinking()))
 Loop 3 {
-    Hotkey("^+" . A_Index, (hk) => ToggleSlotLock(Integer(SubStr(hk, -1))))
-    Hotkey("^!" . A_Index, (hk) => ClearTargetSlot(Integer(SubStr(hk, -1))))
+    h := (hk) => ToggleSlotLock(Integer(SubStr(hk, -1)))
+    Hotkey("^+" . A_Index, h)
+    c := (hk) => ClearTargetSlot(Integer(SubStr(hk, -1)))
+    Hotkey("^!" . A_Index, c)
 }
 
 
@@ -251,6 +260,7 @@ wv.AddScriptToExecuteOnDocumentCreatedAsync(
     "window.ahkSettings = " Jxon_Dump(Settings) ";"
 )
 
+
 ; 展開フォルダ内のHTMLをロード
 uPath := "file:///" StrReplace(ResDir, "\", "/") "/ui.html"
 wv.add_WebMessageReceived(OnWebMsg)
@@ -303,6 +313,7 @@ OnWebMsg(sender, args) {
 
             ; 設定変更をUIに反映
             wv.ExecuteScriptAsync("updateUI('" k "', '" v "');")
+
 
             if (k == "FocusHotkey") {
                 SetFocusHotkey(Settings[k])

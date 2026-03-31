@@ -13,6 +13,7 @@ StartLinking() {
     SetTimer(CheckActiveWindow, 100)
 }
 
+
 /**
  * リンク処理を中断
  * @param {string} msg 通知メッセージ
@@ -39,15 +40,19 @@ CheckActiveWindow() {
         TargetHWND := currentHWND
         TargetProcess := WinGetProcessName("ahk_id " . TargetHWND)
         MainGui.Title := AppName . " - Linked: " . TargetProcess
-        
+
+
         ; スロットに追加
-        AddTargetSlot(TargetHWND, TargetProcess, Settings["TargetAction"])
-        
+        AddTargetSlot(TargetHWND, TargetProcess,
+            Settings["TargetAction"])
+
         wv.PostWebMessageAsString("notify:success:Linked: " . TargetProcess)
         wv.ExecuteScriptAsync("updateLinkButton('Relink'); ")
         WinActivate("ahk_id " . MainGui.Hwnd)
-        wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")
+        wv.ExecuteScriptAsync(
+            "document.getElementById('main-textarea').focus();")
     } else if (A_TickCount - StartTime > 10000) {
+
         CancelLinking("Timeout")
     }
 }
@@ -59,9 +64,10 @@ SaveWindowPreset(index) {
     global MainGui, IsToolbarHidden, Settings, IsRecordingHotkey
     if (IsRecordingHotkey)
         return
+
     WinGetPos(&x, &y, &w, &h, "ahk_id " . MainGui.Hwnd)
     presetData := Map(
-        "x", x, "y", y, "w", w, "h", h, 
+        "x", x, "y", y, "w", w, "h", h,
         "isToolbarHidden", IsToolbarHidden,
         "action", Settings["TargetAction"]
     )
@@ -69,6 +75,7 @@ SaveWindowPreset(index) {
     wv.PostWebMessageAsString("notify:success:Preset " . index . " Saved!")
     SaveSettings()
 }
+
 
 /**
  * プリセットの座標を適用
@@ -89,18 +96,22 @@ ApplyWindowPreset(index) {
     MainGui.Move(preset["x"], preset["y"], preset["w"], preset["h"])
     if (preset.Has("isToolbarHidden")) {
         IsToolbarHidden := preset["isToolbarHidden"]
-        wv.PostWebMessageAsString(IsToolbarHidden ? "hideToolbar" : "showToolbar")
+        wv.PostWebMessageAsString(
+            IsToolbarHidden ? "hideToolbar" : "showToolbar")
     }
-    
+
+
     ; ターゲットアクションの復元
     if (preset.Has("action")) {
         UpdateTargetAction(preset["action"])
     }
-    
+
     wv.PostWebMessageAsString("notify:info:Preset " . index . " Applied")
     WinActivate("ahk_id " . MainGui.Hwnd)
-    wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();")
+    wv.ExecuteScriptAsync(
+        "document.getElementById('main-textarea').focus();")
 }
+
 
 /**
  * 指定座標がモニター内にあるか確認

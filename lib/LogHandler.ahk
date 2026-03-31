@@ -7,8 +7,10 @@ SelectLogDir(*) {
     global MainGui, Settings, wv
     ; ダイアログが隠れないよう一時的にAlwaysOnTopを解除
     MainGui.Opt("-AlwaysOnTop")
-    selDir := FileSelect("D", "*" . Settings["LogDir"], "Select Log Directory")
+    selDir := FileSelect("D", "*" . Settings["LogDir"],
+        "Select Log Directory")
     MainGui.Opt("+AlwaysOnTop")
+
 
     if (selDir != "") {
         ; 書き込み権限テスト
@@ -17,9 +19,11 @@ SelectLogDir(*) {
             FileAppend("", testFile)
             FileDelete(testFile)
         } catch {
-            MsgBox("この場所には書き込み権限がありません。", "Permission Error", 48)
+            MsgBox("この場所には書き込み権限がありません。",
+                "Permission Error", 48)
             return
         }
+
 
         Settings["LogDir"] := selDir
         escapedPath := StrReplace(selDir, "\", "\\")
@@ -41,12 +45,14 @@ OpenLatestLog(*) {
         return
     }
 
-    ; history_YYYY-MM-DD.jsonl の形式なので名前順でループして最新を探す
+    ; history_YYYY-MM-DD.jsonl 形式から最新を探す
     Loop Files, logDir "\history_*.jsonl" {
-        if (latestFile == "" || StrCompare(A_LoopFileName, latestFile) > 0) {
+        if (latestFile == "" ||
+            StrCompare(A_LoopFileName, latestFile) > 0) {
             latestFile := A_LoopFileName
         }
     }
+
 
     if (latestFile != "") {
         fullPath := logDir "\" latestFile
@@ -90,10 +96,11 @@ SaveToLog(content, target := "Unknown") {
             DirCreate(logPath)
         } catch as err {
             wv.PostWebMessageAsString(
-                "notify:error:Failed to create log directory: "
+                "notify:error:Failed to create log dir: "
                 . logPath . "`nReason: " . err.Message)
             return
         }
+
     }
 
     fileName := logPath

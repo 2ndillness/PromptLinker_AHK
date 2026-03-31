@@ -26,15 +26,16 @@ LoadSettings() {
             Settings["SubmitDelay"] := Max(100, Min(2000, val))
         }
     } catch as err {
-        msg := "設定ファイルが破損している可能性があるため、リセットします。`n"
+        msg := "設定ファイル破損のためリセットします。`n"
             . "詳細: " . err.Message . "`n"
-            . "読込内容(先頭): " . SubStr(raw, 1, 100)
+            . "読込内容: " . SubStr(raw, 1, 100)
         MsgBox(msg, "Settings Load Error", 48)
         try {
             FileDelete(SettingsFile)
         }
     }
 }
+
 
 /**
  * 現在の設定をファイルに保存
@@ -116,6 +117,7 @@ ToggleTriggerKey(*) {
     wv.PostWebMessageAsString("notify:success:Trigger: " . newVal)
 }
 
+
 /**
  * ターゲットアクションを更新する
  * @param {string} action アクション名
@@ -125,9 +127,7 @@ UpdateTargetAction(action) {
     Settings["TargetAction"] := action
     wv.ExecuteScriptAsync("updateUI('TargetAction', '" action "');")
     
-    ; スロット側のアクションも同期
     UpdateSlotAction(action)
-    
     SaveSettings()
     wv.PostWebMessageAsString("notify:success:Action: " . action)
-}
+}
