@@ -35,12 +35,22 @@ function updateTargetSlots(slots) {
   const menu = document.getElementById("target-menu");
   if (!menu) return;
 
+  const activeNumEl = document.getElementById("active-slot-num");
+  const activeSlot = slots.find((s) => s.active);
+  if (activeNumEl && activeSlot) {
+    activeNumEl.innerText = activeSlot.index;
+  }
+
   menu.innerHTML = "";
   slots.forEach((slot) => {
     const item = document.createElement("div");
-    item.className = "target-item" + (slot.active ? " active" : "");
-    item.onclick = (e) => {
-      e.stopPropagation();
+    const isEmpty = slot.exe === "(Empty)";
+    item.className =
+      "target-item" +
+      (slot.active ? " active" : "") +
+      (isEmpty ? " is-empty" : "");
+
+    item.onclick = (e) => {      e.stopPropagation();
       sendMsg("switchTargetSlot:" + slot.index);
       menu.classList.add("hidden");
     };
