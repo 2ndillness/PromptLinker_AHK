@@ -161,7 +161,7 @@ ToggleSlotLock(index) {
     if (index < 1 || index > 3) {
         return
     }
-    
+
     slot := TargetSlots[index]
     if (slot.hwnd == 0) {
         wv.PostWebMessageAsString("notify:warning:Slot " . index . " is empty")
@@ -202,7 +202,7 @@ ClearTargetSlot(index) {
 
     slot.hwnd := 0
     slot.exe := ""
-    
+
     ; 現在選択中のスロットをクリアした場合の処理
     if (index == CurrentSlotIndex) {
         TargetHWND := 0
@@ -222,10 +222,12 @@ ClearTargetSlot(index) {
 
         if (nextSlot != 0) {
             SwitchTargetSlot(nextSlot)
-            wv.PostWebMessageAsString("notify:info:Slot " . index 
+            wv.PostWebMessageAsString("notify:info:Slot " . index
                 . " Cleared. Auto-switched to Slot " . nextSlot)
         } else {
-            wv.PostWebMessageAsString("notify:warning:Slot " . index . " Cleared. All slots are empty")
+            wv.PostWebMessageAsString(
+                "notify:warning:Slot " . index . " Cleared. All slots are empty"
+            )
         }
     } else {
         wv.PostWebMessageAsString("notify:success:Slot " . index . " Cleared")
@@ -303,7 +305,7 @@ MonitorTargetStatus() {
 
         if (nextSlot != 0) {
             SwitchTargetSlot(nextSlot)
-            wv.PostWebMessageAsString("notify:info:Slot " . closedIndex 
+            wv.PostWebMessageAsString("notify:info:Slot " . closedIndex
                 . " was closed. Auto-switched to Slot " . nextSlot)
         } else {
             wv.PostWebMessageAsString("notify:warning:All slots are empty")
