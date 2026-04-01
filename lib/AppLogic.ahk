@@ -193,15 +193,12 @@ ClearTargetSlot(index) {
         return
     }
 
-
-
     ; ロックされている場合はクリアさせない
     if (slot.locked) {
         wv.PostWebMessageAsString(
             "notify:warning:Unlock slot " . index . " first")
         return
     }
-
 
     slot.hwnd := 0
     slot.exe := ""
@@ -212,10 +209,29 @@ ClearTargetSlot(index) {
         TargetProcess := ""
         MainGui.Title := AppName . " - Unlinked"
         wv.ExecuteScriptAsync("updateLinkButton('Link Target');")
+        wv.ExecuteScriptAsync("updateUI('TargetAction', 'Enter');")
+
+        ; 別の有効なスロットを探す
+        nextSlot := 0
+        for i, s in TargetSlots {
+            if (s.hwnd != 0) {
+                nextSlot := i
+                break
+            }
+        }
+
+        if (nextSlot != 0) {
+            SwitchTargetSlot(nextSlot)
+            wv.PostWebMessageAsString("notify:info:Slot " . index 
+                . " Cleared. Auto-switched to Slot " . nextSlot)
+        } else {
+            wv.PostWebMessageAsString("notify:warning:Slot " . index . " Cleared. All slots are empty")
+        }
+    } else {
+        wv.PostWebMessageAsString("notify:success:Slot " . index . " Cleared")
     }
 
     SyncSlotsToJS()
-    wv.PostWebMessageAsString("notify:success:Slot " . index . " Cleared")
 }
 
 /**
@@ -256,21 +272,41 @@ SyncSlotsToJS() {
 MonitorTargetStatus() {
     global TargetSlots, CurrentSlotIndex, TargetHWND, TargetProcess, MainGui, AppName, wv
     changed := false
+    currentSlotWasClosed := false
+    closedIndex := 0
 
     for index, slot in TargetSlots {
         if (slot.hwnd != 0 && !WinExist("ahk_id " . slot.hwnd)) {
-            slot.hwnd := 0
-            slot.exe := ""
-            changed := true
-
-            ; 現在選択中のスロットが閉じられた場合
             if (index == CurrentSlotIndex) {
+                currentSlotWasClosed := true
+                closedIndex := index
                 TargetHWND := 0
                 TargetProcess := ""
                 MainGui.Title := AppName . " - Unlinked"
                 wv.ExecuteScriptAsync("updateLinkButton('Link Target');")
                 wv.ExecuteScriptAsync("updateUI('TargetAction', 'Enter');")
             }
+            slot.hwnd := 0
+            slot.exe := ""
+            changed := true
+        }
+    }
+
+    if (currentSlotWasClosed) {
+        nextSlot := 0
+        for index, slot in TargetSlots {
+            if (slot.hwnd != 0) {
+                nextSlot := index
+                break
+            }
+        }
+
+        if (nextSlot != 0) {
+            SwitchTargetSlot(nextSlot)
+            wv.PostWebMessageAsString("notify:info:Slot " . closedIndex 
+                . " was closed. Auto-switched to Slot " . nextSlot)
+        } else {
+            wv.PostWebMessageAsString("notify:warning:All slots are empty")
         }
     }
 

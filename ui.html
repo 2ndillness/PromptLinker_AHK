@@ -10,8 +10,11 @@
   <body>
     <div id="content-area">
       <div id="main-view">
-        <!-- ツールバー -->
+        <!--******************  メイン画面  *******************-->
+
         <div class="toolbar">
+          <!------------------- ツールバー ---------------------->
+
           <!-- リンクボタン（スプリットボタン） -->
           <div class="split-button" id="link-split-btn">
             <button id="link-btn" onclick="sendMsg('toggleLink')">
@@ -38,7 +41,8 @@
               <!-- JSで動的に生成 -->
             </div>
           </div>
-          <!-- メイン画面用プリセット呼び出しボタン -->
+
+          <!-- プリセット呼び出しボタン -->
           <div class="main-presets">
             <button
               class="preset-call-btn"
@@ -101,6 +105,8 @@
               </div>
             </div>
           </div>
+
+          <!-- 設定ボタン -->
           <button id="settings-btn" onclick="toggleSetView()" title="Settings">
             <img
               src="assets/icons/settings.svg"
@@ -108,6 +114,8 @@
               data-icon="settings"
             />
           </button>
+
+          <!-- ヘルプボタン -->
           <button id="help-btn" onclick="toggleHelp()" title="Help">
             <img
               src="assets/icons/help-circle.svg"
@@ -117,12 +125,14 @@
           </button>
         </div>
 
+        <!-- テキスト入力欄 -->
         <textarea id="main-textarea"></textarea>
       </div>
 
-      <!-- 設定画面 -->
       <div id="settings-view" class="hidden scrollable-view">
+        <!--*********************** 設定画面 *************************-->
         <div class="settings-header">
+          <!-- 戻るボタン -->
           <button class="back-btn" onclick="toggleSetView()">
             <img
               src="assets/icons/arrow-left.svg"
@@ -132,6 +142,8 @@
             Back
           </button>
           <h3>Settings</h3>
+
+          <!-- setting.jsonを開くボタン -->
           <button
             class="head-icon-btn"
             onclick="sendMsg('openSettings')"
@@ -188,8 +200,9 @@
           </div>
         </div>
 
+        <!-- トリガーキー選択 -->
         <div class="setting-row">
-          <label>Trigger Key</label>
+          <label>Transfer Trigger Key</label>
           <div class="custom-select" id="trigger-key-select">
             <button
               class="target-action-btn"
@@ -220,6 +233,7 @@
           </div>
         </div>
 
+        <!-- フォントサイズ -->
         <div class="setting-row">
           <label>Font Size</label>
           <div class="num-control">
@@ -233,6 +247,7 @@
           </div>
         </div>
 
+        <!-- 最小化オプション -->
         <div class="setting-row">
           <label>Minimize Option</label>
           <label class="switch">
@@ -249,6 +264,7 @@
           </label>
         </div>
 
+        <!-- ログ保存オプション -->
         <div class="setting-row">
           <label>Save Log</label>
           <label class="switch">
@@ -263,6 +279,7 @@
           </label>
         </div>
 
+        <!-- フォーカスキー -->
         <div class="setting-row">
           <label>Focus Hotkey</label>
           <div class="input-group">
@@ -284,6 +301,7 @@
           </div>
         </div>
 
+        <!-- ログ保存ディレクトリ選択 -->
         <div class="setting-row">
           <label>Log Directory</label>
           <div class="input-group expand">
@@ -298,6 +316,7 @@
           </div>
         </div>
 
+        <!-- ログ保存ディレクトリ -->
         <div class="action-row">
           <button onclick="sendMsg('openLogDir')">
             <img
@@ -318,8 +337,8 @@
         </div>
       </div>
 
-      <!-- ヘルプ画面 -->
       <div id="help-view" class="hidden scrollable-view">
+        <!--******************** ヘルプ画面 *********************-->
         <div class="settings-header">
           <button class="back-btn" onclick="showView('main-view')">
             <img
@@ -370,7 +389,6 @@
                 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
               </div>
               <div>Clear Slot</div>
-
 
               <div class="help-item"><kbd>Ctrl</kbd>+<kbd>,</kbd></div>
               <div>Show Settings View</div>
@@ -437,7 +455,7 @@
             <div class="help-grid">
               <div class="help-item"><kbd>Alt</kbd>+<kbd>J</kbd></div>
               <div>Open settings.json</div>
-              
+
               <div class="help-item"><kbd>Alt</kbd>+<kbd>R</kbd></div>
               <div>Reset Focus Hotkey to Default</div>
 
@@ -463,15 +481,14 @@
 
               <div class="help-item"><kbd>Alt</kbd>+<kbd>O</kbd></div>
               <div>Open Latest Log</div>
-
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- 右クリックメニュー -->
     <div id="context-menu" class="context-menu">
+      <!--********************* 右クリックメニュー *********************-->
       <div class="menu-item" onclick="runEditorCommand('transfer')">
         Transfer<span class="shortcut" id="menu-transfer-shortcut"
           >Ctrl+Enter</span
