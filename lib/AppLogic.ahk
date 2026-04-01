@@ -148,7 +148,7 @@ SwitchTargetSlot(index) {
     ; UI更新
     MainGui.Title := AppName . " - Linked: " . TargetProcess
     wv.ExecuteScriptAsync("updateUI('TargetAction', '" . slot.action . "');")
-    wv.ExecuteScriptAsync("updateLinkButton('Relink');")
+    wv.ExecuteScriptAsync("setLinkWaiting(false);")
     SyncSlotsToJS()
     wv.PostWebMessageAsString("notify:success:Switched to Slot " . index)
 }
@@ -208,7 +208,7 @@ ClearTargetSlot(index) {
         TargetHWND := 0
         TargetProcess := ""
         MainGui.Title := AppName . " - Unlinked"
-        wv.ExecuteScriptAsync("updateLinkButton('Link Target');")
+        wv.ExecuteScriptAsync("setLinkWaiting(false);")
         wv.ExecuteScriptAsync("updateUI('TargetAction', 'Enter');")
 
         ; 別の有効なスロットを探す
@@ -285,7 +285,7 @@ MonitorTargetStatus() {
                 TargetHWND := 0
                 TargetProcess := ""
                 MainGui.Title := AppName . " - Unlinked"
-                wv.ExecuteScriptAsync("updateLinkButton('Link Target');")
+                wv.ExecuteScriptAsync("setLinkWaiting(false);")
                 wv.ExecuteScriptAsync("updateUI('TargetAction', 'Enter');")
             }
             slot.hwnd := 0

@@ -3,12 +3,21 @@
  */
 
 /**
- * Linkボタンのテキスト更新
+ * Linkボタンの待機状態を切り替え
+ * @param {boolean} isWaiting 待機中かどうか
  */
-function updateLinkButton(text) {
+function setLinkWaiting(isWaiting) {
   const btn = document.getElementById("link-btn");
   const textEl = btn.querySelector(".btn-text");
-  if (textEl) textEl.innerText = text;
+  if (!textEl) return;
+
+  if (isWaiting) {
+    btn.classList.add("recording");
+    textEl.innerText = "Waiting...";
+  } else {
+    btn.classList.remove("recording");
+    textEl.innerText = "Link Target";
+  }
 }
 
 /**
