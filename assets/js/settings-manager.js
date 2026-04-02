@@ -65,7 +65,6 @@ const HOTKEY_BLACKLIST = [
   "!b",
   "!-",
   "!=",
-  "!+",
   "!m",
   "!s",
   "!o",
@@ -153,7 +152,7 @@ function resetFocusHotkey() {
     const formatted = formatHotkey(defaultHotkey);
     hotkeyInput.value = formatted;
     sendMsg("updateSetting:FocusHotkey:" + defaultHotkey);
-    showToast("Hotkey reset to default: " + formatted, "success");
+    showToast("Hotkey reset to default:\n" + formatted, "success");
   }
 }
 
@@ -206,7 +205,7 @@ function handleHotkeyInput(e) {
   );
 
   if (isBlacklisted) {
-    showToast(`Hotkey "${formatHotkey(ahkString)}" is reserved.`, "error");
+    showToast(`Hotkey is reserved:\n"${formatHotkey(ahkString)}"`, "error");
     return;
   }
 

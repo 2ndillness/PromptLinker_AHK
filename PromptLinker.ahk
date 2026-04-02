@@ -33,11 +33,11 @@ for d in subDirs {
 
 ; ファイルの展開 (実行時に展開)
 FileInstall "ui.html", ResDir "\ui.html", 1
-FileInstall "script.js", ResDir "\script.js", 1
+FileInstall "assets\js\main.js", ResDir "\assets\js\main.js", 1
 FileInstall "style.css", ResDir "\style.css", 1
-FileInstall "editor-manager.js", ResDir "\assets\js\editor-manager.js", 1
-FileInstall "settings-manager.js", ResDir "\assets\js\settings-manager.js", 1
-FileInstall "ui-utils.js", ResDir "\assets\js\ui-utils.js", 1
+FileInstall "assets\js\editor-manager.js", ResDir "\assets\js\editor-manager.js", 1
+FileInstall "assets\js\settings-manager.js", ResDir "\assets\js\settings-manager.js", 1
+FileInstall "assets\js\ui-utils.js", ResDir "\assets\js\ui-utils.js", 1
 
 FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
 
@@ -118,10 +118,7 @@ global IsToolbarHidden := false
 
 ; ターゲットスロット管理
 global CurrentSlotIndex := 1
-global TargetSlots := [
-    { hwnd: 0, exe: "", action: "", locked: false },
-    { hwnd: 0, exe: "", action: "", locked: false },
-    { hwnd: 0, exe: "", action: "", locked: false }
+global TargetSlots := [{ hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }
 ]
 
 

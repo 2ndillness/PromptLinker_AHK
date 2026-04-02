@@ -221,10 +221,10 @@ ClearTargetSlot(index) {
         if (nextSlot != 0) {
             SwitchTargetSlot(nextSlot)
             wv.PostWebMessageAsString("notify:info:Slot " . index
-                . " Cleared. Auto-switched to Slot " . nextSlot)
+                . " Cleared.`nAuto-switched to Slot " . nextSlot)
         } else {
             wv.PostWebMessageAsString(
-                "notify:warning:Slot " . index . " Cleared. All slots are empty"
+                "notify:warning:Slot " . index . " Cleared.`nAll slots are empty"
             )
         }
     } else {
@@ -302,7 +302,7 @@ MonitorTargetStatus() {
         if (nextSlot != 0) {
             SwitchTargetSlot(nextSlot)
             wv.PostWebMessageAsString("notify:info:Slot " . closedIndex
-                . " was closed. Auto-switched to Slot " . nextSlot)
+                . " was closed.`nAuto-switched to Slot " . nextSlot)
         } else {
             wv.PostWebMessageAsString("notify:warning:All slots are empty")
         }

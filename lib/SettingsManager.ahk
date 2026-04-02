@@ -51,7 +51,7 @@ SaveSettings() {
             f.Close()
         }
     } catch as err {
-        wv.PostWebMessageAsString("notify:error:Save Failed: " err.Message)
+        wv.PostWebMessageAsString("notify:error:Save Failed:`n" err.Message)
     }
 }
 

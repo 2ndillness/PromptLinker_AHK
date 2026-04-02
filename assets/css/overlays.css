@@ -68,6 +68,7 @@
   font-size: var(--font-size-main);
   min-width: 200px;
   max-width: 400px;
+  white-space: pre-wrap;
   pointer-events: auto;
   animation: toast-in 0.3s ease-out;
 }
