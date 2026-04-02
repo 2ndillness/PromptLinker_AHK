@@ -346,12 +346,13 @@ window.addEventListener("click", () => {
  * AHK側からの操作をUIコンポーネントに反映させる
  */
 function updateUI(key, value) {
+  const isTrue = value === "1" || value === "true" || value === true;
   switch (key) {
     case "SaveLog":
-      document.getElementById("save-log-check").checked = value;
+      document.getElementById("save-log-check").checked = isTrue;
       break;
     case "MinimizeOption":
-      document.getElementById("minimize-option-check").checked = value;
+      document.getElementById("minimize-option-check").checked = isTrue;
       break;
     case "TriggerKey":
       const tLabel = document.getElementById("trigger-key-label");

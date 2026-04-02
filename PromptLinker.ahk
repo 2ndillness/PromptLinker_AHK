@@ -310,10 +310,12 @@ OnWebMsg(sender, args) {
         pts := StrSplit(msg, ":")
         if (pts.Length >= 3) {
             k := pts[2], v := pts[3]
-            if (k == "SaveLog" || k == "MinimizeOption")
+            if (k == "SaveLog" || k == "MinimizeOption") {
                 Settings[k] := (v == "1")
-            else
+                v := Settings[k] ? "1" : "0"
+            } else {
                 Settings[k] := v
+            }
 
             ; 設定変更をUIに反映
             wv.ExecuteScriptAsync("updateUI('" k "', '" v "');")
