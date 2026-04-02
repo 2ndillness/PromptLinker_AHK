@@ -299,12 +299,33 @@ function showSlotContextMenu(e, index) {
   currentContextSlot = index;
 
   const menu = document.getElementById("slot-context-menu");
-  menu.style.display = "block";
-  menu.style.left = e.clientX + "px";
-  menu.style.top = e.clientY + "px";
 
   // 他のメニューを閉じる
   document.getElementById("context-menu").style.display = "none";
+
+  // 位置計算のために一旦表示（非可視）
+  menu.style.visibility = "hidden";
+  menu.style.display = "block";
+
+  const menuWidth = menu.offsetWidth;
+  const menuHeight = menu.offsetHeight;
+  const winWidth = window.innerWidth;
+  const winHeight = window.innerHeight;
+
+  let x = e.clientX;
+  let y = e.clientY;
+
+  // 画面端での折り返し処理
+  if (x + menuWidth > winWidth) x -= menuWidth;
+  if (y + menuHeight > winHeight) y -= menuHeight;
+
+  // 画面外に出てしまうのを防ぐ
+  if (x < 0) x = 0;
+  if (y < 0) y = 0;
+
+  menu.style.left = x + "px";
+  menu.style.top = y + "px";
+  menu.style.visibility = "visible";
 }
 
 function handleSlotAction(action) {

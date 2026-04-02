@@ -1,4 +1,15 @@
-/* メニューと通知のスタイル */
+/* メニューと通知の共通ベース（背景、境界、影） */
+.context-menu,
+.dropdown-menu,
+#action-menu,
+#trigger-menu,
+.toast {
+  background-color: var(--menu-bg);
+  border: 1px solid var(--menu-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* メニュー固有の設定 */
 .context-menu,
 .dropdown-menu,
 #action-menu,
@@ -6,10 +17,7 @@
   display: none;
   position: absolute;
   z-index: 1000;
-  min-width: 128px; /* 128pxに固定 */
-  background-color: var(--menu-bg);
-  border: 1px solid var(--menu-border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  min-width: 128px;
   padding: 2px 0;
   border-radius: var(--border-radius-lg);
 }
@@ -19,25 +27,63 @@
 #trigger-menu:not(.hidden) {
   display: block;
 }
-#action-menu:not(.hidden),
-#trigger-menu:not(.hidden) {
-  display: block;
-}
 .menu-item,
 .target-item,
 .action-item {
   display: flex;
   align-items: center;
-  padding: 3px 6px; /* 12pxから6pxへ圧縮 */
+  padding: 3px 6px;
   font-size: var(--font-size-sm);
   cursor: pointer;
   color: var(--text-color);
   transition: background 0.2s;
 }
+
 .menu-item:hover,
 .target-item:hover,
 .action-item:hover {
   background-color: var(--hover-bg);
+}
+
+/* スロットアイテム固有の装飾 */
+.target-item {
+  gap: 6px;
+  padding: 6px 4px 6px 10px;
+  min-width: 150px;
+}
+.target-item .status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: transparent;
+  flex-shrink: 0;
+}
+.target-item.active .status-dot {
+  background-color: var(--success-color);
+  box-shadow: 0 0 4px var(--success-color);
+}
+.target-item .slot-num {
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
+  min-width: 10px;
+  flex-shrink: 0;
+}
+.target-item .exe-name {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+.target-item .lock-icon {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+.target-item.is-empty {
+  color: var(--text-muted);
+  opacity: 0.6;
 }
 .separator {
   height: 1px;
@@ -58,13 +104,10 @@
   pointer-events: none;
 }
 .toast {
-  background-color: var(--menu-bg);
   color: var(--text-color);
-  border: 1px solid var(--menu-border);
   border-left: 4px solid var(--accent-color);
   padding: 10px 15px;
   border-radius: var(--border-radius);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   font-size: var(--font-size-main);
   min-width: 200px;
   max-width: 400px;
