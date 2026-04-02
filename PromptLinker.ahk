@@ -192,7 +192,7 @@ Loop 3 {
     Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
     Hotkey("+!" A_Index, (hk) => SaveWindowPreset(Integer(SubStr(hk, -1))))
 }
-Hotkey("!t", (*) => wv.PostWebMessageAsString("toggleToolbar"))
+Hotkey("!t", (*) => SetToolbarState(!IsToolbarHidden))
 
 ; アプリ操作用ショートカット
 Hotkey("!l", (*) => (IsLinking ? CancelLinking() : StartLinking()))

@@ -282,8 +282,6 @@ window.chrome.webview.addEventListener("message", (event) => {
     document.querySelector(".toolbar").classList.add("collapsed");
   } else if (msg === "showToolbar") {
     document.querySelector(".toolbar").classList.remove("collapsed");
-  } else if (msg === "toggleToolbar") {
-    document.querySelector(".toolbar").classList.toggle("collapsed");
   } else if (msg.startsWith("updateTargetSlots:")) {
     const slots = JSON.parse(msg.substring(18));
     updateTargetSlots(slots);
