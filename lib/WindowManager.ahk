@@ -123,7 +123,9 @@ IsWindowVisible(x, y) {
     visible := false
     Loop MonitorGetCount() {
         MonitorGetWorkArea(A_Index, &l, &t, &r, &b)
-        if (x >= l && x < r && y >= t && y < b) {
+        ; スナップ時のわずかな画面外や、タイトルバーの一部が
+        ; 画面内にあれば許容するため、マージン(100px)を設ける
+        if (x >= l - 100 && x < r && y >= t - 100 && y < b) {
             visible := true
             break
         }
