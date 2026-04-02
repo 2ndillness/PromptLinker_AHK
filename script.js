@@ -112,16 +112,6 @@ function rotateView(direction) {
 }
 
 /**
- * インデックス指定でビューを切り替える (Ctrl+1, 2... 用)
- * @param {number} index ビューのインデックス
- */
-function showViewByIndex(index) {
-  if (index >= 0 && index < APP_VIEWS.length) {
-    showView(APP_VIEWS[index]);
-  }
-}
-
-/**
  * ヘルプ画面表示切り替え
  * @param {boolean|null} forceState 強制指定
  */
@@ -265,10 +255,6 @@ textArea.addEventListener("keydown", (e) => {
   const labelEl = document.getElementById("trigger-key-label");
   if (labelEl) {
     trigger = labelEl.innerText;
-  } else {
-    // 互換性フォールバック（もしDOMが無ければ）
-    const selEl = document.getElementById("trigger-key");
-    if (selEl) trigger = selEl.value;
   }
   const isCtrlTrigger = trigger === "Ctrl + Enter" && e.ctrlKey && !e.shiftKey;
   const isShiftTrigger =
@@ -358,9 +344,6 @@ function updateUI(key, value) {
       const tLabel = document.getElementById("trigger-key-label");
       if (tLabel) {
         tLabel.innerText = value;
-      } else {
-        const tSel = document.getElementById("trigger-key");
-        if (tSel) tSel.value = value;
       }
       // コンテキストメニューのショートカット表示も更新
       const mShortcut = document.getElementById("menu-transfer-shortcut");
