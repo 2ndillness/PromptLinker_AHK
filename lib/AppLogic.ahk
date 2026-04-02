@@ -252,19 +252,16 @@ UpdateSlotAction(action) {
  */
 SyncSlotsToJS() {
     global TargetSlots, CurrentSlotIndex, wv
-    jsonStr := "["
+    slotsArr := []
     for index, slot in TargetSlots {
-        exeName := slot.exe ? slot.exe : "(Empty)"
-        active := (index == CurrentSlotIndex) ? "true" : "false"
-        locked := slot.locked ? "true" : "false"
-        jsonStr .= '{"index":' index ',"exe":"' exeName
-            . '","active":' active ',"locked":' locked '}'
-
-        if (index < 3)
-            jsonStr .= ","
-
+        slotsArr.Push(Map(
+            "index", index,
+            "exe", slot.exe ? slot.exe : "(Empty)",
+            "active", (index == CurrentSlotIndex),
+            "locked", slot.locked ? true : false
+        ))
     }
-    jsonStr .= "]"
+    jsonStr := Jxon_Dump(slotsArr)
     wv.ExecuteScriptAsync("updateTargetSlots(" . jsonStr . ");")
 }
 
@@ -290,6 +287,7 @@ MonitorTargetStatus() {
             }
             slot.hwnd := 0
             slot.exe := ""
+            slot.locked := false
             changed := true
         }
     }
