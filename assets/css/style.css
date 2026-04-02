@@ -98,9 +98,6 @@
 }
 .target-action-btn {
   width: 120px;
-  background-color: var(--input-bg);
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
   justify-content: space-between;
   padding: 5px 10px;
 }

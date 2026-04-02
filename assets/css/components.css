@@ -16,15 +16,31 @@
   font-size: 18px;
 }
 
+/* 共通の面デザイン（背景、境界、角丸、ホバー） */
+.ui-surface,
 button {
   background-color: var(--input-bg);
   color: var(--text-color);
   border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  transition: background 0.2s, border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.ui-surface:hover,
+button:hover {
+  background-color: var(--hover-bg);
+}
+
+.ui-surface:active,
+button:active {
+  background-color: var(--accent-color);
+}
+
+button {
   cursor: pointer;
   font-family: var(--font-family);
-  border-radius: var(--border-radius);
   height: 26px;
-  box-sizing: border-box;
   font-size: var(--font-size-sm);
   padding: 2px 10px;
   white-space: nowrap;
@@ -32,13 +48,6 @@ button {
   align-items: center;
   justify-content: center;
   gap: 4px;
-}
-
-button:hover {
-  background-color: var(--hover-bg);
-}
-button:active {
-  background-color: var(--accent-color);
 }
 
 /* アイコンのみのボタン（ヘッダー用など） */

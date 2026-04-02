@@ -25,7 +25,7 @@
 
           <!-- リンクボタン（スプリットボタン） -->
           <div class="split-button" id="link-split-btn">
-            <button id="link-btn" onclick="sendMsg('toggleLink')">
+            <button id="link-btn" class="ui-surface" onclick="sendMsg('toggleLink')">
               <span id="active-slot-num"></span>
               <img
                 src="assets/icons/link.svg"
@@ -35,7 +35,7 @@
               <span class="btn-text">Link Target</span>
             </button>
             <button
-              class="chevron-btn"
+              class="chevron-btn ui-surface"
               onclick="toggleTargetMenu(event)"
               title="Target Slots"
             >
@@ -53,21 +53,21 @@
           <!-- プリセット呼び出しボタン -->
           <div class="main-presets">
             <button
-              class="preset-call-btn"
+              class="preset-call-btn ui-surface"
               onclick="sendMsg('applyPreset:1')"
               title="Apply Preset 1"
             >
               1
             </button>
             <button
-              class="preset-call-btn"
+              class="preset-call-btn ui-surface"
               onclick="sendMsg('applyPreset:2')"
               title="Apply Preset 2"
             >
               2
             </button>
             <button
-              class="preset-call-btn"
+              class="preset-call-btn ui-surface"
               onclick="sendMsg('applyPreset:3')"
               title="Apply Preset 3"
             >
@@ -78,7 +78,7 @@
           <!-- Target Action カスタムドロップダウン -->
           <div class="custom-select" id="action-select">
             <button
-              class="target-action-btn"
+              class="target-action-btn ui-surface"
               onclick="toggleActionMenu(event)"
               title="Target Action"
             >
@@ -170,7 +170,7 @@
           <label>Window Presets</label>
           <div class="preset-controls">
             <button
-              class="preset-save-tile"
+              class="preset-save-tile ui-surface"
               onclick="sendMsg('savePreset:1')"
               title="Save  to Preset 1"
             >
@@ -182,7 +182,7 @@
               <span class="preset-label">Preset 1</span>
             </button>
             <button
-              class="preset-save-tile"
+              class="preset-save-tile ui-surface"
               onclick="sendMsg('savePreset:2')"
               title="Save  to Preset 2"
             >
@@ -194,7 +194,7 @@
               <span class="preset-label">Preset 2</span>
             </button>
             <button
-              class="preset-save-tile"
+              class="preset-save-tile ui-surface"
               onclick="sendMsg('savePreset:3')"
               title="Save  to Preset 3"
             >
