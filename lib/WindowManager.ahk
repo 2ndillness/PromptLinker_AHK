@@ -108,7 +108,7 @@ ApplyWindowPreset(index) {
         UpdateTargetAction(preset["action"])
     }
 
-    wv.PostWebMessageAsString("notify:info:Preset " . index . " Applied")
+    wv.PostWebMessageAsString("notify:success:Preset " . index . " Applied")
     WinActivate("ahk_id " . MainGui.Hwnd)
     wv.ExecuteScriptAsync("document.getElementById('main-textarea')"
         . ".focus();")

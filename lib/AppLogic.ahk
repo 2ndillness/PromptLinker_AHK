@@ -220,7 +220,7 @@ ClearTargetSlot(index) {
 
         if (nextSlot != 0) {
             SwitchTargetSlot(nextSlot)
-            wv.PostWebMessageAsString("notify:info:Slot " . index
+            wv.PostWebMessageAsString("notify:success:Slot " . index
                 . " Cleared.`nAuto-switched to Slot " . nextSlot)
         } else {
             wv.PostWebMessageAsString(
