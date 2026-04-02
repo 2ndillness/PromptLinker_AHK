@@ -34,7 +34,7 @@ for d in subDirs {
 ; ファイルの展開 (実行時に展開)
 FileInstall "ui.html", ResDir "\ui.html", 1
 FileInstall "assets\js\main.js", ResDir "\assets\js\main.js", 1
-FileInstall "style.css", ResDir "\style.css", 1
+FileInstall "assets\css\style.css", ResDir "\assets\css\style.css", 1
 FileInstall "assets\js\editor-manager.js", ResDir "\assets\js\editor-manager.js", 1
 FileInstall "assets\js\settings-manager.js", ResDir "\assets\js\settings-manager.js", 1
 FileInstall "assets\js\ui-utils.js", ResDir "\assets\js\ui-utils.js", 1
@@ -279,15 +279,17 @@ DwmSetDarkMode(hwnd) {
 DwmSetDarkMode(MainGui.Hwnd)
 
 MainGui.Show("w500 h400")
-wvc.IsVisible := true
 wvc.Fill()
 
 ; ==============================================================================
 ; メインスレッド用関数
 ; ==============================================================================
 OnNavigationCompleted(sender, args) {
+    global wvc
     SyncSlotsToJS()
     SetTimer(MonitorTargetStatus, 1000)
+    ; レンダリング完了を待ってから可視化 (ホワイトフラッシュ対策)
+    wvc.IsVisible := true
 }
 
 OnPermissionRequested(sender, args) {

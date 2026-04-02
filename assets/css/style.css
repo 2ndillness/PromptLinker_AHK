@@ -1,9 +1,9 @@
 /* Prompt Linker - メインスタイルシート */
-@import url("assets/css/theme.css");
-@import url("assets/css/components.css");
-@import url("assets/css/forms.css");
-@import url("assets/css/overlays.css");
-@import url("assets/css/layout.css");
+@import url("theme.css");
+@import url("components.css");
+@import url("forms.css");
+@import url("overlays.css");
+@import url("layout.css");
 
 #link-btn {
   width: 120px;
