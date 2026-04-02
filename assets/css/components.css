@@ -16,24 +16,28 @@
   font-size: 18px;
 }
 
-/* 共通の面デザイン（背景、境界、角丸、ホバー） */
+/* 共通の面デザイン（背景、境界、角丸） */
 .ui-surface,
 button {
   background-color: var(--input-bg);
   color: var(--text-color);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
-  transition: background 0.2s, border-color 0.2s;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
   box-sizing: border-box;
 }
 
-.ui-surface:hover,
-button:hover {
+/* ホバー・アクティブ時の変化（ボタンまたは明示的な対話要素のみ） */
+button:hover,
+.ui-surface.interactive:hover {
   background-color: var(--hover-bg);
 }
 
-.ui-surface:active,
-button:active {
+button:active,
+.ui-surface.interactive:active {
   background-color: var(--accent-color);
 }
 

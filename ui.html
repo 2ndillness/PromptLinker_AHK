@@ -295,7 +295,7 @@
             <input
               type="text"
               id="hotkey-input"
-              class="hotkey-input"
+              class="hotkey-input ui-surface"
               readonly
             />
             <button onclick="resetFocusHotkey()" title="Reset to Default">
@@ -312,7 +312,7 @@
         <div class="setting-row">
           <label>Log Directory</label>
           <div class="input-group expand">
-            <input type="text" id="log-dir-display" readonly value="C:\..." />
+            <input type="text" id="log-dir-display" class="ui-surface" readonly value="C:\..." />
             <button onclick="sendMsg('selectLogDir')" title="Browse...">
               <img
                 src="assets/icons/folder.svg"

@@ -151,7 +151,6 @@
   border-color: var(--accent-color) !important;
   background-color: rgba(0, 120, 215, 0.1) !important;
   color: var(--accent-color) !important;
-  font-weight: bold;
   outline: none;
 }
 .input-group button {
