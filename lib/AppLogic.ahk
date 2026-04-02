@@ -38,14 +38,12 @@ ExecuteTransfer(text) {
     }
 
     Sleep(150)
-    wv.ExecuteScriptAsync("document.getElementById('main-textarea').value = '';")
+    wv.ExecuteScriptAsync("clearTextArea();")
 
     if (Settings["MinimizeOption"]) {
         WinMinimize("ahk_id " . MainGui.Hwnd)
     } else {
         WinActivate("ahk_id " . MainGui.Hwnd)
-        wv.ExecuteScriptAsync("document.getElementById('main-textarea')"
-            . ".focus();")
     }
 }
 

@@ -94,7 +94,19 @@ function updateTargetSlots(slots) {
 }
 
 /**
+ * メインテキストエリアの内容をクリアしフォーカスする
+ */
+function clearTextArea() {
+  const textArea = document.getElementById("main-textarea");
+  if (textArea) {
+    textArea.value = "";
+    textArea.focus();
+  }
+}
+
+/**
  * トースト通知の表示
+
  * @param {string} msg
  * @param {string} type 'info' | 'error' | 'warning' |'success'
  */
