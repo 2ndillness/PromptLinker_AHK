@@ -254,8 +254,7 @@ try {
 } catch {
 }
 
-; ブラウザ標準のショートカット(Ctrl+P, Ctrl+U等)を有効にする
-; これによりユーザーが発見したPDF出力機能やソース表示を許可します
+; ブラウザ標準のショートカットキー（Ctrl+P, Ctrl+U等）を有効化
 wv.Settings.AreBrowserAcceleratorKeysEnabled := true
 wv.Settings.AreDefaultContextMenusEnabled := false
 wv.Settings.IsZoomControlEnabled := false
