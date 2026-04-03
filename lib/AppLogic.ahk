@@ -254,9 +254,9 @@ SyncSlotsToJS() {
     for index, slot in TargetSlots {
         slotsArr.Push(Map(
             "index", index,
-            "exe", slot.exe ? slot.exe : "(Empty)",
+            "exe", slot.exe || "(Empty)",
             "active", (index == CurrentSlotIndex),
-            "locked", slot.locked ? true : false
+            "locked", !!slot.locked
         ))
     }
     jsonStr := Jxon_Dump(slotsArr)

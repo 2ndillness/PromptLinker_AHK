@@ -254,6 +254,9 @@ try {
 } catch {
 }
 
+; ブラウザ標準のショートカット(Ctrl+P, Ctrl+U等)を有効にする
+; これによりユーザーが発見したPDF出力機能やソース表示を許可します
+wv.Settings.AreBrowserAcceleratorKeysEnabled := true
 wv.Settings.AreDefaultContextMenusEnabled := false
 wv.Settings.IsZoomControlEnabled := false
 
@@ -299,60 +302,81 @@ OnPermissionRequested(sender, args) {
 
 OnWebMsg(sender, args) {
     global IsRecordingHotkey
-    msg := args.TryGetWebMessageAsString()
+    ; JavaScriptから送られてくるメッセージは全てJSONオブジェクト形式に統一された
+    jsonStr := args.WebMessageAsJson
 
-    if (msg == "toggleLink") {
+    try {
+        ; JSON文字列をAHKのMapオブジェクトにパース
+        data := Jxon_Load(&jsonStr)
+        if !(data is Map)
+            return
+
+        ; .Get() を使うことで、キーが存在しない場合のエラーを回避
+        mType := data.Get("type", "")
+        payload := data.Get("payload", "")
+    } catch {
+        return
+    }
+
+    if (mType == "toggleLink") {
         (IsLinking ? CancelLinking() : StartLinking())
-    } else if (SubStr(msg, 1, 9) == "transfer:") {
-        ExecuteTransfer(SubStr(msg, 10))
-    } else if (SubStr(msg, 1, 14) == "updateSetting:") {
-        pts := StrSplit(msg, ":")
-        if (pts.Length >= 3) {
-            k := pts[2], v := pts[3]
-            if (k == "SaveLog" || k == "MinimizeOption") {
-                Settings[k] := (v == "1")
-                v := Settings[k] ? "1" : "0"
-            } else {
-                Settings[k] := v
-            }
+    } else if (mType == "transfer") {
+        ExecuteTransfer(payload)
+    } else if (mType == "updateSetting") {
+        if !(payload is Map)
+            return
+        k := payload.Get("key", "")
+        v := payload.Get("value", "")
 
-            ; 設定変更をUIに反映
-            wv.ExecuteScriptAsync("updateUI('" k "', '" v "');")
-
-
-            if (k == "FocusHotkey") {
-                SetFocusHotkey(Settings[k])
-                wv.ExecuteScriptAsync(
-                    "window.ahkSettings.FocusHotkey = '" Settings[k] "';"
-                )
-            }
-            SaveSettings()
+        ; JavaScriptのBoolean(true/false)または文字列("1"/"0")に対応
+        if (k == "SaveLog" || k == "MinimizeOption") {
+            Settings[k] := (v = true || v = 1 || v == "1" || v == "true") ? true : false
+            v := Settings[k] ? "1" : "0" ; JS側へ返すために文字列化
+        } else {
+            Settings[k] := v
         }
-    } else if (SubStr(msg, 1, 15) == "changeFontSize:") {
-        ChangeFontSize(Integer(SubStr(msg, 16)))
-    } else if (msg == "selectLogDir") {
+
+        ; 設定変更をUIに反映
+        wv.ExecuteScriptAsync("updateUI('" k "', '" v "');")
+
+        if (k == "FocusHotkey") {
+            SetFocusHotkey(Settings[k])
+            wv.ExecuteScriptAsync(
+                "window.ahkSettings.FocusHotkey = '" Settings[k] "';"
+            )
+        }
+        SaveSettings()
+    } else if (mType == "changeFontSize") {
+        if IsNumber(payload)
+            ChangeFontSize(Integer(payload))
+    } else if (mType == "selectLogDir") {
         SelectLogDir()
-    } else if (msg == "openLogDir") {
+    } else if (mType == "openLogDir") {
         OpenLogDir()
-    } else if (msg == "openSettings") {
+    } else if (mType == "openSettings") {
         OpenSettings()
-    } else if (msg == "viewLatestLog") {
+    } else if (mType == "viewLatestLog") {
         OpenLatestLog()
-    } else if (msg == "toggleToolbar") {
+    } else if (mType == "toggleToolbar") {
         SetToolbarState(!IsToolbarHidden)
-    } else if (msg == "startRecording") {
+    } else if (mType == "startRecording") {
         IsRecordingHotkey := true
-    } else if (msg == "stopRecording") {
+    } else if (mType == "stopRecording") {
         IsRecordingHotkey := false
-    } else if (SubStr(msg, 1, 12) == "applyPreset:") {
-        ApplyWindowPreset(Integer(SubStr(msg, 13)))
-    } else if (SubStr(msg, 1, 11) == "savePreset:") {
-        SaveWindowPreset(Integer(SubStr(msg, 12)))
-    } else if (SubStr(msg, 1, 17) == "switchTargetSlot:") {
-        SwitchTargetSlot(Integer(SubStr(msg, 18)))
-    } else if (SubStr(msg, 1, 15) == "toggleSlotLock:") {
-        ToggleSlotLock(Integer(SubStr(msg, 16)))
-    } else if (SubStr(msg, 1, 16) == "clearTargetSlot:") {
-        ClearTargetSlot(Integer(SubStr(msg, 17)))
+    } else if (mType == "applyPreset") {
+        if IsNumber(payload)
+            ApplyWindowPreset(Integer(payload))
+    } else if (mType == "savePreset") {
+        if IsNumber(payload)
+            SaveWindowPreset(Integer(payload))
+    } else if (mType == "switchTargetSlot") {
+        if IsNumber(payload)
+            SwitchTargetSlot(Integer(payload))
+    } else if (mType == "toggleSlotLock") {
+        if IsNumber(payload)
+            ToggleSlotLock(Integer(payload))
+    } else if (mType == "clearTargetSlot") {
+        if IsNumber(payload)
+            ClearTargetSlot(Integer(payload))
     }
 }

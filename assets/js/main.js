@@ -54,9 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
 /**
  * AHKへメッセージを送信
  */
-function sendMsg(msg) {
-  if (window.chrome?.webview) {
-    window.chrome.webview.postMessage(msg);
+function sendMsg(type, payload = null) {
+  if (window.chrome && window.chrome.webview) {
+    window.chrome.webview.postMessage({
+      type: type,
+      payload: payload,
+    });
   }
 }
 
@@ -175,7 +178,10 @@ function selectAction(action, e) {
   if (e) e.stopPropagation();
   document.getElementById("target-action-label").innerText = action;
   document.getElementById("action-menu").classList.add("hidden");
-  sendMsg("updateSetting:TargetAction:" + action);
+  sendMsg("updateSetting", {
+    key: "TargetAction",
+    value: action,
+  });
 }
 
 /**
@@ -244,7 +250,10 @@ function selectTrigger(trigger, e) {
   const mShortcut = document.getElementById("menu-transfer-shortcut");
   if (mShortcut) mShortcut.innerText = trigger;
   document.getElementById("trigger-menu").classList.add("hidden");
-  sendMsg("updateSetting:TriggerKey:" + trigger);
+  sendMsg("updateSetting", {
+    key: "TriggerKey",
+    value: trigger,
+  });
 }
 
 /**
@@ -262,7 +271,12 @@ textArea.addEventListener("keydown", (e) => {
 
   if ((isCtrlTrigger || isShiftTrigger) && e.key === "Enter") {
     e.preventDefault();
-    sendMsg("transfer:" + textArea.value);
+    sendMsg("transfer", textArea.value);
+  }
+
+  // Alt + C でテキストエリアをクリア
+  if (e.altKey && e.key === "c") {
+    clearTextArea();
   }
 });
 
@@ -332,9 +346,9 @@ function handleSlotAction(action) {
   if (currentContextSlot === null) return;
 
   if (action === "lock") {
-    sendMsg("toggleSlotLock:" + currentContextSlot);
+    sendMsg("toggleSlotLock", currentContextSlot);
   } else if (action === "clear") {
-    sendMsg("clearTargetSlot:" + currentContextSlot);
+    sendMsg("clearTargetSlot", currentContextSlot);
   }
 
   document.getElementById("slot-context-menu").style.display = "none";

@@ -25,7 +25,11 @@
 
           <!-- リンクボタン（スプリットボタン） -->
           <div class="split-button" id="link-split-btn">
-            <button id="link-btn" class="ui-surface" onclick="sendMsg('toggleLink')">
+            <button
+              id="link-btn"
+              class="ui-surface"
+              onclick="sendMsg('toggleLink')"
+            >
               <span id="active-slot-num"></span>
               <img
                 src="assets/icons/link.svg"
@@ -54,21 +58,21 @@
           <div class="main-presets">
             <button
               class="preset-call-btn ui-surface"
-              onclick="sendMsg('applyPreset:1')"
+              onclick="sendMsg('applyPreset', 1)"
               title="Apply Preset 1"
             >
               1
             </button>
             <button
               class="preset-call-btn ui-surface"
-              onclick="sendMsg('applyPreset:2')"
+              onclick="sendMsg('applyPreset', 2)"
               title="Apply Preset 2"
             >
               2
             </button>
             <button
               class="preset-call-btn ui-surface"
-              onclick="sendMsg('applyPreset:3')"
+              onclick="sendMsg('applyPreset', 3)"
               title="Apply Preset 3"
             >
               3
@@ -171,7 +175,7 @@
           <div class="preset-controls">
             <button
               class="preset-save-tile ui-surface"
-              onclick="sendMsg('savePreset:1')"
+              onclick="sendMsg('savePreset', 1)"
               title="Save  to Preset 1"
             >
               <img
@@ -183,7 +187,7 @@
             </button>
             <button
               class="preset-save-tile ui-surface"
-              onclick="sendMsg('savePreset:2')"
+              onclick="sendMsg('savePreset', 2)"
               title="Save  to Preset 2"
             >
               <img
@@ -195,7 +199,7 @@
             </button>
             <button
               class="preset-save-tile ui-surface"
-              onclick="sendMsg('savePreset:3')"
+              onclick="sendMsg('savePreset', 3)"
               title="Save  to Preset 3"
             >
               <img
@@ -245,11 +249,11 @@
         <div class="setting-row">
           <label>Font Size</label>
           <div class="num-control">
-            <button class="symbol" onclick="sendMsg('changeFontSize:-1')">
+            <button class="symbol" onclick="sendMsg('changeFontSize', -1)">
               -
             </button>
             <span id="font-size-val">14</span>
-            <button class="symbol" onclick="sendMsg('changeFontSize:1')">
+            <button class="symbol" onclick="sendMsg('changeFontSize', 1)">
               +
             </button>
           </div>
@@ -263,9 +267,10 @@
               type="checkbox"
               id="minimize-option-check"
               onchange="
-                sendMsg(
-                  'updateSetting:MinimizeOption:' + (this.checked ? '1' : '0'),
-                )
+                sendMsg('updateSetting', {
+                  key: 'MinimizeOption',
+                  value: this.checked,
+                })
               "
             />
             <span class="slider"></span>
@@ -280,7 +285,10 @@
               type="checkbox"
               id="save-log-check"
               onchange="
-                sendMsg('updateSetting:SaveLog:' + (this.checked ? '1' : '0'))
+                sendMsg('updateSetting', {
+                  key: 'SaveLog',
+                  value: this.checked,
+                })
               "
             />
             <span class="slider"></span>
@@ -312,7 +320,13 @@
         <div class="setting-row">
           <label>Log Directory</label>
           <div class="input-group expand">
-            <input type="text" id="log-dir-display" class="ui-surface" readonly value="C:\..." />
+            <input
+              type="text"
+              id="log-dir-display"
+              class="ui-surface"
+              readonly
+              value="C:\..."
+            />
             <button onclick="sendMsg('selectLogDir')" title="Browse...">
               <img
                 src="assets/icons/folder.svg"
@@ -374,118 +388,83 @@
           </div>
 
           <div class="help-section">
-            <h4>Navigation</h4>
+          <div class="help-section">
+            <h4>View Navigation</h4>
             <div class="help-grid">
               <div class="help-item"><kbd>Alt</kbd>+<kbd>T</kbd></div>
               <div>Show/Hide Toolbar</div>
-
               <div class="help-item"><kbd>Esc</kbd></div>
               <div>Show Main View</div>
-
               <div class="help-item"><kbd>F1</kbd></div>
               <div>Show/Hide Help View</div>
-
               <div class="help-item"><kbd>Ctrl</kbd>+<kbd>,</kbd></div>
               <div>Show Settings View</div>
-
               <div class="help-item"><kbd>Ctrl</kbd>+<kbd>Tab</kbd></div>
               <div>Rotate Views (Main ↔ Settings ↔ Help)</div>
+            </div>
+          </div>
 
-              <div class="help-item">
-                <kbd>Ctrl</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
-              </div>
+          <div class="help-section">
+            <h4>Link Slots</h4>
+            <div class="help-grid">
+              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
               <div>Switch Link Slot</div>
-
-              <div class="help-item">
-                <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
-              </div>
+              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
               <div>Lock / Unlock Link Slot (Toggle)</div>
-
-              <div class="help-item">
-                <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
-              </div>
+              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
               <div>Clear Link Slot</div>
             </div>
           </div>
 
           <div class="help-section">
-            <h4>Core Actions</h4>
+            <h4>Transfer & Target Actions</h4>
             <div class="help-grid">
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>C</kbd></div>
+              <div>Clear Text Area</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>L</kbd></div>
               <div>Link / Cancel Target App</div>
-
-              <div class="help-item">
-                <kbd>Ctrl/Shift</kbd>+<kbd>Enter</kbd>
-              </div>
+              <div class="help-item"><kbd>Ctrl/Shift</kbd>+<kbd>Enter</kbd></div>
               <div>Transfer Text (Trigger)</div>
-            </div>
-          </div>
-
-          <div class="help-section">
-            <h4>Target Action Settings</h4>
-            <div class="help-grid">
               <div class="help-item"><kbd>Alt</kbd>+<kbd>Enter</kbd></div>
               <div>Set Action: Enter</div>
-
-              <div class="help-item">
-                <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd>
-              </div>
+              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd></div>
               <div>Set Action: Ctrl+Enter</div>
-
-              <div class="help-item">
-                <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd>
-              </div>
+              <div class="help-item"><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd></div>
               <div>Set Action: Shift+Enter</div>
-
               <div class="help-item"><kbd>Alt</kbd>+<kbd>P</kbd></div>
               <div>Set Action: Paste Only</div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>K</kbd></div>
+              <div>Toggle Trigger Key</div>
             </div>
           </div>
 
           <div class="help-section">
             <h4>Presets</h4>
             <div class="help-grid">
-              <div class="help-item">
-                <kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
-              </div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
               <div>Apply Preset</div>
-
-              <div class="help-item">
-                <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
-              </div>
+              <div class="help-item"><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
               <div>Save Preset</div>
             </div>
           </div>
 
           <div class="help-section">
-            <h4>Application Control</h4>
+            <h4>Settings & Logs</h4>
             <div class="help-grid">
               <div class="help-item"><kbd>Alt</kbd>+<kbd>J</kbd></div>
               <div>Open settings.json</div>
-
               <div class="help-item"><kbd>Alt</kbd>+<kbd>R</kbd></div>
               <div>Reset Focus Hotkey to Default</div>
-
               <div class="help-item"><kbd>Alt</kbd>+<kbd>S</kbd></div>
               <div>Toggle Save Log</div>
-
               <div class="help-item"><kbd>Alt</kbd>+<kbd>M</kbd></div>
               <div>Toggle Minimize Option</div>
-
-              <div class="help-item"><kbd>Alt</kbd>+<kbd>K</kbd></div>
-              <div>Toggle Trigger Key: Ctrl/Shift+Enter</div>
-
-              <div class="help-item">
-                <kbd>Alt</kbd>+<kbd>-</kbd> / <kbd>=</kbd>
-              </div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>-</kbd> / <kbd>=</kbd></div>
               <div>Change Font Size</div>
-
               <div class="help-item"><kbd>Alt</kbd>+<kbd>B</kbd></div>
-              <div>Browse Log Directory (Select Folder)</div>
-
+              <div>Select Log Directory</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>D</kbd></div>
               <div>Open Log Directory</div>
-
               <div class="help-item"><kbd>Alt</kbd>+<kbd>O</kbd></div>
               <div>Open Latest Log</div>
             </div>

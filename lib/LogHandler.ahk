@@ -103,8 +103,7 @@ SaveToLog(content, target := "Unknown") {
 
     }
 
-    fileName := logPath
-        . "\history_" . A_YYYY . "-" . A_MM . "-" . A_DD . ".jsonl"
+    fileName := logPath . "\history_" . FormatTime(, "yyyy-MM-dd") . ".jsonl"
 
     ; JSONオブジェクトの構築
     logObj := Map(

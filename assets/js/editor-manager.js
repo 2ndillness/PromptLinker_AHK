@@ -64,7 +64,7 @@ async function runEditorCommand(command) {
   try {
     switch (command) {
       case "transfer":
-        sendMsg("transfer:" + textArea.value);
+        sendMsg("transfer", textArea.value);
         break;
       case "cut":
         if (start !== end) {

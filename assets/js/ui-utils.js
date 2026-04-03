@@ -61,7 +61,7 @@ function updateTargetSlots(slots) {
 
     item.onclick = (e) => {
       e.stopPropagation();
-      sendMsg("switchTargetSlot:" + slot.index);
+      sendMsg("switchTargetSlot", slot.index);
       menu.classList.add("hidden");
     };
 

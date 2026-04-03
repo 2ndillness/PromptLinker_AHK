@@ -19,6 +19,7 @@ const HOTKEY_BLACKLIST = [
   "^n",
   "^w",
   "^p",
+  "^r",
   // Windowsシステム操作 (Win+L, D, E, R, S, X, I, Tabなど)
   "#l",
   "#d",
@@ -27,6 +28,7 @@ const HOTKEY_BLACKLIST = [
   "#s",
   "#x",
   "#i",
+  "#v",
   "#tab",
   "!tab",
   "!f4",
@@ -59,6 +61,7 @@ const HOTKEY_BLACKLIST = [
   "f1",
   "!j",
   "!r",
+  "!c",
   "!t",
   "!k",
   "!d",
@@ -151,7 +154,10 @@ function resetFocusHotkey() {
   if (hotkeyInput) {
     const formatted = formatHotkey(defaultHotkey);
     hotkeyInput.value = formatted;
-    sendMsg("updateSetting:FocusHotkey:" + defaultHotkey);
+    sendMsg("updateSetting", {
+      key: "FocusHotkey",
+      value: defaultHotkey,
+    });
     showToast("Hotkey reset to default:\n" + formatted, "success");
   }
 }
@@ -212,7 +218,10 @@ function handleHotkeyInput(e) {
   const formatted = formatHotkey(ahkString);
   e.target.value = formatted;
   window.ahkSettings.FocusHotkey = ahkString; // 即時同期してロールバックを防止
-  sendMsg("updateSetting:FocusHotkey:" + ahkString);
+  sendMsg("updateSetting", {
+    key: "FocusHotkey",
+    value: ahkString,
+  });
   showToast(`Hotkey updated: ${formatted}`, "success");
   e.target.blur(); // 入力完了時にフォーカスを外して確定させる
 }
