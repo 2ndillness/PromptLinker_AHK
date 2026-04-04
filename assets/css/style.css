@@ -82,14 +82,6 @@
   padding-left: 4px;
 }
 
-/* 26px正方形のアイコンボタン共通クラス */
-.sq-btn {
-  width: 26px !important;
-  height: 26px !important;
-  min-width: 26px !important;
-  flex-shrink: 0 !important;
-  padding: 0 !important;
-}
 
 #settings-view,
 #help-view {

@@ -72,9 +72,6 @@ input:checked + .slider:before {
   gap: 6px !important;
   transition: all 0.2s;
 }
-.preset-save-tile:hover {
-  border-color: var(--accent-color);
-}
 .preset-label {
   font-size: var(--font-size-sm);
   font-weight: bold;

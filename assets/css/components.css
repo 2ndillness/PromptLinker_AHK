@@ -54,18 +54,22 @@ button {
   gap: 4px;
 }
 
-/* アイコンのみのボタン（ヘッダー用など） */
+/* 26px正方形のアイコンボタン共通 */
+.sq-btn,
 .head-icon-btn {
-  background: transparent;
-  border: none;
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  flex-shrink: 0 !important;
+  padding: 0 !important;
+}
+
+.head-icon-btn {
   color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px;
   display: flex;
-  transition: color 0.2s;
 }
 .head-icon-btn:hover {
-  color: var(--accent-color);
+  color: var(--text-color);
 }
 
 /* 共通の表示ビューヘッダー */
