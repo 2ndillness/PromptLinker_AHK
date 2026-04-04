@@ -245,6 +245,27 @@
           </div>
         </div>
 
+        <!-- フォーカスキー -->
+        <div class="setting-row">
+          <label>Focus Hotkey</label>
+          <div class="input-group">
+            <div class="explanation">Press keys to set.</div>
+            <input
+              type="text"
+              id="hotkey-input"
+              class="hotkey-input ui-surface"
+              readonly
+            />
+            <button onclick="resetFocusHotkey()" title="Reset to Default">
+              <img
+                src="assets/icons/arrow-left.svg"
+                class="icon-img"
+                data-icon="arrow-left"
+              />
+            </button>
+          </div>
+        </div>
+
         <!-- フォントサイズ -->
         <div class="setting-row">
           <label>Font Size</label>
@@ -322,28 +343,7 @@
           </div>
         </div>
 
-        <!-- フォーカスキー -->
-        <div class="setting-row">
-          <label>Focus Hotkey</label>
-          <div class="input-group">
-            <div class="explanation">Press keys to set.</div>
-            <input
-              type="text"
-              id="hotkey-input"
-              class="hotkey-input ui-surface"
-              readonly
-            />
-            <button onclick="resetFocusHotkey()" title="Reset to Default">
-              <img
-                src="assets/icons/arrow-left.svg"
-                class="icon-img"
-                data-icon="arrow-left"
-              />
-            </button>
-          </div>
-        </div>
-
-        <!-- エクスポートディレクトリ選択 -->
+        <!-- エクスポートディレクトリ設定 -->
         <div class="setting-row">
           <label>Export Directory</label>
           <div class="input-group expand">
@@ -352,7 +352,7 @@
               id="export-dir-display"
               class="ui-surface"
               readonly
-              value="C:\..."
+              placeholder="Not set. Please browse..."
             />
             <button onclick="sendMsg('selectExportDir')" title="Browse...">
               <img
@@ -361,19 +361,14 @@
                 data-icon="folder"
               />
             </button>
+            <button onclick="sendMsg('openExportDir')" title="Open Folder">
+              <img
+                src="assets/icons/folder-open.svg"
+                class="icon-img"
+                data-icon="folder-open"
+              />
+            </button>
           </div>
-        </div>
-
-        <!-- エクスポートディレクトリ操作 -->
-        <div class="action-row">
-          <button onclick="sendMsg('openExportDir')">
-            <img
-              src="assets/icons/folder-open.svg"
-              class="icon-img"
-              data-icon="folder-open"
-            />
-            Open Folder
-          </button>
         </div>
       </div>
 
