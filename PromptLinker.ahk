@@ -33,6 +33,7 @@ FileInstall "assets\css\style.css", ResDir "\assets\css\style.css", 1
 FileInstall "assets\js\editor-manager.js", ResDir "\assets\js\editor-manager.js", 1
 FileInstall "assets\js\settings-manager.js", ResDir "\assets\js\settings-manager.js", 1
 FileInstall "assets\js\ui-utils.js", ResDir "\assets\js\ui-utils.js", 1
+FileInstall "assets\js\view-manager.js", ResDir "\assets\js\view-manager.js", 1
 FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
 FileInstall "assets\css\components.css", ResDir "\assets\css\components.css", 1
 FileInstall "assets\css\theme.css", ResDir "\assets\css\theme.css", 1

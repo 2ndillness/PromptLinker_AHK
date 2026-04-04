@@ -71,52 +71,7 @@ function sendMsg(type, payload = null) {
   }
 }
 
-const APP_VIEWS = ["main-view", "settings-view", "help-view"];
 
-/**
- * 指定されたビューを表示し、他を非表示にする
- */
-function showView(targetId) {
-  APP_VIEWS.forEach((id) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    if (id === targetId) {
-      el.classList.remove("hidden");
-      if (id === "main-view") textArea.focus();
-    } else {
-      el.classList.add("hidden");
-    }
-  });
-}
-
-function toggleSetView(forceState = null) {
-  const isOpeningSettings =
-    forceState !== null
-      ? forceState
-      : document.getElementById("settings-view").classList.contains("hidden");
-
-  showView(isOpeningSettings ? "settings-view" : "main-view");
-}
-
-function rotateView(direction) {
-  const currentIndex = APP_VIEWS.findIndex(
-    (id) => !document.getElementById(id).classList.contains("hidden"),
-  );
-  const nextIndex =
-    (currentIndex + direction + APP_VIEWS.length) % APP_VIEWS.length;
-  showView(APP_VIEWS[nextIndex]);
-}
-
-function toggleHelp(forceState = null) {
-  const helpView = document.getElementById("help-view");
-  if (!helpView) return;
-
-  const isOpening =
-    forceState !== null ? forceState : helpView.classList.contains("hidden");
-
-  showView(isOpening ? "help-view" : "main-view");
-}
 
 
 
