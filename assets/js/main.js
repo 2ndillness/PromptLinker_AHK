@@ -49,6 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
   textArea.addEventListener("mouseleave", () => {
     textArea.classList.remove("at-top");
   });
+
+  // Ctrl + S で保存
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key === "s") {
+      e.preventDefault();
+      exportCurrentText();
+    }
+  });
 });
 
 /**
@@ -63,15 +71,10 @@ function sendMsg(type, payload = null) {
   }
 }
 
-/**
- * 表示ビューの切り替え管理
- * 将来的にログ画面を追加する場合は、この配列に ID を追加
- */
 const APP_VIEWS = ["main-view", "settings-view", "help-view"];
 
 /**
  * 指定されたビューを表示し、他を非表示にする
- * @param {string} targetId 表示する要素のID
  */
 function showView(targetId) {
   APP_VIEWS.forEach((id) => {
@@ -87,10 +90,6 @@ function showView(targetId) {
   });
 }
 
-/**
- * 設定画面の表示切り替え
- * @param {boolean|null} forceState 強制的に設定画面を表示(true)か非表示(false)か
- */
 function toggleSetView(forceState = null) {
   const isOpeningSettings =
     forceState !== null
@@ -100,24 +99,15 @@ function toggleSetView(forceState = null) {
   showView(isOpeningSettings ? "settings-view" : "main-view");
 }
 
-/**
- * ビューを順番に切り替える (Ctrl+Tab 用)
- * @param {number} direction 1: 次へ, -1: 前へ
- */
 function rotateView(direction) {
   const currentIndex = APP_VIEWS.findIndex(
     (id) => !document.getElementById(id).classList.contains("hidden"),
   );
-  // 負の数に対応したループ計算
   const nextIndex =
     (currentIndex + direction + APP_VIEWS.length) % APP_VIEWS.length;
   showView(APP_VIEWS[nextIndex]);
 }
 
-/**
- * ヘルプ画面表示切り替え
- * @param {boolean|null} forceState 強制指定
- */
 function toggleHelp(forceState = null) {
   const helpView = document.getElementById("help-view");
   if (!helpView) return;
@@ -128,15 +118,11 @@ function toggleHelp(forceState = null) {
   showView(isOpening ? "help-view" : "main-view");
 }
 
-/**
- * ターゲットメニューの表示切り替え
- */
 function toggleTargetMenu(e) {
   e.stopPropagation();
   const menu = document.getElementById("target-menu");
   menu.classList.toggle("hidden");
 
-  // メニューが開いた時、外側クリックで閉じるようにする
   if (!menu.classList.contains("hidden")) {
     const closeMenu = (event) => {
       if (!menu.contains(event.target)) {
@@ -150,9 +136,6 @@ function toggleTargetMenu(e) {
   }
 }
 
-/**
- * ターゲットアクションメニューの表示切り替え
- */
 function toggleActionMenu(e) {
   e.stopPropagation();
   const menu = document.getElementById("action-menu");
@@ -171,9 +154,6 @@ function toggleActionMenu(e) {
   }
 }
 
-/**
- * ターゲットアクションを選択
- */
 function selectAction(action, e) {
   if (e) e.stopPropagation();
   document.getElementById("target-action-label").innerText = action;
@@ -184,19 +164,17 @@ function selectAction(action, e) {
   });
 }
 
-/**
- * グローバルキーイベント (Escキーなどの共通処理)
- */
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
-    // ホットキー入力欄にフォーカスがある時は、グローバルな遷移をさせない
     const hotkeyInput = document.getElementById("hotkey-input");
-    if (hotkeyInput && document.activeElement === hotkeyInput) {
-      return;
-    }
+    if (hotkeyInput && document.activeElement === hotkeyInput) return;
+    
     const targetMenu = document.getElementById("target-menu");
     const actionMenu = document.getElementById("action-menu");
-    if (!targetMenu.classList.contains("hidden")) {
+    const exportMenu = document.getElementById("export-menu");
+    const triggerMenu = document.getElementById("trigger-menu");
+
+    if (targetMenu && !targetMenu.classList.contains("hidden")) {
       targetMenu.classList.add("hidden");
       return;
     }
@@ -204,30 +182,22 @@ document.addEventListener("keydown", (e) => {
       actionMenu.classList.add("hidden");
       return;
     }
-    const triggerMenu = document.getElementById("trigger-menu");
-    const exportMenu = document.getElementById("export-menu");
-    if (triggerMenu && !triggerMenu.classList.contains("hidden")) {
-      triggerMenu.classList.add("hidden");
-      return;
-    }
     if (exportMenu && !exportMenu.classList.contains("hidden")) {
       exportMenu.classList.add("hidden");
       return;
     }
+    if (triggerMenu && !triggerMenu.classList.contains("hidden")) {
+      triggerMenu.classList.add("hidden");
+      return;
+    }
 
-    // メイン画面以外が表示されているなら、メインに戻る
     const isMainVisible = !document
       .getElementById("main-view")
       .classList.contains("hidden");
-    if (!isMainVisible) {
-      showView("main-view");
-    }
+    if (!isMainVisible) showView("main-view");
   }
 });
 
-/**
- * Trigger Key メニューの表示切り替え
- */
 function toggleTriggerMenu(e) {
   e.stopPropagation();
   const menu = document.getElementById("trigger-menu");
@@ -246,9 +216,6 @@ function toggleTriggerMenu(e) {
   }
 }
 
-/**
- * Trigger Key を選択
- */
 function selectTrigger(trigger, e) {
   if (e) e.stopPropagation();
   document.getElementById("trigger-key-label").innerText = trigger;
@@ -261,9 +228,6 @@ function selectTrigger(trigger, e) {
   });
 }
 
-/**
- * Export Extension メニューの表示切り替え
- */
 function toggleExportMenu(e) {
   e.stopPropagation();
   const menu = document.getElementById("export-menu");
@@ -282,9 +246,6 @@ function toggleExportMenu(e) {
   }
 }
 
-/**
- * Export Extension を選択
- */
 function selectExportExt(ext, e) {
   if (e) e.stopPropagation();
   document.getElementById("export-ext-label").innerText = ext;
@@ -296,37 +257,7 @@ function selectExportExt(ext, e) {
 }
 
 /**
- * イベントリスナー
- */
-textArea.addEventListener("keydown", (e) => {
-  let trigger = "Ctrl + Enter";
-  const labelEl = document.getElementById("trigger-key-label");
-  if (labelEl) {
-    trigger = labelEl.innerText;
-  }
-  const isCtrlTrigger = trigger === "Ctrl + Enter" && e.ctrlKey && !e.shiftKey;
-  const isShiftTrigger =
-    trigger === "Shift + Enter" && e.shiftKey && !e.ctrlKey;
-
-  if ((isCtrlTrigger || isShiftTrigger) && e.key === "Enter") {
-    e.preventDefault();
-    sendMsg("transfer", textArea.value);
-  }
-
-  // Alt + C でテキストエリアをクリア
-  if (e.altKey && e.key === "c") {
-    clearTextArea();
-  }
-  
-  // Ctrl + S で保存
-  if (e.ctrlKey && e.key === "s") {
-    e.preventDefault();
-    exportCurrentText();
-  }
-});
-
-/**
- * 現在のプロンプトを保存（AHK側へ転送）
+ * 現在のプロンプトを保存
  */
 function exportCurrentText() {
   const content = textArea.value;
@@ -337,9 +268,24 @@ function exportCurrentText() {
   sendMsg("export", content);
 }
 
-/**
- * AHKからのメッセージを受信
- */
+textArea.addEventListener("keydown", (e) => {
+  let trigger = "Ctrl + Enter";
+  const labelEl = document.getElementById("trigger-key-label");
+  if (labelEl) trigger = labelEl.innerText;
+
+  const isCtrlT = trigger === "Ctrl + Enter" && e.ctrlKey && !e.shiftKey;
+  const isShiftT = trigger === "Shift + Enter" && e.shiftKey && !e.ctrlKey;
+
+  if ((isCtrlT || isShiftT) && e.key === "Enter") {
+    e.preventDefault();
+    sendMsg("transfer", textArea.value);
+  }
+
+  if (e.altKey && e.key === "c") {
+    clearTextArea();
+  }
+});
+
 window.chrome.webview.addEventListener("message", (event) => {
   const msg = event.data;
   if (typeof msg !== "string") return;
@@ -359,9 +305,6 @@ window.chrome.webview.addEventListener("message", (event) => {
   }
 });
 
-/**
- * スロット用コンテキストメニューの制御
- */
 let currentContextSlot = null;
 
 function showSlotContextMenu(e, index) {
@@ -370,11 +313,8 @@ function showSlotContextMenu(e, index) {
   currentContextSlot = index;
 
   const menu = document.getElementById("slot-context-menu");
-
-  // 他のメニューを閉じる
   document.getElementById("context-menu").style.display = "none";
 
-  // 位置計算のために一旦表示（非可視）
   menu.style.visibility = "hidden";
   menu.style.display = "block";
 
@@ -386,11 +326,8 @@ function showSlotContextMenu(e, index) {
   let x = e.clientX;
   let y = e.clientY;
 
-  // 画面端での折り返し処理
   if (x + menuWidth > winWidth) x -= menuWidth;
   if (y + menuHeight > winHeight) y -= menuHeight;
-
-  // 画面外に出てしまうのを防ぐ
   if (x < 0) x = 0;
   if (y < 0) y = 0;
 
@@ -401,25 +338,22 @@ function showSlotContextMenu(e, index) {
 
 function handleSlotAction(action) {
   if (currentContextSlot === null) return;
-
   if (action === "lock") {
     sendMsg("toggleSlotLock", currentContextSlot);
   } else if (action === "clear") {
     sendMsg("clearTargetSlot", currentContextSlot);
   }
-
   document.getElementById("slot-context-menu").style.display = "none";
   currentContextSlot = null;
 }
 
-// 共通のクリック処理でメニューを閉じる
 window.addEventListener("click", () => {
   const slotMenu = document.getElementById("slot-context-menu");
   if (slotMenu) slotMenu.style.display = "none";
 });
 
 /**
- * AHK側からの操作をUIコンポーネントに反映させる
+ * AHK側からの操作をUIに反映
  */
 function updateUI(key, value) {
   const isTrue = value === "1" || value === "true" || value === true;
@@ -427,6 +361,10 @@ function updateUI(key, value) {
     case "ExportExtension":
       const extLabel = document.getElementById("export-ext-label");
       if (extLabel) extLabel.innerText = value;
+      const exportBtn = document.getElementById("export-btn");
+      if (exportBtn) {
+        exportBtn.title = "Save as " + value.replace(".", "");
+      }
       break;
     case "MinimizeOption":
       document.getElementById("minimize-option-check").checked = isTrue;
@@ -436,14 +374,9 @@ function updateUI(key, value) {
       break;
     case "TriggerKey":
       const tLabel = document.getElementById("trigger-key-label");
-      if (tLabel) {
-        tLabel.innerText = value;
-      }
-      // コンテキストメニューのショートカット表示も更新
-      const mShortcut = document.getElementById("menu-transfer-shortcut");
-      if (mShortcut) {
-        mShortcut.innerText = value;
-      }
+      if (tLabel) tLabel.innerText = value;
+      const mS = document.getElementById("menu-transfer-shortcut");
+      if (mS) mS.innerText = value;
       break;
     case "TargetAction":
       const label = document.getElementById("target-action-label");

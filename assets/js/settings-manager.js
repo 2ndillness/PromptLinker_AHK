@@ -64,14 +64,13 @@ const HOTKEY_BLACKLIST = [
   "!c",
   "!t",
   "!k",
-  "!d",
   "!b",
   "!-",
   "!=",
   "!m",
-  "!s",
-  "!o",
+  "!e",
   "!a",
+  "!o",
 ];
 let recordingTimeout = null;
 
@@ -99,6 +98,12 @@ function initSettings(settings) {
   const extLabel = document.getElementById("export-ext-label");
   if (extLabel) extLabel.innerText = settings.ExportExtension || ".txt";
   updateExportDirectory(settings.ExportDir);
+
+  const exportBtn = document.getElementById("export-btn");
+  if (exportBtn) {
+    const ext = (settings.ExportExtension || ".txt").replace(".", "");
+    exportBtn.title = "Save as " + ext;
+  }
 
   const hotkeyInput = document.getElementById("hotkey-input");
   if (hotkeyInput) {

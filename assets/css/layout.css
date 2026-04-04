@@ -40,8 +40,9 @@
 /* メインツールバーのプリセット呼び出しボタン */
 .main-presets {
   display: flex;
-  margin-left: 12px;
+  margin-left: 10px;
   gap: var(--spacing-sm);
+  flex-shrink: 0;
 }
 .preset-call-btn {
   width: 24px !important;

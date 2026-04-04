@@ -169,7 +169,7 @@ Loop 3 {
 
 Hotkey("!j", OpenSettings)
 Hotkey("!r", (*) => wv.ExecuteScriptAsync("resetFocusHotkey();"))
-Hotkey("!d", OpenExportDir)
+Hotkey("!o", OpenExportDir)
 Hotkey("!b", SelectExportDir)
 
 Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))

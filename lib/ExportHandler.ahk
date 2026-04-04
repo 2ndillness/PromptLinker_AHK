@@ -8,8 +8,8 @@ SelectExportDir(*) {
     global MainGui, Settings, wv
     
     ; 現在の AlwaysOnTop 状態を確認
-    isTopmost := WinGetExStyle(MainGui.Hwnd) & 0x8
-    
+    isOk := false
+    isTopmost := Settings["AlwaysOnTop"]
     if (isTopmost)
         MainGui.Opt("-AlwaysOnTop")
         

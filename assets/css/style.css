@@ -33,6 +33,7 @@
   display: flex;
   align-items: center;
   position: relative;
+  flex-shrink: 0;
 }
 .chevron-btn {
   width: 24px !important;
@@ -55,6 +56,7 @@
   display: flex;
   align-items: center;
   margin-left: 12px;
+  flex-shrink: 0;
 }
 .target-action-btn {
   width: 120px;
@@ -80,10 +82,13 @@
   padding-left: 4px;
 }
 
-#settings-btn,
-#help-btn {
-  width: 26px;
-  padding: 0;
+/* 26px正方形のアイコンボタン共通クラス */
+.sq-btn {
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  flex-shrink: 0 !important;
+  padding: 0 !important;
 }
 
 #settings-view,
@@ -133,16 +138,17 @@
 
 /** ツールバーのボタン群レイアウト */
 .main-presets {
-  margin-left: 15px;
+  margin-left: 10px;
+  flex-shrink: 0;
 }
 #action-select {
-  margin-left: 15px;
+  margin-left: 10px;
 }
 #export-btn {
-  margin-left: 15px;
+  margin-left: 10px;
 }
 #settings-btn {
-  margin-left: 8px;
+  margin-left: 6px;
 }
 #help-btn {
   margin-left: 6px;
