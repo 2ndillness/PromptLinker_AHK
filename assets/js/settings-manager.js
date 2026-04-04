@@ -93,8 +93,7 @@ function initSettings(settings) {
   updateFontSize(settings.FontSize);
   document.getElementById("minimize-option-check").checked =
     settings.MinimizeOption;
-  document.getElementById("always-on-top-check").checked =
-    settings.AlwaysOnTop;
+  document.getElementById("always-on-top-check").checked = settings.AlwaysOnTop;
   const extLabel = document.getElementById("export-ext-label");
   if (extLabel) extLabel.innerText = settings.ExportExtension || ".txt";
   updateExportDirectory(settings.ExportDir);
@@ -109,6 +108,22 @@ function initSettings(settings) {
   if (hotkeyInput) {
     hotkeyInput.value = formatHotkey(settings.FocusHotkey || "^!f");
     hotkeyInput.onkeydown = handleHotkeyInput;
+    hotkeyInput.onkeyup = (e) => {
+      if (["Control", "Shift", "Alt", "Meta"].includes(e.key)) {
+        const parts = [];
+        if (e.ctrlKey) parts.push("^");
+        if (e.shiftKey) parts.push("+");
+        if (e.altKey) parts.push("!");
+        if (e.metaKey) parts.push("#");
+
+        const currentMods = parts.join("");
+        if (hotkeyInput.classList.contains("recording")) {
+          hotkeyInput.value = currentMods
+            ? formatHotkey(currentMods) + " + ..."
+            : "Recording...";
+        }
+      }
+    };
 
     hotkeyInput.onfocus = () => {
       sendMsg("startRecording");
@@ -182,13 +197,20 @@ function handleHotkeyInput(e) {
     return;
   }
 
-  if (["Control", "Shift", "Alt", "Meta"].includes(e.key)) return;
-
   const parts = [];
   if (e.ctrlKey) parts.push("^");
   if (e.shiftKey) parts.push("+");
   if (e.altKey) parts.push("!");
   if (e.metaKey) parts.push("#");
+
+  // モディファイアキーのみの場合はプレビューを表示して終了
+  if (["Control", "Shift", "Alt", "Meta"].includes(e.key)) {
+    const currentMods = parts.join("");
+    e.target.value = currentMods
+      ? formatHotkey(currentMods) + " + ..."
+      : "Recording...";
+    return;
+  }
 
   let key = e.key;
   const map = {
