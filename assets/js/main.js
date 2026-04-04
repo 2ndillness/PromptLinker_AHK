@@ -168,7 +168,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") {
     const hotkeyInput = document.getElementById("hotkey-input");
     if (hotkeyInput && document.activeElement === hotkeyInput) return;
-    
+
     const targetMenu = document.getElementById("target-menu");
     const actionMenu = document.getElementById("action-menu");
     const exportMenu = document.getElementById("export-menu");
