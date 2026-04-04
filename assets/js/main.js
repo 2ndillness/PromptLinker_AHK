@@ -317,7 +317,25 @@ textArea.addEventListener("keydown", (e) => {
   if (e.altKey && e.key === "c") {
     clearTextArea();
   }
+  
+  // Ctrl + S で保存
+  if (e.ctrlKey && e.key === "s") {
+    e.preventDefault();
+    exportCurrentText();
+  }
 });
+
+/**
+ * 現在のプロンプトを保存（AHK側へ転送）
+ */
+function exportCurrentText() {
+  const content = textArea.value;
+  if (content.trim() === "") {
+    showToast("No text to save", "warning");
+    return;
+  }
+  sendMsg("export", content);
+}
 
 /**
  * AHKからのメッセージを受信

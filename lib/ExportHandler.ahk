@@ -13,29 +13,40 @@ SelectExportDir(*) {
     if (isTopmost)
         MainGui.Opt("-AlwaysOnTop")
         
-    ; エクスプローラ形式でフォルダ選択を表示
-    prompt := "Select Export Directory"
-    selDir := FileSelect("D", "*" . Settings["ExportDir"], prompt)
-    
-    if (isTopmost)
-        MainGui.Opt("+AlwaysOnTop")
+    Loop {
+        ; エクスプローラ形式でフォルダ選択を表示
+        prompt := "Select Export Directory"
+        selDir := FileSelect("D", "*" . Settings["ExportDir"], prompt)
+        
+        if (selDir == "")
+            break ; キャンセルされた場合は終了
 
-    if (selDir != "") {
         ; 書き込み権限テスト
         testFile := selDir "\.write_test"
+        isOk := false
         try {
             FileAppend("", testFile)
             FileDelete(testFile)
+            isOk := true
         } catch {
-            wv.PostWebMessageAsString("notify:error:Permission Denied")
-            return
+            msg := "Permission Denied: Please select another directory"
+            wv.PostWebMessageAsString("notify:error:" . msg)
+            ; ループを継続し、再選択させる
         }
 
-        Settings["ExportDir"] := selDir
-        escapedPath := StrReplace(selDir, "\", "\\")
-        wv.ExecuteScriptAsync("updateExportDirectory('" . escapedPath . "');")
-        SaveSettings()
+        if (isOk) {
+            Settings["ExportDir"] := selDir
+            escapedPath := StrReplace(selDir, "\", "\\")
+            wv.ExecuteScriptAsync("updateExportDirectory('" escapedPath "');")
+            SaveSettings()
+            isOk := true
+            break
+        }
     }
+    
+    if (isTopmost)
+        MainGui.Opt("+AlwaysOnTop")
+    return isOk
 }
 
 /**
@@ -67,14 +78,13 @@ ExportPrompt(content) {
     }
 
     savePath := Settings["ExportDir"]
-    if !DirExist(savePath) {
-        ; NOTE: ステップ2でこの部分をダイアログ誘導に強化予定
-        try {
-            DirCreate(savePath)
-        } catch as err {
-            wv.PostWebMessageAsString("notify:error:Failed to create save dir")
-            return
+    if (savePath == "" || !DirExist(savePath)) {
+        wv.PostWebMessageAsString("notify:warning:Please select a directory")
+        ; 選択に成功した場合は、そのまま保存処理を続行する
+        if (SelectExportDir()) {
+            ExportPrompt(content)
         }
+        return
     }
 
     ; ファイル名の生成: YYYYMMDD_HHMMSS_[1行目(20文字)].ext

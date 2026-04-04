@@ -132,19 +132,18 @@
 }
 
 /** ツールバーのボタン群レイアウト */
-/* プリセットボタンセット */
 .main-presets {
-  margin-left: 25px;
+  margin-left: 15px;
 }
-/* Traget Action */
 #action-select {
-  margin-left: 25px;
+  margin-left: 15px;
 }
-/* 設定ボタン */
+#export-btn {
+  margin-left: 15px;
+}
 #settings-btn {
-  margin-left: 20px;
-}
-/* ヘルプボタン */
-#help-btn {
   margin-left: 8px;
+}
+#help-btn {
+  margin-left: 6px;
 }

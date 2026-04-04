@@ -94,6 +94,8 @@ function initSettings(settings) {
   updateFontSize(settings.FontSize);
   document.getElementById("minimize-option-check").checked =
     settings.MinimizeOption;
+  document.getElementById("always-on-top-check").checked =
+    settings.AlwaysOnTop;
   const extLabel = document.getElementById("export-ext-label");
   if (extLabel) extLabel.innerText = settings.ExportExtension || ".txt";
   updateExportDirectory(settings.ExportDir);
