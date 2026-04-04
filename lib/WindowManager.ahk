@@ -50,8 +50,6 @@ CheckActiveWindow() {
         wv.PostWebMessageAsString("notify:success:Linked: " TargetProcess)
         wv.ExecuteScriptAsync("setLinkWaiting(false);")
         WinActivate("ahk_id " MainGui.Hwnd)
-        wv.ExecuteScriptAsync("document.getElementById('main-textarea')"
-            . ".focus();")
     } else if (A_TickCount - StartTime > 10000) {
 
         CancelLinking("Timeout")
@@ -110,8 +108,6 @@ ApplyWindowPreset(index) {
 
     wv.PostWebMessageAsString("notify:success:Preset " . index . " Applied")
     WinActivate("ahk_id " . MainGui.Hwnd)
-    wv.ExecuteScriptAsync("document.getElementById('main-textarea')"
-        . ".focus();")
 }
 
 

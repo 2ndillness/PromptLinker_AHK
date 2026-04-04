@@ -373,6 +373,9 @@ function updateUI(key, value) {
     case "MinimizeOption":
       document.getElementById("minimize-option-check").checked = isTrue;
       break;
+    case "AlwaysOnTop":
+      document.getElementById("always-on-top-check").checked = isTrue;
+      break;
     case "TriggerKey":
       const tLabel = document.getElementById("trigger-key-label");
       if (tLabel) {

@@ -118,7 +118,10 @@ global IsToolbarHidden := false
 
 ; ターゲットスロット管理
 global CurrentSlotIndex := 1
-global TargetSlots := [{ hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }
+global TargetSlots := [
+    { hwnd: 0, exe: "", action: "", locked: false },
+    { hwnd: 0, exe: "", action: "", locked: false },
+    { hwnd: 0, exe: "", action: "", locked: false }
 ]
 
 
@@ -126,6 +129,7 @@ global TargetSlots := [{ hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 
 global Settings := Map(
     "FontSize", 14,
     "MinimizeOption", false,
+    "AlwaysOnTop", false,
     "SaveLog", false,
     "LogDir", (UsePortable ? A_ScriptDir "\logs" : DataDir "\logs"),
     "TargetAction", "Enter",
@@ -134,6 +138,7 @@ global Settings := Map(
     "TriggerKey", "Ctrl + Enter",
     "Presets", Map("1", "", "2", "", "3", "")
 )
+
 
 ; ==============================================================================
 ; コールバック関数
@@ -157,6 +162,29 @@ Gui_Size(thisGui, minMax, width, height) {
 #Include Lib\Hotkeys.ahk
 
 ; ==============================================================================
+; ウィンドウメッセージの監視
+; ==============================================================================
+OnMessage(0x0006, OnActivate) ; WM_ACTIVATE
+
+OnActivate(wParam, lParam, msg, hwnd) {
+    global MainGui, wvc, wv
+    ; ウィンドウがアクティブになった場合 (wParam != 0)
+    if (hwnd == MainGui.Hwnd && (wParam & 0xFFFF) != 0) {
+        if (IsSet(wvc) && wvc) {
+            try {
+                wvc.MoveFocus(0) ; 0: PROGRAMMATIC
+            }
+        }
+        if (IsSet(wv) && wv) {
+            ; ブラウザ側の準備を待ってからエディタにフォーカス (50ms)
+            SetTimer(() => (IsSet(wv) && wv ?
+                wv.ExecuteScriptAsync("document.getElementById('main-textarea')"
+                . ".focus();") : 0), -50)
+        }
+    }
+}
+
+; ==============================================================================
 ; アプリケーションの初期化
 ; ==============================================================================
 LoadSettings()
@@ -172,9 +200,10 @@ if Settings["SaveLog"] && !DirExist(Settings["LogDir"]) {
     }
 }
 
-MainGui := Gui("+AlwaysOnTop +Resize +MinSize500x140"
+; Clibor等のツールが認識しやすくなるよう、オーナーウィンドウ設定を避ける
+; 原因切り分けのため一時的に +AlwaysOnTop を解除
+MainGui := Gui("+Resize +MinSize500x140"
     , AppName " - Unlinked")
-
 
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
@@ -226,6 +255,7 @@ Hotkey("!-", (*) => ChangeFontSize(-1))
 Hotkey("!=", (*) => ChangeFontSize(1))
 
 ; 設定トグル
+Hotkey("!a", (*) => ToggleAlwaysOnTop())
 Hotkey("!s", (*) => ToggleSetting("SaveLog"))
 Hotkey("!m", (*) => ToggleSetting("MinimizeOption"))
 Hotkey("!k", ToggleTriggerKey)
@@ -280,18 +310,34 @@ DwmSetDarkMode(hwnd) {
 }
 DwmSetDarkMode(MainGui.Hwnd)
 
+if Settings["AlwaysOnTop"] {
+    MainGui.Opt("+AlwaysOnTop")
+}
+
 MainGui.Show("w500 h400")
 wvc.Fill()
-
 ; ==============================================================================
 ; メインスレッド用関数
 ; ==============================================================================
+ToggleAlwaysOnTop() {
+    global Settings, MainGui, wv
+    Settings["AlwaysOnTop"] := !Settings["AlwaysOnTop"]
+    MainGui.Opt(Settings["AlwaysOnTop"] ? "+AlwaysOnTop" : "-AlwaysOnTop")
+    wv.ExecuteScriptAsync("updateUI('AlwaysOnTop', " . (Settings["AlwaysOnTop"] ? "true" : "false") . ");")
+    status := Settings["AlwaysOnTop"] ? "ON" : "OFF"
+    wv.PostWebMessageAsString("notify:info:Always On Top: " . status)
+    SaveSettings()
+}
+
 OnNavigationCompleted(sender, args) {
     global wvc
     SyncSlotsToJS()
     SetTimer(MonitorTargetStatus, 1000)
     ; レンダリング完了を待ってから可視化 (ホワイトフラッシュ対策)
     wvc.IsVisible := true
+    try {
+        wvc.MoveFocus(0)
+    }
 }
 
 OnPermissionRequested(sender, args) {
@@ -328,9 +374,15 @@ OnWebMsg(sender, args) {
         v := payload.Get("value", "")
 
         ; JavaScriptのBoolean(true/false)または文字列("1"/"0")に対応
-        if (k == "SaveLog" || k == "MinimizeOption") {
-            Settings[k] := (v = true || v = 1 || v == "1" || v == "true") ? true : false
+        if (k == "SaveLog" || k == "MinimizeOption" || k == "AlwaysOnTop") {
+            Settings[k] := (
+                v = true || v = 1 || v == "1" || v == "true"
+            ) ? true : false
             v := Settings[k] ? "1" : "0" ; JS側へ返すために文字列化
+
+            if (k == "AlwaysOnTop") {
+                MainGui.Opt(Settings[k] ? "+AlwaysOnTop" : "-AlwaysOnTop")
+            }
         } else {
             Settings[k] := v
         }

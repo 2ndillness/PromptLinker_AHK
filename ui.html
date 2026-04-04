@@ -138,7 +138,7 @@
         </div>
 
         <!-- テキスト入力欄 -->
-        <textarea id="main-textarea"></textarea>
+        <textarea id="main-textarea" autofocus></textarea>
       </div>
 
       <div id="settings-view" class="hidden scrollable-view">
@@ -269,6 +269,24 @@
               onchange="
                 sendMsg('updateSetting', {
                   key: 'MinimizeOption',
+                  value: this.checked,
+                })
+              "
+            />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- 最前面表示オプション -->
+        <div class="setting-row">
+          <label>Always On Top</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="always-on-top-check"
+              onchange="
+                sendMsg('updateSetting', {
+                  key: 'AlwaysOnTop',
                   value: this.checked,
                 })
               "
@@ -455,6 +473,8 @@
               <div>Open settings.json</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>R</kbd></div>
               <div>Reset Focus Hotkey to Default</div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>A</kbd></div>
+              <div>Toggle Always On Top</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>S</kbd></div>
               <div>Toggle Save Log</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>M</kbd></div>
