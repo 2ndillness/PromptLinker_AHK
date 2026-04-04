@@ -205,8 +205,13 @@ document.addEventListener("keydown", (e) => {
       return;
     }
     const triggerMenu = document.getElementById("trigger-menu");
+    const exportMenu = document.getElementById("export-menu");
     if (triggerMenu && !triggerMenu.classList.contains("hidden")) {
       triggerMenu.classList.add("hidden");
+      return;
+    }
+    if (exportMenu && !exportMenu.classList.contains("hidden")) {
+      exportMenu.classList.add("hidden");
       return;
     }
 
@@ -253,6 +258,40 @@ function selectTrigger(trigger, e) {
   sendMsg("updateSetting", {
     key: "TriggerKey",
     value: trigger,
+  });
+}
+
+/**
+ * Export Extension メニューの表示切り替え
+ */
+function toggleExportMenu(e) {
+  e.stopPropagation();
+  const menu = document.getElementById("export-menu");
+  menu.classList.toggle("hidden");
+
+  if (!menu.classList.contains("hidden")) {
+    const closeExportMenu = (event) => {
+      if (!menu.contains(event.target)) {
+        menu.classList.add("hidden");
+        document.removeEventListener("click", closeExportMenu);
+      }
+    };
+    setTimeout(() => {
+      document.addEventListener("click", closeExportMenu);
+    }, 10);
+  }
+}
+
+/**
+ * Export Extension を選択
+ */
+function selectExportExt(ext, e) {
+  if (e) e.stopPropagation();
+  document.getElementById("export-ext-label").innerText = ext;
+  document.getElementById("export-menu").classList.add("hidden");
+  sendMsg("updateSetting", {
+    key: "ExportExtension",
+    value: ext,
   });
 }
 
@@ -367,8 +406,9 @@ window.addEventListener("click", () => {
 function updateUI(key, value) {
   const isTrue = value === "1" || value === "true" || value === true;
   switch (key) {
-    case "SaveLog":
-      document.getElementById("save-log-check").checked = isTrue;
+    case "ExportExtension":
+      const extLabel = document.getElementById("export-ext-label");
+      if (extLabel) extLabel.innerText = value;
       break;
     case "MinimizeOption":
       document.getElementById("minimize-option-check").checked = isTrue;

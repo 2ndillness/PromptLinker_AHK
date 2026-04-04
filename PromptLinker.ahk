@@ -12,7 +12,6 @@
 ; リソースの展開処理 (単一EXE化用)
 ; ==============================================================================
 global ResDir := A_Temp "\PromptLinker_Resources"
-; 古いファイルがあれば一旦削除（起動時に掃除を行う）
 if DirExist(ResDir) {
     try {
         DirDelete(ResDir, 1)
@@ -22,51 +21,36 @@ if !DirExist(ResDir) {
     DirCreate(ResDir)
 }
 
-; サブフォルダの作成
-subDirs := ["assets\css", "assets\js", "assets\icons",
-    "WebView2\32bit", "WebView2\64bit"]
+subDirs := ["assets\css", "assets\js", "assets\icons", "WebView2\32bit", "WebView2\64bit"]
 for d in subDirs {
     if !DirExist(ResDir "\" d)
         DirCreate(ResDir "\" d)
 }
 
-; ファイルの展開 (実行時に展開)
 FileInstall "ui.html", ResDir "\ui.html", 1
 FileInstall "assets\js\main.js", ResDir "\assets\js\main.js", 1
 FileInstall "assets\css\style.css", ResDir "\assets\css\style.css", 1
 FileInstall "assets\js\editor-manager.js", ResDir "\assets\js\editor-manager.js", 1
 FileInstall "assets\js\settings-manager.js", ResDir "\assets\js\settings-manager.js", 1
 FileInstall "assets\js\ui-utils.js", ResDir "\assets\js\ui-utils.js", 1
-
 FileInstall "assets\app_icon.ico", ResDir "\assets\app_icon.ico", 1
-
 FileInstall "assets\css\components.css", ResDir "\assets\css\components.css", 1
 FileInstall "assets\css\theme.css", ResDir "\assets\css\theme.css", 1
 FileInstall "assets\css\layout.css", ResDir "\assets\css\layout.css", 1
 FileInstall "assets\css\forms.css", ResDir "\assets\css\forms.css", 1
 FileInstall "assets\css\overlays.css", ResDir "\assets\css\overlays.css", 1
-
-; アイコンファイルの展開
 FileInstall "assets\icons\link.svg", ResDir "\assets\icons\link.svg", 1
 FileInstall "assets\icons\settings.svg", ResDir "\assets\icons\settings.svg", 1
 FileInstall "assets\icons\folder.svg", ResDir "\assets\icons\folder.svg", 1
-FileInstall "assets\icons\arrow-left.svg",
-    ResDir "\assets\icons\arrow-left.svg", 1
-FileInstall "assets\icons\folder-open.svg",
-    ResDir "\assets\icons\folder-open.svg", 1
+FileInstall "assets\icons\arrow-left.svg", ResDir "\assets\icons\arrow-left.svg", 1
+FileInstall "assets\icons\folder-open.svg", ResDir "\assets\icons\folder-open.svg", 1
 FileInstall "assets\icons\save.svg", ResDir "\assets\icons\save.svg", 1
-FileInstall "assets\icons\file-text.svg",
-    ResDir "\assets\icons\file-text.svg", 1
-FileInstall "assets\icons\help-circle.svg",
-    ResDir "\assets\icons\help-circle.svg", 1
-
-FileInstall "assets\icons\chevron-down.svg",
-    ResDir "\assets\icons\chevron-down.svg", 1
+FileInstall "assets\icons\file-text.svg", ResDir "\assets\icons\file-text.svg", 1
+FileInstall "assets\icons\help-circle.svg", ResDir "\assets\icons\help-circle.svg", 1
+FileInstall "assets\icons\chevron-down.svg", ResDir "\assets\icons\chevron-down.svg", 1
 FileInstall "assets\icons\lock.svg", ResDir "\assets\icons\lock.svg", 1
-FileInstall "lib\WebView2\32bit\WebView2Loader.dll",
-    ResDir "\WebView2\32bit\WebView2Loader.dll", 1
-FileInstall "lib\WebView2\64bit\WebView2Loader.dll",
-    ResDir "\WebView2\64bit\WebView2Loader.dll", 1
+FileInstall "lib\WebView2\32bit\WebView2Loader.dll", ResDir "\WebView2\32bit\WebView2Loader.dll", 1
+FileInstall "lib\WebView2\64bit\WebView2Loader.dll", ResDir "\WebView2\64bit\WebView2Loader.dll", 1
 
 ; ==============================================================================
 ; 初期設定・変数定義
@@ -75,7 +59,6 @@ global AppName := "Prompt Linker"
 global DataDir := A_AppData "\" StrReplace(AppName, " ", "_")
 global PortableFile := A_ScriptDir "\settings.json"
 
-; 書き込み権限テスト
 IsScriptDirWritable() {
     testFile := A_ScriptDir "\.write_test"
     try {
@@ -87,7 +70,6 @@ IsScriptDirWritable() {
     }
 }
 
-; 設定ファイルのパス決定
 if FileExist(PortableFile) || IsScriptDirWritable() {
     global SettingsFile := PortableFile
     global UsePortable := true
@@ -98,8 +80,7 @@ if FileExist(PortableFile) || IsScriptDirWritable() {
         try {
             DirCreate(DataDir)
         } catch as err {
-            MsgBox("データディレクトリ作成失敗: " DataDir "`n" err.Message,
-                "Error", 48)
+            MsgBox("データディレクトリ作成失敗: " DataDir "`n" err.Message, "Error", 48)
         }
     }
 }
@@ -114,21 +95,16 @@ global wv := ""
 global StartTime := 0
 global IsToolbarHidden := false
 
-; ターゲットスロット管理
 global CurrentSlotIndex := 1
-global TargetSlots := [
-    { hwnd: 0, exe: "", action: "", locked: false },
-    { hwnd: 0, exe: "", action: "", locked: false },
-    { hwnd: 0, exe: "", action: "", locked: false }
+global TargetSlots := [{ hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }
 ]
 
-; 設定マップの初期値
 global Settings := Map(
     "FontSize", 14,
     "MinimizeOption", false,
     "AlwaysOnTop", false,
     "ExportExtension", ".txt",
-    "LogDir", (UsePortable ? A_ScriptDir "\logs" : DataDir "\logs"),
+    "ExportDir", "",
     "TargetAction", "Enter",
     "SubmitDelay", 400,
     "FocusHotkey", "^!f",
@@ -136,9 +112,6 @@ global Settings := Map(
     "Presets", Map("1", "", "2", "", "3", "")
 )
 
-; ==============================================================================
-; コールバック関数
-; ==============================================================================
 Gui_Size(thisGui, minMax, width, height) {
     global wvc
     if (minMax != -1 && IsSet(wvc) && wvc) {
@@ -146,21 +119,15 @@ Gui_Size(thisGui, minMax, width, height) {
     }
 }
 
-; ==============================================================================
-; ライブラリのインクルード
-; ==============================================================================
 #Include Lib\WebView2\WebView2.ahk
 #Include Lib\_JXON.ahk
 #Include Lib\SettingsManager.ahk
 #Include Lib\WindowManager.ahk
 #Include Lib\AppLogic.ahk
-#Include Lib\LogHandler.ahk
+#Include Lib\ExportHandler.ahk
 #Include Lib\Hotkeys.ahk
 
-; ==============================================================================
-; ウィンドウメッセージの監視
-; ==============================================================================
-OnMessage(0x0006, OnActivate) ; WM_ACTIVATE
+OnMessage(0x0006, OnActivate)
 
 OnActivate(wParam, lParam, msg, hwnd) {
     global MainGui, wvc, wv
@@ -177,21 +144,7 @@ OnActivate(wParam, lParam, msg, hwnd) {
     }
 }
 
-; ==============================================================================
-; アプリケーションの初期化
-; ==============================================================================
 LoadSettings()
-
-; ログディレクトリの作成
-if !DirExist(Settings["LogDir"]) {
-    try {
-        DirCreate(Settings["LogDir"])
-    } catch {
-        Settings["LogDir"] := DataDir "\logs"
-        if !DirExist(Settings["LogDir"])
-            DirCreate(Settings["LogDir"])
-    }
-}
 
 MainGui := Gui("+Resize +MinSize500x140", AppName " - Unlinked")
 MainGui.BackColor := "1e1e1e"
@@ -216,8 +169,8 @@ Loop 3 {
 
 Hotkey("!j", OpenSettings)
 Hotkey("!r", (*) => wv.ExecuteScriptAsync("resetFocusHotkey();"))
-Hotkey("!d", OpenLogDir)
-Hotkey("!b", SelectLogDir)
+Hotkey("!d", OpenExportDir)
+Hotkey("!b", SelectExportDir)
 
 Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))
 Hotkey("^+Tab", (*) => wv.ExecuteScriptAsync("rotateView(-1)"))
@@ -227,8 +180,7 @@ Hotkey("^3", (*) => SwitchTargetSlot(3))
 Hotkey("^,", (*) => wv.ExecuteScriptAsync("toggleSetView(true)"))
 Hotkey("F1", (*) => wv.ExecuteScriptAsync("toggleHelp()"))
 
-; 拡張ホットキー
-Hotkey("^s", (*) => wv.ExecuteScriptAsync("exportCurrentText()")) ; JS経由でテキスト取得
+Hotkey("^s", (*) => wv.ExecuteScriptAsync("exportCurrentText()"))
 Hotkey("!-", (*) => ChangeFontSize(-1))
 Hotkey("!=", (*) => ChangeFontSize(1))
 Hotkey("!a", (*) => ToggleAlwaysOnTop())
@@ -280,9 +232,6 @@ if Settings["AlwaysOnTop"] {
 MainGui.Show("w500 h400")
 wvc.Fill()
 
-; ==============================================================================
-; メインスレッド用関数
-; ==============================================================================
 ToggleAlwaysOnTop() {
     global Settings, MainGui
     newVal := !Settings["AlwaysOnTop"]
@@ -347,13 +296,17 @@ OnWebMsg(sender, args) {
             SetFocusHotkey(Settings[k])
             wv.ExecuteScriptAsync("window.ahkSettings.FocusHotkey = '" Settings[k] "';")
         }
+    } else if (mType == "updateExportExtension") {
+        ; ペイロードが true なら .md, false なら .txt
+        newExt := payload ? ".md" : ".txt"
+        UpdateSetting("ExportExtension", newExt, "Extension: " newExt)
     } else if (mType == "changeFontSize") {
         if IsNumber(payload)
             ChangeFontSize(Integer(payload))
-    } else if (mType == "selectLogDir") {
-        SelectLogDir()
-    } else if (mType == "openLogDir") {
-        OpenLogDir()
+    } else if (mType == "selectExportDir") {
+        SelectExportDir()
+    } else if (mType == "openExportDir") {
+        OpenExportDir()
     } else if (mType == "openSettings") {
         OpenSettings()
     } else if (mType == "toggleToolbar") {

@@ -30,10 +30,10 @@ function updateFontSize(size) {
 }
 
 /**
- * ログディレクトリ表示の更新
+ * プロンプト保存ディレクトリ表示の更新
  */
-function updateLogDirectory(path) {
-  const display = document.getElementById("log-dir-display");
+function updateExportDirectory(path) {
+  const display = document.getElementById("export-dir-display");
   if (display) display.value = path;
 }
 

@@ -94,8 +94,9 @@ function initSettings(settings) {
   updateFontSize(settings.FontSize);
   document.getElementById("minimize-option-check").checked =
     settings.MinimizeOption;
-  document.getElementById("save-log-check").checked = settings.SaveLog;
-  updateLogDirectory(settings.LogDir);
+  const extLabel = document.getElementById("export-ext-label");
+  if (extLabel) extLabel.innerText = settings.ExportExtension || ".txt";
+  updateExportDirectory(settings.ExportDir);
 
   const hotkeyInput = document.getElementById("hotkey-input");
   if (hotkeyInput) {

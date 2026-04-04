@@ -295,22 +295,31 @@
           </label>
         </div>
 
-        <!-- ログ保存オプション -->
+        <!-- エクスポート拡張子設定 (ドロップダウン) -->
         <div class="setting-row">
-          <label>Save Log</label>
-          <label class="switch">
-            <input
-              type="checkbox"
-              id="save-log-check"
-              onchange="
-                sendMsg('updateSetting', {
-                  key: 'SaveLog',
-                  value: this.checked,
-                })
-              "
-            />
-            <span class="slider"></span>
-          </label>
+          <label>Export Extension</label>
+          <div class="custom-select" id="export-ext-select">
+            <button
+              class="target-action-btn"
+              onclick="toggleExportMenu(event)"
+              title="Export Extension"
+            >
+              <span id="export-ext-label" class="btn-text">.txt</span>
+              <img
+                src="assets/icons/chevron-down.svg"
+                class="icon-img action-chevron"
+                data-icon="chevron-down"
+              />
+            </button>
+            <div id="export-menu" class="dropdown-menu hidden">
+              <div class="action-item" onclick="selectExportExt('.txt', event)">
+                .txt (Plain Text)
+              </div>
+              <div class="action-item" onclick="selectExportExt('.md', event)">
+                .md (Markdown)
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- フォーカスキー -->
@@ -334,18 +343,18 @@
           </div>
         </div>
 
-        <!-- ログ保存ディレクトリ選択 -->
+        <!-- エクスポートディレクトリ選択 -->
         <div class="setting-row">
-          <label>Log Directory</label>
+          <label>Export Directory</label>
           <div class="input-group expand">
             <input
               type="text"
-              id="log-dir-display"
+              id="export-dir-display"
               class="ui-surface"
               readonly
               value="C:\..."
             />
-            <button onclick="sendMsg('selectLogDir')" title="Browse...">
+            <button onclick="sendMsg('selectExportDir')" title="Browse...">
               <img
                 src="assets/icons/folder.svg"
                 class="icon-img"
@@ -355,23 +364,15 @@
           </div>
         </div>
 
-        <!-- ログ保存ディレクトリ -->
+        <!-- エクスポートディレクトリ操作 -->
         <div class="action-row">
-          <button onclick="sendMsg('openLogDir')">
+          <button onclick="sendMsg('openExportDir')">
             <img
               src="assets/icons/folder-open.svg"
               class="icon-img"
               data-icon="folder-open"
             />
             Open Folder
-          </button>
-          <button onclick="sendMsg('viewLatestLog')">
-            <img
-              src="assets/icons/file-text.svg"
-              class="icon-img"
-              data-icon="file-text"
-            />
-            Open Latest Log
           </button>
         </div>
       </div>
