@@ -1,16 +1,19 @@
-; ログ管理ライブラリ
+; プロンプト保存（エクスポート）管理ライブラリ
 
 /**
- * ログ保存先ディレクトリを選択する
+ * 保存先ディレクトリを選択する
  */
 SelectLogDir(*) {
     global MainGui, Settings, wv
     ; ダイアログが隠れないよう一時的にAlwaysOnTopを解除
-    MainGui.Opt("-AlwaysOnTop")
-    selDir := FileSelect("D", "*" . Settings["LogDir"],
-        "Select Log Directory")
-    MainGui.Opt("+AlwaysOnTop")
-
+    wasAlwaysOnTop := Settings["AlwaysOnTop"]
+    if (wasAlwaysOnTop)
+        MainGui.Opt("-AlwaysOnTop")
+        
+    selDir := DirSelect("*" . Settings["LogDir"], 3, "Select Save Directory")
+    
+    if (wasAlwaysOnTop)
+        MainGui.Opt("+AlwaysOnTop")
 
     if (selDir != "") {
         ; 書き込み権限テスト
@@ -19,11 +22,9 @@ SelectLogDir(*) {
             FileAppend("", testFile)
             FileDelete(testFile)
         } catch {
-            MsgBox("この場所には書き込み権限がありません。",
-                "Permission Error", 48)
+            MsgBox("この場所には書き込み権限がありません。", "Permission Error", 48)
             return
         }
-
 
         Settings["LogDir"] := selDir
         escapedPath := StrReplace(selDir, "\", "\\")
@@ -33,41 +34,7 @@ SelectLogDir(*) {
 }
 
 /**
- * 最新のログファイルを外部エディタで開く
- */
-OpenLatestLog(*) {
-    global Settings, wv
-    logDir := Settings["LogDir"]
-    latestFile := ""
-
-    if !DirExist(logDir) {
-        wv.PostWebMessageAsString("notify:error:Log directory not found.")
-        return
-    }
-
-    ; history_YYYY-MM-DD.jsonl 形式から最新を探す
-    Loop Files, logDir "\history_*.jsonl" {
-        if (latestFile == "" ||
-            StrCompare(A_LoopFileName, latestFile) > 0) {
-            latestFile := A_LoopFileName
-        }
-    }
-
-
-    if (latestFile != "") {
-        fullPath := logDir "\" latestFile
-        try {
-            Run(fullPath)
-        } catch {
-            wv.PostWebMessageAsString("notify:error:Failed to open log file.")
-        }
-    } else {
-        wv.PostWebMessageAsString("notify:info:No log files found.")
-    }
-}
-
-/**
- * ログディレクトリをエクスプローラーで開く
+ * 保存先ディレクトリをエクスプローラーで開く
  */
 OpenLogDir(*) {
     global Settings, wv
@@ -84,43 +51,47 @@ OpenLogDir(*) {
 }
 
 /**
- * 指定された内容をログファイルに追記する
+ * 現在のテキストを指定された形式でファイルに保存する
  * @param {string} content 保存するテキスト
- * @param {string} target ターゲットプロセス名
  */
-SaveToLog(content, target := "Unknown") {
+ExportPrompt(content) {
     global Settings, wv
-    logPath := Settings["LogDir"]
-    if !DirExist(logPath) {
-        try {
-            DirCreate(logPath)
-        } catch as err {
-            wv.PostWebMessageAsString(
-                "notify:error:Failed to create log dir: "
-                . logPath . "`nReason: " . err.Message)
-            return
-        }
-
+    if (content == "") {
+        wv.PostWebMessageAsString("notify:warning:No text to save")
+        return
     }
 
-    fileName := logPath . "\history_" . FormatTime(, "yyyy-MM-dd") . ".jsonl"
+    savePath := Settings["LogDir"]
+    if !DirExist(savePath) {
+        try {
+            DirCreate(savePath)
+        } catch as err {
+            wv.PostWebMessageAsString("notify:error:Failed to create save dir")
+            return
+        }
+    }
 
-    ; JSONオブジェクトの構築
-    logObj := Map(
-        "timestamp", FormatTime(, "yyyy-MM-ddTHH:mm:ss"),
-        "target", target,
-        "length", StrLen(content),
-        "content", content
-    )
+    ; ファイル名の生成: YYYYMMDD_HHMMSS_[1行目(20文字)].ext
+    timestamp := FormatTime(, "yyyyMMdd_HHmmss")
+    
+    ; 1行目の抽出とクリーニング
+    firstLine := StrSplit(content, "`n", "`r")[1]
+    title := SubStr(firstLine, 1, 20)
+    ; ファイル名に使用できない文字を置換
+    title := RegExReplace(title, "[\\/:*?`"<>|]", "_")
+    title := Trim(title)
 
-    ; JSONLとして1行で書き出し
-    logEntry := Jxon_Dump(logObj) . "`n"
+    fileName := timestamp . (title != "" ? "_" . title : "") . Settings["ExportExtension"]
+    fullPath := savePath . "\" . fileName
 
     try {
-        FileAppend(logEntry, fileName, "UTF-8")
+        if FileExist(fullPath) {
+            wv.PostWebMessageAsString("notify:warning:File already exists")
+            return
+        }
+        FileAppend(content, fullPath, "UTF-8")
+        wv.PostWebMessageAsString("notify:success:Saved as: " . fileName)
     } catch as err {
-        wv.PostWebMessageAsString(
-            "notify:error:Log Write Failed to: "
-            . fileName . "`nReason: " . err.Message)
+        wv.PostWebMessageAsString("notify:error:Save Failed: " . err.Message)
     }
 }

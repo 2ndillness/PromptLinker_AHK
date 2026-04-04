@@ -14,7 +14,6 @@
 global ResDir := A_Temp "\PromptLinker_Resources"
 ; 古いファイルがあれば一旦削除（起動時に掃除を行う）
 if DirExist(ResDir) {
-
     try {
         DirDelete(ResDir, 1)
     }
@@ -105,7 +104,6 @@ if FileExist(PortableFile) || IsScriptDirWritable() {
     }
 }
 
-
 global TargetHWND := 0
 global IsLinking := false
 global IsRecordingHotkey := false
@@ -124,13 +122,12 @@ global TargetSlots := [
     { hwnd: 0, exe: "", action: "", locked: false }
 ]
 
-
 ; 設定マップの初期値
 global Settings := Map(
     "FontSize", 14,
     "MinimizeOption", false,
     "AlwaysOnTop", false,
-    "SaveLog", false,
+    "ExportExtension", ".txt",
     "LogDir", (UsePortable ? A_ScriptDir "\logs" : DataDir "\logs"),
     "TargetAction", "Enter",
     "SubmitDelay", 400,
@@ -138,7 +135,6 @@ global Settings := Map(
     "TriggerKey", "Ctrl + Enter",
     "Presets", Map("1", "", "2", "", "3", "")
 )
-
 
 ; ==============================================================================
 ; コールバック関数
@@ -168,18 +164,15 @@ OnMessage(0x0006, OnActivate) ; WM_ACTIVATE
 
 OnActivate(wParam, lParam, msg, hwnd) {
     global MainGui, wvc, wv
-    ; ウィンドウがアクティブになった場合 (wParam != 0)
     if (hwnd == MainGui.Hwnd && (wParam & 0xFFFF) != 0) {
         if (IsSet(wvc) && wvc) {
             try {
-                wvc.MoveFocus(0) ; 0: PROGRAMMATIC
+                wvc.MoveFocus(0)
             }
         }
         if (IsSet(wv) && wv) {
-            ; ブラウザ側の準備を待ってからエディタにフォーカス (50ms)
             SetTimer(() => (IsSet(wv) && wv ?
-                wv.ExecuteScriptAsync("document.getElementById('main-textarea')"
-                . ".focus();") : 0), -50)
+                wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();") : 0), -50)
         }
     }
 }
@@ -190,7 +183,7 @@ OnActivate(wParam, lParam, msg, hwnd) {
 LoadSettings()
 
 ; ログディレクトリの作成
-if Settings["SaveLog"] && !DirExist(Settings["LogDir"]) {
+if !DirExist(Settings["LogDir"]) {
     try {
         DirCreate(Settings["LogDir"])
     } catch {
@@ -200,27 +193,19 @@ if Settings["SaveLog"] && !DirExist(Settings["LogDir"]) {
     }
 }
 
-; Clibor等のツールが認識しやすくなるよう、オーナーウィンドウ設定を避ける
-; 原因切り分けのため一時的に +AlwaysOnTop を解除
-MainGui := Gui("+Resize +MinSize500x140"
-    , AppName " - Unlinked")
-
+MainGui := Gui("+Resize +MinSize500x140", AppName " - Unlinked")
 MainGui.BackColor := "1e1e1e"
 MainGui.OnEvent("Size", Gui_Size)
 MainGui.OnEvent("Close", SaveAndExit)
 
-; フォーカス用ホットキー
 SetFocusHotkey(Settings["FocusHotkey"])
 
-; プリセット用ホットキー (当アプリ内のみ)
 HotIf((*) => WinActive("ahk_id " MainGui.Hwnd) && !IsRecordingHotkey)
 Loop 3 {
     Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
     Hotkey("+!" A_Index, (hk) => SaveWindowPreset(Integer(SubStr(hk, -1))))
 }
 Hotkey("!t", (*) => SetToolbarState(!IsToolbarHidden))
-
-; アプリ操作用ショートカット
 Hotkey("!l", (*) => (IsLinking ? CancelLinking() : StartLinking()))
 Loop 3 {
     h := (hk) => ToggleSlotLock(Integer(SubStr(hk, -1)))
@@ -229,38 +214,28 @@ Loop 3 {
     Hotkey("^!" . A_Index, c)
 }
 
-
 Hotkey("!j", OpenSettings)
 Hotkey("!r", (*) => wv.ExecuteScriptAsync("resetFocusHotkey();"))
 Hotkey("!d", OpenLogDir)
 Hotkey("!b", SelectLogDir)
-Hotkey("!o", OpenLatestLog)
 
-
-; 表示切り替え (ビュー巡回)
 Hotkey("^Tab", (*) => wv.ExecuteScriptAsync("rotateView(1)"))
 Hotkey("^+Tab", (*) => wv.ExecuteScriptAsync("rotateView(-1)"))
-
-; ターゲットスロット切り替え
 Hotkey("^1", (*) => SwitchTargetSlot(1))
 Hotkey("^2", (*) => SwitchTargetSlot(2))
 Hotkey("^3", (*) => SwitchTargetSlot(3))
-
-; ビューダイレクト指定
 Hotkey("^,", (*) => wv.ExecuteScriptAsync("toggleSetView(true)"))
 Hotkey("F1", (*) => wv.ExecuteScriptAsync("toggleHelp()"))
 
-; フォントサイズ変更
+; 拡張ホットキー
+Hotkey("^s", (*) => wv.ExecuteScriptAsync("exportCurrentText()")) ; JS経由でテキスト取得
 Hotkey("!-", (*) => ChangeFontSize(-1))
 Hotkey("!=", (*) => ChangeFontSize(1))
-
-; 設定トグル
 Hotkey("!a", (*) => ToggleAlwaysOnTop())
-Hotkey("!s", (*) => ToggleSetting("SaveLog"))
+Hotkey("!e", (*) => ToggleExportExtension())
 Hotkey("!m", (*) => ToggleSetting("MinimizeOption"))
 Hotkey("!k", ToggleTriggerKey)
 
-; TargetAction 変更
 Hotkey("!p", (*) => UpdateTargetAction("Paste Only"))
 Hotkey("!Enter", (*) => UpdateTargetAction("Enter"))
 Hotkey("^!Enter", (*) => UpdateTargetAction("Ctrl + Enter"))
@@ -270,8 +245,6 @@ HotIf()
 try {
     sub := (A_PtrSize = 8 ? "64bit" : "32bit")
     dll := ResDir "\WebView2\" sub "\WebView2Loader.dll"
-    if !FileExist(dll)
-        throw Error("WebView2Loader.dll 欠損: " dll)
     wvc := WebView2.Create(MainGui.Hwnd, , , , , , dll)
 } catch as err {
     MsgBox("WebView2初期化失敗:`n" err.Message, "Error", 4096)
@@ -279,12 +252,6 @@ try {
 }
 
 wv := wvc.CoreWebView2
-try {
-    wvc.DefaultBackgroundColor := 0
-} catch {
-}
-
-; ブラウザ標準のショートカットキー（Ctrl+P, Ctrl+U等）を有効化
 wv.Settings.AreBrowserAcceleratorKeysEnabled := true
 wv.Settings.AreDefaultContextMenusEnabled := false
 wv.Settings.IsZoomControlEnabled := false
@@ -293,20 +260,16 @@ wv.AddScriptToExecuteOnDocumentCreatedAsync(
     "window.ahkSettings = " Jxon_Dump(Settings) ";"
 )
 
-
-; 展開フォルダ内のHTMLをロード
 uPath := "file:///" StrReplace(ResDir, "\", "/") "/ui.html"
 wv.add_WebMessageReceived(OnWebMsg)
 wv.add_PermissionRequested(OnPermissionRequested)
 wv.add_NavigationCompleted(OnNavigationCompleted)
 wv.Navigate(uPath)
 
-; ダークモード適用
 DwmSetDarkMode(hwnd) {
     val := Buffer(4, 0)
     NumPut("Int", 1, val)
-    DllCall("Dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "Int", 20,
-        "Ptr", val, "Int", 4)
+    DllCall("Dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "Int", 20, "Ptr", val, "Int", 4)
 }
 DwmSetDarkMode(MainGui.Hwnd)
 
@@ -316,24 +279,27 @@ if Settings["AlwaysOnTop"] {
 
 MainGui.Show("w500 h400")
 wvc.Fill()
+
 ; ==============================================================================
 ; メインスレッド用関数
 ; ==============================================================================
 ToggleAlwaysOnTop() {
-    global Settings, MainGui, wv
-    Settings["AlwaysOnTop"] := !Settings["AlwaysOnTop"]
-    MainGui.Opt(Settings["AlwaysOnTop"] ? "+AlwaysOnTop" : "-AlwaysOnTop")
-    wv.ExecuteScriptAsync("updateUI('AlwaysOnTop', " . (Settings["AlwaysOnTop"] ? "true" : "false") . ");")
-    status := Settings["AlwaysOnTop"] ? "ON" : "OFF"
-    wv.PostWebMessageAsString("notify:info:Always On Top: " . status)
-    SaveSettings()
+    global Settings, MainGui
+    newVal := !Settings["AlwaysOnTop"]
+    MainGui.Opt(newVal ? "+AlwaysOnTop" : "-AlwaysOnTop")
+    UpdateSetting("AlwaysOnTop", newVal, "Always On Top: " . (newVal ? "ON" : "OFF"))
+}
+
+ToggleExportExtension() {
+    global Settings
+    newExt := (Settings["ExportExtension"] == ".txt") ? ".md" : ".txt"
+    UpdateSetting("ExportExtension", newExt, "Extension: " newExt)
 }
 
 OnNavigationCompleted(sender, args) {
     global wvc
     SyncSlotsToJS()
     SetTimer(MonitorTargetStatus, 1000)
-    ; レンダリング完了を待ってから可視化 (ホワイトフラッシュ対策)
     wvc.IsVisible := true
     try {
         wvc.MoveFocus(0)
@@ -347,16 +313,11 @@ OnPermissionRequested(sender, args) {
 
 OnWebMsg(sender, args) {
     global IsRecordingHotkey
-    ; JavaScriptから送られてくるメッセージは全てJSONオブジェクト形式に統一された
     jsonStr := args.WebMessageAsJson
-
     try {
-        ; JSON文字列をAHKのMapオブジェクトにパース
         data := Jxon_Load(&jsonStr)
         if !(data is Map)
             return
-
-        ; .Get() を使うことで、キーが存在しない場合のエラーを回避
         mType := data.Get("type", "")
         payload := data.Get("payload", "")
     } catch {
@@ -367,36 +328,25 @@ OnWebMsg(sender, args) {
         (IsLinking ? CancelLinking() : StartLinking())
     } else if (mType == "transfer") {
         ExecuteTransfer(payload)
+    } else if (mType == "export") {
+        ExportPrompt(payload)
     } else if (mType == "updateSetting") {
         if !(payload is Map)
             return
         k := payload.Get("key", "")
         v := payload.Get("value", "")
 
-        ; JavaScriptのBoolean(true/false)または文字列("1"/"0")に対応
-        if (k == "SaveLog" || k == "MinimizeOption" || k == "AlwaysOnTop") {
-            Settings[k] := (
-                v = true || v = 1 || v == "1" || v == "true"
-            ) ? true : false
-            v := Settings[k] ? "1" : "0" ; JS側へ返すために文字列化
-
-            if (k == "AlwaysOnTop") {
-                MainGui.Opt(Settings[k] ? "+AlwaysOnTop" : "-AlwaysOnTop")
-            }
-        } else {
-            Settings[k] := v
+        if (k == "MinimizeOption" || k == "AlwaysOnTop") {
+            v := (v = true || v = 1 || v == "1" || v == "true") ? true : false
+            if (k == "AlwaysOnTop")
+                MainGui.Opt(v ? "+AlwaysOnTop" : "-AlwaysOnTop")
         }
-
-        ; 設定変更をUIに反映
-        wv.ExecuteScriptAsync("updateUI('" k "', '" v "');")
+        UpdateSetting(k, v)
 
         if (k == "FocusHotkey") {
             SetFocusHotkey(Settings[k])
-            wv.ExecuteScriptAsync(
-                "window.ahkSettings.FocusHotkey = '" Settings[k] "';"
-            )
+            wv.ExecuteScriptAsync("window.ahkSettings.FocusHotkey = '" Settings[k] "';")
         }
-        SaveSettings()
     } else if (mType == "changeFontSize") {
         if IsNumber(payload)
             ChangeFontSize(Integer(payload))
@@ -406,8 +356,6 @@ OnWebMsg(sender, args) {
         OpenLogDir()
     } else if (mType == "openSettings") {
         OpenSettings()
-    } else if (mType == "viewLatestLog") {
-        OpenLatestLog()
     } else if (mType == "toggleToolbar") {
         SetToolbarState(!IsToolbarHidden)
     } else if (mType == "startRecording") {

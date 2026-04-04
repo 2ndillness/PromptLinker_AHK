@@ -123,11 +123,27 @@ ToggleTriggerKey(*) {
  * @param {string} action アクション名
  */
 UpdateTargetAction(action) {
-    global Settings, wv
-    Settings["TargetAction"] := action
-    wv.ExecuteScriptAsync("updateUI('TargetAction', '" action "');")
-    
+    UpdateSetting("TargetAction", action, "Action: " action)
     UpdateSlotAction(action)
+}
+
+/**
+ * 設定値を更新し、UI同期・保存・通知を行う共通関数
+ * @param {string} key Settingsマップのキー
+ * @param {any} value 設定する値
+ * @param {string} notifyMsg 通知メッセージ (空の場合は通知なし)
+ */
+UpdateSetting(key, value, notifyMsg := "") {
+    global Settings, wv
+    Settings[key] := value
+
+    ; JS側への通知（数値・文字列・真偽値を適切に変換）
+    jsVal := (value = true) ? "true" : (value = false) ? "false" : "'" value "'"
+    wv.ExecuteScriptAsync("updateUI('" key "', " jsVal ");")
+
+    if (notifyMsg != "")
+        wv.PostWebMessageAsString("notify:success:" notifyMsg)
+
     SaveSettings()
-    wv.PostWebMessageAsString("notify:success:Action: " . action)
-}
+}
+

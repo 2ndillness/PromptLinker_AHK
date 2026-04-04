@@ -10,10 +10,6 @@ ExecuteTransfer(text) {
         return
     }
 
-    if (Settings["SaveLog"]) {
-        SaveToLog(text, TargetProcess)
-    }
-
     A_Clipboard := text
     if (WinGetMinMax("ahk_id " . TargetHWND) = -1) {
         WinRestore("ahk_id " . TargetHWND)
