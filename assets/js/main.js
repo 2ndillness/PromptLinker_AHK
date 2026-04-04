@@ -118,41 +118,7 @@ function toggleHelp(forceState = null) {
   showView(isOpening ? "help-view" : "main-view");
 }
 
-function toggleTargetMenu(e) {
-  e.stopPropagation();
-  const menu = document.getElementById("target-menu");
-  menu.classList.toggle("hidden");
 
-  if (!menu.classList.contains("hidden")) {
-    const closeMenu = (event) => {
-      if (!menu.contains(event.target)) {
-        menu.classList.add("hidden");
-        document.removeEventListener("click", closeMenu);
-      }
-    };
-    setTimeout(() => {
-      document.addEventListener("click", closeMenu);
-    }, 10);
-  }
-}
-
-function toggleActionMenu(e) {
-  e.stopPropagation();
-  const menu = document.getElementById("action-menu");
-  menu.classList.toggle("hidden");
-
-  if (!menu.classList.contains("hidden")) {
-    const closeActionMenu = (event) => {
-      if (!menu.contains(event.target)) {
-        menu.classList.add("hidden");
-        document.removeEventListener("click", closeActionMenu);
-      }
-    };
-    setTimeout(() => {
-      document.addEventListener("click", closeActionMenu);
-    }, 10);
-  }
-}
 
 function selectAction(action, e) {
   if (e) e.stopPropagation();
@@ -198,23 +164,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-function toggleTriggerMenu(e) {
-  e.stopPropagation();
-  const menu = document.getElementById("trigger-menu");
-  menu.classList.toggle("hidden");
-
-  if (!menu.classList.contains("hidden")) {
-    const closeTriggerMenu = (event) => {
-      if (!menu.contains(event.target)) {
-        menu.classList.add("hidden");
-        document.removeEventListener("click", closeTriggerMenu);
-      }
-    };
-    setTimeout(() => {
-      document.addEventListener("click", closeTriggerMenu);
-    }, 10);
-  }
-}
 
 function selectTrigger(trigger, e) {
   if (e) e.stopPropagation();
@@ -228,23 +177,6 @@ function selectTrigger(trigger, e) {
   });
 }
 
-function toggleExportMenu(e) {
-  e.stopPropagation();
-  const menu = document.getElementById("export-menu");
-  menu.classList.toggle("hidden");
-
-  if (!menu.classList.contains("hidden")) {
-    const closeExportMenu = (event) => {
-      if (!menu.contains(event.target)) {
-        menu.classList.add("hidden");
-        document.removeEventListener("click", closeExportMenu);
-      }
-    };
-    setTimeout(() => {
-      document.addEventListener("click", closeExportMenu);
-    }, 10);
-  }
-}
 
 function selectExportExt(ext, e) {
   if (e) e.stopPropagation();

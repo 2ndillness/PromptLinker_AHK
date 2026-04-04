@@ -128,3 +128,29 @@ function showToast(msg, type = "info") {
     setTimeout(() => toast.remove(), 300);
   }, 3000);
 }
+
+/**
+ * 汎用ドロップダウンメニューのトグル
+ * @param {string} menuId 対象メニューのID
+ * @param {Event} e クリックイベント
+ */
+function toggleDropdown(menuId, e) {
+  if (e) e.stopPropagation();
+  const menu = document.getElementById(menuId);
+  if (!menu) return;
+
+  const isHidden = menu.classList.toggle("hidden");
+
+  if (!isHidden) {
+    const closeHandler = (event) => {
+      if (!menu.contains(event.target)) {
+        menu.classList.add("hidden");
+        document.removeEventListener("click", closeHandler);
+      }
+    };
+    // 自身のクリックイベントを無視するように微調整
+    setTimeout(() => {
+      document.addEventListener("click", closeHandler);
+    }, 10);
+  }
+}

@@ -40,7 +40,7 @@
             </button>
             <button
               class="chevron-btn ui-surface"
-              onclick="toggleTargetMenu(event)"
+              onclick="toggleDropdown('target-menu', event)"
               title="Target Slots"
             >
               <img
@@ -83,7 +83,7 @@
           <div class="custom-select" id="action-select">
             <button
               class="target-action-btn ui-surface"
-              onclick="toggleActionMenu(event)"
+              onclick="toggleDropdown('action-menu', event)"
               title="Target Action"
             >
               <span id="target-action-label" class="btn-text">Enter</span>
@@ -227,7 +227,7 @@
           <div class="custom-select" id="trigger-key-select">
             <button
               class="target-action-btn"
-              onclick="toggleTriggerMenu(event)"
+              onclick="toggleDropdown('trigger-menu', event)"
               title="Trigger Key"
             >
               <span id="trigger-key-label" class="btn-text">Ctrl + Enter</span>
@@ -331,7 +331,7 @@
           <div class="custom-select" id="export-ext-select">
             <button
               class="target-action-btn"
-              onclick="toggleExportMenu(event)"
+              onclick="toggleDropdown('export-menu', event)"
               title="Export Extension"
             >
               <span id="export-ext-label" class="btn-text">.txt</span>
