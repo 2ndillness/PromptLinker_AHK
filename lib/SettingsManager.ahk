@@ -117,6 +117,24 @@ ToggleTriggerKey(*) {
     wv.PostWebMessageAsString("notify:success:Trigger: " . newVal)
 }
 
+/**
+ * タブキーの挙動を順次切り替える
+ */
+CycleTabBehavior(*) {
+    global Settings
+    current := Settings["TabBehavior"]
+    behaviors := ["Move Focus", "Tab (\t)", "2 Spaces", "4 Spaces"]
+    nextIdx := 1
+    for i, v in behaviors {
+        if (v == current) {
+            nextIdx := Mod(i, behaviors.Length) + 1
+            break
+        }
+    }
+    newVal := behaviors[nextIdx]
+    UpdateSetting("TabBehavior", newVal, "Tab: " . newVal)
+}
+
 
 /**
  * ターゲットアクションを更新する
@@ -138,7 +156,9 @@ UpdateSetting(key, value, notifyMsg := "") {
     Settings[key] := value
 
     ; JS側への通知（数値・文字列・真偽値を適切に変換）
-    jsVal := (value = true) ? "true" : (value = false) ? "false" : "'" value "'"
+    ; バックスラッシュをエスケープしてJSのリテラルとして正しく渡るようにする
+    escapedValue := StrReplace(value, "\", "\\")
+    jsVal := (value = true) ? "true" : (value = false) ? "false" : "'" escapedValue "'"
     wv.ExecuteScriptAsync("updateUI('" key "', " jsVal ");")
 
     if (notifyMsg != "")

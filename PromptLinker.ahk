@@ -160,7 +160,7 @@ Loop 3 {
     Hotkey("!" A_Index, (hk) => ApplyWindowPreset(Integer(SubStr(hk, -1))))
     Hotkey("+!" A_Index, (hk) => SaveWindowPreset(Integer(SubStr(hk, -1))))
 }
-Hotkey("!t", (*) => SetToolbarState(!IsToolbarHidden))
+Hotkey("!h", (*) => SetToolbarState(!IsToolbarHidden))
 Hotkey("!l", (*) => (IsLinking ? CancelLinking() : StartLinking()))
 Loop 3 {
     h := (hk) => ToggleSlotLock(Integer(SubStr(hk, -1)))
@@ -189,6 +189,8 @@ Hotkey("!a", (*) => ToggleAlwaysOnTop())
 Hotkey("!e", (*) => ToggleExportExtension())
 Hotkey("!m", (*) => ToggleSetting("MinimizeOption"))
 Hotkey("!k", ToggleTriggerKey)
+Hotkey("!t", (*) => CycleTabBehavior())
+
 
 Hotkey("!p", (*) => UpdateTargetAction("Paste Only"))
 Hotkey("!Enter", (*) => UpdateTargetAction("Enter"))

@@ -71,6 +71,7 @@ const HOTKEY_BLACKLIST = [
   "!e",
   "!a",
   "!o",
+  "!h",
 ];
 let recordingTimeout = null;
 
