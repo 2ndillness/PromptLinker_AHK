@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (x < 0) x = 0;
     if (y < 0) y = 0;
 
+    contextMenu.style.left = x + "px";
     contextMenu.style.top = y + "px";
     contextMenu.style.visibility = "visible";
   });
