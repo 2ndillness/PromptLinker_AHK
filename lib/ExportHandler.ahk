@@ -6,18 +6,18 @@
  */
 SelectExportDir(*) {
     global MainGui, Settings, wv
-    
+
     ; 現在の AlwaysOnTop 状態を確認
     isOk := false
     isTopmost := Settings["AlwaysOnTop"]
     if (isTopmost)
         MainGui.Opt("-AlwaysOnTop")
-        
+
     Loop {
         ; エクスプローラ形式でフォルダ選択を表示
         prompt := "Select Export Directory"
         selDir := FileSelect("D", "*" . Settings["ExportDir"], prompt)
-        
+
         if (selDir == "")
             break ; キャンセルされた場合は終了
 
@@ -43,7 +43,7 @@ SelectExportDir(*) {
             break
         }
     }
-    
+
     if (isTopmost)
         MainGui.Opt("+AlwaysOnTop")
     return isOk
@@ -87,9 +87,9 @@ ExportPrompt(content) {
         return
     }
 
-    ; ファイル名の生成: YYYYMMDD_HHMMSS_[1行目(20文字)].ext
-    timestamp := FormatTime(, "yyyyMMdd_HHmmss")
-    
+    ; ファイル名の生成: YYYY-MM-DD-HHmmss_[1行目(20文字)].ext
+    timestamp := FormatTime(, "yyyy-MM-dd-HHmmss")
+
     ; 1行目の抽出とクリーニング
     firstLine := StrSplit(content, "`n", "`r")[1]
     title := SubStr(firstLine, 1, 20)
@@ -97,7 +97,7 @@ ExportPrompt(content) {
     title := RegExReplace(title, "[\\/:*?`"<>|]", "_")
     title := Trim(title)
 
-    fileName := timestamp . (title != "" ? "_" . title : "") 
+    fileName := timestamp . (title != "" ? "_" . title : "")
     fileName .= Settings["ExportExtension"]
     fullPath := savePath . "\" . fileName
 
