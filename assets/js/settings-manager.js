@@ -96,6 +96,8 @@ function initSettings(settings) {
   document.getElementById("always-on-top-check").checked = settings.AlwaysOnTop;
   const extLabel = document.getElementById("export-ext-label");
   if (extLabel) extLabel.innerText = settings.ExportExtension || ".txt";
+  const tabLabel = document.getElementById("tab-behavior-label");
+  if (tabLabel) tabLabel.innerText = settings.TabBehavior || "Move Focus";
   updateExportDirectory(settings.ExportDir);
 
   const exportBtn = document.getElementById("export-btn");

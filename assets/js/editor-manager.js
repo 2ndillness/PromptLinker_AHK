@@ -33,9 +33,40 @@ document.addEventListener("DOMContentLoaded", () => {
     if (x < 0) x = 0;
     if (y < 0) y = 0;
 
-    contextMenu.style.left = x + "px";
     contextMenu.style.top = y + "px";
     contextMenu.style.visibility = "visible";
+  });
+
+  /**
+   * TABキーの挙動制御
+   */
+  textArea.addEventListener("keydown", (e) => {
+    if (e.key === "Tab" && !e.ctrlKey && !e.shiftKey && !e.altKey && !e.metaKey) {
+      const behavior = window.ahkSettings.TabBehavior || "Move Focus";
+      if (behavior === "Move Focus") return;
+
+      e.preventDefault();
+      const start = textArea.selectionStart;
+      const end = textArea.selectionEnd;
+      let insertText = "";
+
+      switch (behavior) {
+        case "Tab (\\t)":
+          insertText = "\t";
+          break;
+        case "2 Spaces":
+          insertText = "  ";
+          break;
+        case "4 Spaces":
+          insertText = "    ";
+          break;
+      }
+
+      if (insertText) {
+        textArea.setRangeText(insertText, start, end, "end");
+        textArea.dispatchEvent(new Event("input"));
+      }
+    }
   });
 
   /**

@@ -27,6 +27,13 @@
 #trigger-menu:not(.hidden) {
   display: block;
 }
+
+.dropdown-menu.full-width {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 .menu-item,
 .target-item,
 .action-item {

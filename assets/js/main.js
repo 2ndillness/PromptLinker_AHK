@@ -144,6 +144,24 @@ function selectExportExt(ext, e) {
 }
 
 /**
+ * タブキーの挙動を選択
+ * @param {string} behavior
+ * @param {Event} e
+ */
+function selectTabBehavior(behavior, e) {
+  const label = document.getElementById("tab-behavior-label");
+  if (label) label.innerText = behavior;
+  window.ahkSettings.TabBehavior = behavior;
+  sendMsg("updateSetting", {
+    key: "TabBehavior",
+    value: behavior,
+  });
+  const menu = document.getElementById("tab-behavior-menu");
+  if (menu) menu.classList.add("hidden");
+  if (e) e.stopPropagation();
+}
+
+/**
  * 現在のプロンプトを保存
  */
 function exportCurrentText() {
@@ -268,6 +286,10 @@ function updateUI(key, value) {
     case "TargetAction":
       const label = document.getElementById("target-action-label");
       if (label) label.innerText = value;
+      break;
+    case "TabBehavior":
+      const tLabel2 = document.getElementById("tab-behavior-label");
+      if (tLabel2) tLabel2.innerText = value;
       break;
   }
 }

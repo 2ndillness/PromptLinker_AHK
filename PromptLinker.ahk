@@ -110,6 +110,7 @@ global Settings := Map(
     "SubmitDelay", 400,
     "FocusHotkey", "^!f",
     "TriggerKey", "Ctrl + Enter",
+    "TabBehavior", "Move Focus",
     "Presets", Map("1", "", "2", "", "3", "")
 )
 
@@ -230,7 +231,7 @@ if Settings["AlwaysOnTop"] {
     MainGui.Opt("+AlwaysOnTop")
 }
 
-MainGui.Show("w500 h400")
+MainGui.Show("w500 h440")
 wvc.Fill()
 
 ToggleAlwaysOnTop() {

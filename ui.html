@@ -119,7 +119,12 @@
           </div>
 
           <!-- 保存（エクスポート）ボタン -->
-          <button id="export-btn" class="sq-btn" onclick="exportCurrentText()" title="Save">
+          <button
+            id="export-btn"
+            class="sq-btn"
+            onclick="exportCurrentText()"
+            title="Save"
+          >
             <img
               src="assets/icons/save.svg"
               class="icon-img"
@@ -128,7 +133,12 @@
           </button>
 
           <!-- 設定ボタン -->
-          <button id="settings-btn" class="sq-btn" onclick="toggleSetView()" title="Settings">
+          <button
+            id="settings-btn"
+            class="sq-btn"
+            onclick="toggleSetView()"
+            title="Settings"
+          >
             <img
               src="assets/icons/settings.svg"
               class="icon-img"
@@ -137,7 +147,12 @@
           </button>
 
           <!-- ヘルプボタン -->
-          <button id="help-btn" class="sq-btn" onclick="toggleHelp()" title="Help">
+          <button
+            id="help-btn"
+            class="sq-btn"
+            onclick="toggleHelp()"
+            title="Help"
+          >
             <img
               src="assets/icons/help-circle.svg"
               class="icon-img"
@@ -237,7 +252,7 @@
                 data-icon="chevron-down"
               />
             </button>
-            <div id="trigger-menu" class="dropdown-menu hidden">
+            <div id="trigger-menu" class="dropdown-menu full-width hidden">
               <div
                 class="action-item"
                 onclick="selectTrigger('Ctrl + Enter', event)"
@@ -286,6 +301,51 @@
             <button class="symbol" onclick="sendMsg('changeFontSize', 1)">
               +
             </button>
+          </div>
+        </div>
+
+        <!-- タブキーの挙動設定 (ドロップダウン) -->
+        <div class="setting-row">
+          <label>Tab Key Behavior</label>
+          <div class="custom-select" id="tab-behavior-select">
+            <button
+              class="target-action-btn"
+              onclick="toggleDropdown('tab-behavior-menu', event)"
+              title="Tab Key Behavior"
+            >
+              <span id="tab-behavior-label" class="btn-text">Move Focus</span>
+              <img
+                src="assets/icons/chevron-down.svg"
+                class="icon-img action-chevron"
+                data-icon="chevron-down"
+              />
+            </button>
+            <div id="tab-behavior-menu" class="dropdown-menu full-width hidden">
+              <div
+                class="action-item"
+                onclick="selectTabBehavior('Move Focus', event)"
+              >
+                Move Focus (Default)
+              </div>
+              <div
+                class="action-item"
+                onclick="selectTabBehavior('Tab (\\\\t)', event)"
+              >
+                Tab (\t)
+              </div>
+              <div
+                class="action-item"
+                onclick="selectTabBehavior('2 Spaces', event)"
+              >
+                2 Spaces
+              </div>
+              <div
+                class="action-item"
+                onclick="selectTabBehavior('4 Spaces', event)"
+              >
+                4 Spaces
+              </div>
+            </div>
           </div>
         </div>
 
@@ -341,7 +401,7 @@
                 data-icon="chevron-down"
               />
             </button>
-            <div id="export-menu" class="dropdown-menu hidden">
+            <div id="export-menu" class="dropdown-menu full-width hidden">
               <div class="action-item" onclick="selectExportExt('.txt', event)">
                 .txt (Plain Text)
               </div>
@@ -429,11 +489,17 @@
           <div class="help-section">
             <h4>Link Slots</h4>
             <div class="help-grid">
-              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
+              <div class="help-item">
+                <kbd>Ctrl</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
               <div>Switch Link Slot</div>
-              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
+              <div class="help-item">
+                <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
               <div>Lock / Unlock Link Slot (Toggle)</div>
-              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
+              <div class="help-item">
+                <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
               <div>Clear Link Slot</div>
             </div>
           </div>
@@ -445,13 +511,19 @@
               <div>Clear Text Area</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>L</kbd></div>
               <div>Link / Cancel Target App</div>
-              <div class="help-item"><kbd>Ctrl/Shift</kbd>+<kbd>Enter</kbd></div>
+              <div class="help-item">
+                <kbd>Ctrl/Shift</kbd>+<kbd>Enter</kbd>
+              </div>
               <div>Transfer Text (Trigger)</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>Enter</kbd></div>
               <div>Set Action: Enter</div>
-              <div class="help-item"><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd></div>
+              <div class="help-item">
+                <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd>
+              </div>
               <div>Set Action: Ctrl+Enter</div>
-              <div class="help-item"><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd></div>
+              <div class="help-item">
+                <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>Enter</kbd>
+              </div>
               <div>Set Action: Shift+Enter</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>P</kbd></div>
               <div>Set Action: Paste Only</div>
@@ -463,9 +535,13 @@
           <div class="help-section">
             <h4>Presets</h4>
             <div class="help-grid">
-              <div class="help-item"><kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
+              <div class="help-item">
+                <kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
               <div>Apply Preset</div>
-              <div class="help-item"><kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd></div>
+              <div class="help-item">
+                <kbd>Shift</kbd>+<kbd>Alt</kbd>+<kbd>1</kbd> ~ <kbd>3</kbd>
+              </div>
               <div>Save Preset</div>
             </div>
           </div>
@@ -485,11 +561,13 @@
               <div>Toggle Export Extension (.txt/.md)</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>M</kbd></div>
               <div>Toggle Minimize Option</div>
-              <div class="help-item"><kbd>Alt</kbd>+<kbd>-</kbd> / <kbd>=</kbd></div>
+              <div class="help-item">
+                <kbd>Alt</kbd>+<kbd>-</kbd> / <kbd>=</kbd>
+              </div>
               <div>Change Font Size</div>
               <div class="help-item"><kbd>Alt</kbd>+<kbd>B</kbd></div>
               <div>Browse Export Directory</div>
-              <div class="help-item"><kbd>Alt</kbd>+<kbd>D</kbd></div>
+              <div class="help-item"><kbd>Alt</kbd>+<kbd>O</kbd></div>
               <div>Open Export Directory</div>
             </div>
           </div>
