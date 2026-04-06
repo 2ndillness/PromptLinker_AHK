@@ -7,21 +7,18 @@
 SelectExportDir(*) {
     global MainGui, Settings, wv
 
-    ; 現在の AlwaysOnTop 状態を確認
     isOk := false
     isTopmost := Settings["AlwaysOnTop"]
     if (isTopmost)
         MainGui.Opt("-AlwaysOnTop")
 
     Loop {
-        ; エクスプローラ形式でフォルダ選択を表示
         prompt := "Select Export Directory"
         selDir := FileSelect("D", "*" . Settings["ExportDir"], prompt)
-
         if (selDir == "")
-            break ; キャンセルされた場合は終了
+            break
 
-        ; 書き込み権限テスト
+        ; 書き込み権限確認
         testFile := selDir "\.write_test"
         isOk := false
         try {
@@ -31,7 +28,6 @@ SelectExportDir(*) {
         } catch {
             msg := "Permission Denied: Please select another directory"
             wv.PostWebMessageAsString("notify:error:" . msg)
-            ; ループを継続し、再選択させる
         }
 
         if (isOk) {
@@ -87,15 +83,55 @@ ExportPrompt(content) {
         return
     }
 
-    ; ファイル名の生成: YYYY-MM-DD-HHmmss_[1行目(20文字)].ext
+    ; ファイル名生成
     timestamp := FormatTime(, "yyyy-MM-dd-HHmmss")
+    title := ""
+    lines := StrSplit(content, "`n", "`r")
 
-    ; 1行目の抽出とクリーニング
-    firstLine := StrSplit(content, "`n", "`r")[1]
-    title := SubStr(firstLine, 1, 20)
-    ; 禁止文字を置換
-    title := RegExReplace(title, "[\\/:*?`"<>|]", "_")
-    title := Trim(title)
+    ; YAMLのtitleキー
+    if (lines.Length > 1 && lines[1] == "---") {
+        for i, line in lines {
+            if (i > 1 && line == "---")
+                break
+            if (RegExMatch(line, "i)^title:\s*(.+)$", &match)) {
+                title := Trim(match[1], " '`"`t")
+                break
+            }
+            if (i > 15) ; 探索上限
+                break
+        }
+    }
+
+    ; H1見出し
+    if (title == "") {
+        for line in lines {
+            if (RegExMatch(line, "^#\s+(.+)$", &match)) {
+                title := match[1]
+                break
+            }
+            if (A_Index > 20)
+                break
+        }
+    }
+
+    ; 最初の本文行 (空行や区切り線を除外)
+    if (title == "") {
+        for line in lines {
+            trimmed := Trim(line)
+            if (trimmed != "" && trimmed != "---" && trimmed != "***") {
+                title := trimmed
+                break
+            }
+            if (A_Index > 20)
+                break
+        }
+    }
+
+    title := SubStr(title, 1, 35)
+    ; 禁止文字・制御文字の置換
+    title := RegExReplace(title, '[\\/:*?"<>|\x00-\x1f]', "_")
+    ; 文末の掃除
+    title := Trim(title, ". ")
 
     fileName := timestamp . (title != "" ? "_" . title : "")
     fileName .= Settings["ExportExtension"]

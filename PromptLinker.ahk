@@ -97,7 +97,10 @@ global StartTime := 0
 global IsToolbarHidden := false
 
 global CurrentSlotIndex := 1
-global TargetSlots := [{ hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }
+global TargetSlots := [
+    { hwnd: 0, exe: "", action: "", locked: false },
+    { hwnd: 0, exe: "", action: "", locked: false },
+    { hwnd: 0, exe: "", action: "", locked: false }
 ]
 
 global Settings := Map(
@@ -141,7 +144,9 @@ OnActivate(wParam, lParam, msg, hwnd) {
         }
         if (IsSet(wv) && wv) {
             SetTimer(() => (IsSet(wv) && wv ?
-                wv.ExecuteScriptAsync("document.getElementById('main-textarea').focus();") : 0), -50)
+                wv.ExecuteScriptAsync(
+                    "document.getElementById('main-textarea').focus();"
+                ) : 0), -50)
         }
     }
 }
@@ -225,7 +230,13 @@ wv.Navigate(uPath)
 DwmSetDarkMode(hwnd) {
     val := Buffer(4, 0)
     NumPut("Int", 1, val)
-    DllCall("Dwmapi\DwmSetWindowAttribute", "Ptr", hwnd, "Int", 20, "Ptr", val, "Int", 4)
+    DllCall(
+        "Dwmapi\DwmSetWindowAttribute",
+        "Ptr", hwnd,
+        "Int", 20,
+        "Ptr", val,
+        "Int", 4
+    )
 }
 DwmSetDarkMode(MainGui.Hwnd)
 
@@ -240,7 +251,9 @@ ToggleAlwaysOnTop() {
     global Settings, MainGui
     newVal := !Settings["AlwaysOnTop"]
     MainGui.Opt(newVal ? "+AlwaysOnTop" : "-AlwaysOnTop")
-    UpdateSetting("AlwaysOnTop", newVal, "Always On Top: " . (newVal ? "ON" : "OFF"))
+    UpdateSetting(
+        "AlwaysOnTop", newVal, "Always On Top: " . (newVal ? "ON" : "OFF")
+    )
 }
 
 ToggleExportExtension() {
@@ -298,7 +311,9 @@ OnWebMsg(sender, args) {
 
         if (k == "FocusHotkey") {
             SetFocusHotkey(Settings[k])
-            wv.ExecuteScriptAsync("window.ahkSettings.FocusHotkey = '" Settings[k] "';")
+            wv.ExecuteScriptAsync(
+                "window.ahkSettings.FocusHotkey = '" Settings[k] "';"
+            )
         }
     } else if (mType == "updateExportExtension") {
         ; ペイロードが true なら .md, false なら .txt
