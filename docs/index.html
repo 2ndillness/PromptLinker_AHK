@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- OGP設定 (SNSでのリンク表示用) -->
+    <meta property="og:title" content="Prompt Linker マニュアル" />
+    <meta
+      property="og:description"
+      content="Prompt Linker の操作マニュアル。"
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://<あなたのユーザー名>.github.io/prompt-linker/"
+    />
+    <meta
+      property="og:image"
+      content="https://<あなたのユーザー名>.github.io/prompt-linker/assets/eyecatch.png"
+    />
+    <meta property="og:site_name" content="Prompt Linker" />
+
+    <!-- Twitter Card設定 -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Prompt Linker マニュアル" />
+    <meta
+      name="twitter:description"
+      content="Prompt Linker の操作マニュアル。"
+    />
+    <meta
+      name="twitter:image"
+      content="https://<あなたのユーザー名>.github.io/prompt-linker/assets/eyecatch.png"
+    />
+
+    <title>Prompt Linker マニュアル</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="icon" href="PromptLinker.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  </head>
+  <body>
+    <!-- ******************************************************************************** -->
+    <nav id="sidebar">
+      <h2 id="sidebar-title">🚀 セクションナビ</h2>
+      <ul>
+        <li class="has-children">
+          <span class="toggle-btn">▶</span>
+          <a href="#app-overview" class="nav-h2">📘 アプリ概要</a>
+          <ul>
+            <li><a href="#key-features" class="nav-h3">📌 主な特徴</a></li>
+            <li><a href="#use-cases" class="nav-h3">🎬 利用シーン</a></li>
+            <li>
+              <a href="#problems-solved" class="nav-h3">✨ 解決すること</a>
+            </li>
+            <li>
+              <a href="#traditional-approach" class="nav-h3"
+                >🐌 従来のアプローチ</a
+              >
+            </li>
+            <li class="has-children">
+              <span class="toggle-btn">▶</span>
+              <a href="#using-this-app" class="nav-h3"
+                >🏎️ 本アプリを使用した場合</a
+              >
+              <ul>
+                <li>
+                  <a href="#basic-cycle" class="nav-h4">🔁基本的なサイクル</a>
+                </li>
+                <li>
+                  <a href="#using-minimize-option" class="nav-h4"
+                    >⏬ 最小化オプションを使用した場合</a
+                  >
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#ui-structure" class="nav-h2">🔨 画面構成とツール</a></li>
+        <li class="has-children">
+          <span class="toggle-btn">▶</span>
+          <a href="#main-screen" class="nav-h2">🖥️ メイン画面</a>
+          <ul>
+            <li><a href="#title-bar" class="nav-h3">📢 タイトルバー</a></li>
+            <li><a href="#tool-bar" class="nav-h3">🧰 ツールバー</a></li>
+            <li><a href="#link-button" class="nav-h3">① 🔗 リンクボタン</a></li>
+            <li>
+              <a href="#link-slots" class="nav-h3">__ ▼ リンクスロット</a>
+            </li>
+            <li>
+              <a href="#preset-call-buttons" class="nav-h3"
+                >② 1️⃣2️⃣3️⃣ プリセット呼び出しボタン</a
+              >
+            </li>
+            <li>
+              <a href="#target-action-buttons" class="nav-h3"
+                >③ 🎯 ターゲットアクション選択ボタン</a
+              >
+            </li>
+            <li>
+              <a href="#save-text-button" class="nav-h3"
+                >④ 💾 テキスト保存ボタン</a
+              >
+            </li>
+            <li>
+              <a href="#settings-button" class="nav-h3">⑤ ⚙️ 設定ボタン</a>
+            </li>
+            <li><a href="#help-button" class="nav-h3">⑥ ❓ ヘルプボタン</a></li>
+            <li>
+              <a href="#text-input-field" class="nav-h3">💬 テキスト入力欄</a>
+            </li>
+          </ul>
+        </li>
+        <li class="has-children">
+          <span class="toggle-btn">▶</span>
+          <a href="#settings-screen" class="nav-h2">⚙️ 設定画面</a>
+          <ul>
+            <li>
+              <a href="#back-to-main-button" class="nav-h3"
+                >① 🔙 メイン画面へ戻るボタン</a
+              >
+            </li>
+            <li>
+              <a href="#open-settings-file" class="nav-h3"
+                >② 📃 設定ファイルを開く</a
+              >
+            </li>
+            <li>
+              <a href="#save-preset-button" class="nav-h3"
+                >③ 💾💾💾 プリセット保存ボタン</a
+              >
+            </li>
+            <li>
+              <a href="#trigger-key-selection" class="nav-h3"
+                >④ 🏹 トリガーキー選択ボタン</a
+              >
+            </li>
+            <li>
+              <a href="#focus-hotkey-settings" class="nav-h3"
+                >⑤ 🔭 フォーカスホットキー設定</a
+              >
+            </li>
+            <li>
+              <a href="#font-size-adjustment" class="nav-h3"
+                >⑥ 📐 フォントサイズ調整</a
+              >
+            </li>
+            <li>
+              <a href="#tab-key-settings" class="nav-h3"
+                >⑦ ➡ Tabキーの設定ボタン</a
+              >
+            </li>
+            <li>
+              <a href="#minimize-option" class="nav-h3"
+                >⑧ ⏬ 最小化オプション</a
+              >
+            </li>
+            <li>
+              <a href="#always-on-top-option" class="nav-h3"
+                >⑨ 🔝 最前面オプション</a
+              >
+            </li>
+            <li>
+              <a href="#save-format-selection" class="nav-h3"
+                >⑩ 🔤 テキスト保存形式選択ボタン</a
+              >
+            </li>
+            <li>
+              <a href="#open-save-dir" class="nav-h3"
+                >⑪ 📂 テキスト保存ディレクトリを開く</a
+              >
+            </li>
+            <li>
+              <a href="#select-save-dir" class="nav-h3"
+                >⑫ 🗂️ テキスト保存ディレクトリ選択</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li class="has-children">
+          <span class="toggle-btn">▶</span>
+          <a href="#help-screen" class="nav-h2">❓ ヘルプ画面</a>
+          <ul>
+            <li><a href="#hotkey-list" class="nav-h3">🗺️ ホットキー一覧</a></li>
+          </ul>
+        </li>
+        <li class="has-children">
+          <span class="toggle-btn">▶</span>
+          <a href="#external-apps" class="nav-h2">💡 外部アプリとの連携</a>
+          <ul>
+            <li>
+              <a href="#win-clipboard-history" class="nav-h3"
+                >📋 Windows標準のクリップボード履歴機能</a
+              >
+            </li>
+            <li>
+              <a href="#clibor" class="nav-h3"
+                >✨ 高機能クリップボード履歴管理ソフトClibor</a
+              >
+            </li>
+            <li>
+              <a href="#obsidian-vault" class="nav-h3"
+                >⚛️ ObsidianのVaultへmdファイルとして保存する</a
+              >
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#download-and-installation" class="nav-h2"
+            >📥 ダウンロード・インストール方法</a
+          >
+        </li>
+        <li>
+          <a href="#disclaimer-and-license" class="nav-h2"
+            >⚠️ 免責事項・ライセンス</a
+          >
+        </li>
+      </ul>
+    </nav>
+
+    <main>
+      <!--*************************************************************************-->
+      <img src="./assets/eyecatch.png" alt="Prompt Linker アイキャッチ" />
+      <h1 id="prompt-linker-manual">
+        <img
+          src="PromptLinker.svg"
+          alt=""
+          class="title-icon"
+          aria-hidden="true"
+        />
+        Prompt Linker マニュアル
+      </h1>
+
+      <h2 id="app-overview">📘 アプリ概要</h2>
+      <p>
+        「<strong>Prompt Linker</strong
+        >」は入力したテキストをターゲットとなるアプリへ貼り付けるシンプルな<br />
+        <strong>Windows専用デスクトップアプリ</strong>です。
+      </p>
+      <img
+        src="./assets/main-screenshot.webp"
+        alt="Prompt Linker メイン画面のスクリーンショット"
+      />
+
+      <h3 id="key-features">📌 主な特徴</h3>
+      <ul>
+        <li>
+          <strong>リンクスロット</strong><br />
+          リンクするターゲットアプリを
+          最大3つまでのスロットに記憶し、メニューや「<strong>ホットキー</strong>」※
+          でターゲットアプリを切り替えることができます。
+        </li>
+        <li>
+          <strong>リサイズ可能範囲</strong><br />
+          全画面表示～最小500 x 170(px)まで自由にリサイズできます。
+        </li>
+        <li>
+          <strong>ターゲットアクション</strong><br />
+          ターゲットアプリへテキストを貼り付けた後にターゲットアプリで行うアクション
+          (エンターキーを押すなど)を選択できます。
+        </li>
+        <li>
+          <strong>プリセット機能</strong><br />
+          ウィンドウサイズや位置、ターゲットアクションなどをプリセットとして最大3つまで保存し、
+          ボタンやホットキーで呼び出すことができます。
+        </li>
+        <li>
+          <strong>ホットキー充実</strong><br />
+          殆どの操作をキーボード、マウスのいずれからでも行えます。<br />(一部例外あり)
+        </li>
+        <li>
+          <strong>最小化オプション</strong><br />
+          オプションとしてテキスト貼り付け後に本アプリを自動的に
+          最小化(タスクバーに格納)することができます。
+        </li>
+        <li>
+          <strong>テキスト保存機能</strong><br />
+          テキスト入力欄のテキストをユーザーがあらかじめ指定した任意のディレクトリへ
+          <strong>プレーンテキスト</strong>(<code>.txt</code>)もしくは
+          <strong>マークダウン</strong
+          >(<code>.md</code>)ファイルとして保存できます。
+        </li>
+      </ul>
+      <blockquote>
+        ❗❗ <strong>注意</strong><br />
+        本アプリはテキストの送信にクリップボードを使用します。<br />
+        機密情報等の取り扱いには十分注意して下さい。
+      </blockquote>
+      <blockquote>
+        💡「<strong>ホットキー</strong>」は<br />
+        「ショートカットキー」や「キーボードショートカット」とも呼ばれますが
+        本アプリでは「ホットキー」で統一します。
+      </blockquote>
+
+      <h3 id="use-cases">🎬 利用シーン</h3>
+      <p>本アプリは主に以下のようなシーンで使用することを想定しています。</p>
+      <ul>
+        <li>
+          webチャットベースのAIアプリ(<strong>ChatGPT</strong>など)へのテキスト入力
+        </li>
+        <li>
+          CLIツールのAIアプリ(<strong>Gemini CLI</strong>など)へのテキスト入力
+        </li>
+        <li>
+          IDE(<strong>VSCode</strong>など)でのAIチャット欄へのテキスト入力
+        </li>
+      </ul>
+      <p>
+        その他テキスト貼り付けを受け付けるアプリケーションにも使用できます。
+      </p>
+      <blockquote>
+        ❗ 注意<br />
+        但し、ターゲットアプリ内に複数のテキスト入力欄がある場合は(例:ブラウザのタブなど)<br />
+        本アプリは個別に認識することができません。<br />
+        ターゲット指定する際には入力したい<strong
+          >テキスト入力欄をクリックして</strong
+        >
+        フォーカスしてください。
+      </blockquote>
+
+      <h3 id="problems-solved">✨ 解決すること</h3>
+      <p>
+        AIチャットやCLIツールを使っていて以下のようなことが不便だと感じていたので、
+        これらの問題を解決したいという思いがありました。<br />
+      </p>
+      <ul>
+        <li>
+          <strong>テキスト入力欄が狭い</strong><br />
+          プロンプトなどマークダウン記法で構造化された文章を入力したり確認するには手狭で一覧性が低い。
+        </li>
+        <li>
+          <strong>エンターキーでの誤送信</strong><br />
+          変換確定や改行をしようと思ってエンターキーを押したら誤って文章の途中で送信してしまうことがある。
+        </li>
+        <li>
+          <strong>CLIツールでの日本語入力が不安定</strong><br />
+          変換確定するまでカーソルと離れた位置に文字が表示されることがあるため非常に見辛い。<br />
+          CLIツールやターミナルの設定である程度改善できる場合もあるが不安定なことが多い。<br />
+          場合によっては一部が画面外になることもある。
+        </li>
+      </ul>
+
+      <h3 id="traditional-approach">🐌 従来のアプローチ</h3>
+      <p>
+        上記のようなことを回避するために、メモ帳などのシンプルなテキストエディタを別に立ち上げて、
+        入力したテキストをターゲットアプリのテキスト入力欄へコピペする方法があると思います。
+      </p>
+      <p>ですが、コピペする作業では</p>
+      <ol>
+        <li>テキストエディタでテキストを入力</li>
+        <li>範囲選択(通常は全選択なので<kbd>Ctrl+A</kbd>)</li>
+        <li>コピー(<kbd>Ctrl+C</kbd>もしくは<kbd>Ctrl+X</kbd>)</li>
+        <li>ターゲットアプリをクリック(ターゲットアプリへフォーカス移動)</li>
+        <li>貼り付け(<kbd>Ctrl+V</kbd>)</li>
+        <li>ターゲットアプリで送信ボタン(もしくはエンターキーなど)を押す</li>
+        <li>テキストエディタをクリック(フォーカスをテキストエディタに戻す)</li>
+      </ol>
+      <p>というサイクルになり、効率が悪いです。</p>
+
+      <h3 id="using-this-app">🏎️ 本アプリを使用した場合</h3>
+      <h4 id="basic-cycle">🔁基本的なサイクル</h4>
+      <ol>
+        <li>本アプリでテキストを入力</li>
+        <li>「<strong>トリガーキー</strong>」※を押す</li>
+      </ol>
+      <p>ユーザーが行うサイクルは基本的に<strong>これだけ</strong>です。</p>
+      <p>トリガーキーを押すと</p>
+      <ol start="3">
+        <li>ターゲットアプリにテキストを貼り付け</li>
+        <li>
+          あらかじめ設定しておいたアクション(エンターキーを押すなど)をターゲットアプリで実行
+        </li>
+        <li>本アプリのテキスト入力欄にフォーカスを戻す</li>
+      </ol>
+      <p>といったフローが自動化されます。</p>
+      <blockquote>
+        💡 トリガーキーとは<br />
+        本アプリではターゲットアプリへテキストを貼り付けるためのホットキーを
+        「トリガーキー」と呼称しています。<br />
+        設定画面で<kbd>Ctrl+Enter</kbd> か
+        <kbd>Shift+Enter</kbd> のどちらかを選択できます。<br />
+        また、トリガーキーを押す代わりに右クリックメニューからでも同様の操作が行えます。
+      </blockquote>
+
+      <h4 id="using-minimize-option">⏬ 最小化オプションを使用した場合</h4>
+      <p>
+        最小化オプションをオンにするとターゲットアプリにテキストを貼り付けた後に
+        自動で本アプリのウィンドウを最小化(タスクバーに格納)します。
+      </p>
+      <p>
+        但し、その場合は自動でフォーカスは戻らないのでタスクバーのアイコンをクリックするか、
+        ホットキーを押してフォーカスを戻します。<br />
+        (最小化された状態からフォーカスを戻すとウィンドウが元の位置へ戻ります。)<br />
+        その場合サイクル的には
+      </p>
+      <ol>
+        <li>本アプリでテキストを入力</li>
+        <li>トリガーキーを押す</li>
+        <li>フォーカスを戻すホットキーを押す</li>
+      </ol>
+      <p>
+        というサイクルになるので基本サイクルよりは1サイクルにつき1手多くなります。
+      </p>
+
+      <h2 id="ui-structure">🔨 画面構成とツール</h2>
+      <p>
+        本アプリは「メイン画面」、「設定画面」、「ヘルプ画面」の３つの画面で構成されています。<br />
+        基本的には「メイン画面」を使用し、必要がある時に「設定画面」、「ヘルプ画面」に切り替えます。
+      </p>
+
+      <h2 id="main-screen">🖥️ メイン画面</h2>
+      <img
+        src="./assets/ui-structure-main.webp"
+        alt="メイン画面の各部名称説明"
+      />
+      <p>メイン画面の構成は上から</p>
+      <ul>
+        <li>タイトルバー</li>
+        <li>ツールバー</li>
+        <li>テキスト入力欄</li>
+      </ul>
+      <p>の3つのエリアで構成されています。</p>
+
+      <h3 id="title-bar">📢 タイトルバー</h3>
+      <ul>
+        <li>OS標準のタイトルバーです。全ての画面で共通です。</li>
+        <li>
+          ターゲットアプリを指定していない状態では本アプリ名の後に<code>Unlinked</code>と表示されます。
+        </li>
+        <li>
+          ターゲットアプリを指定すると<code>Linked: </code>
+          の後にターゲットアプリの名前(実行ファイル名)が表示されます。
+        </li>
+      </ul>
+
+      <h3 id="tool-bar">🧰 ツールバー</h3>
+      <img
+        src="./assets/toolbar-toggle.gif"
+        alt="ツールバーの表示・非表示の操作アニメーション"
+      />
+      <ul>
+        <li>
+          ツールバー上で右クリックをするとツールバーを隠すことができます。<br />
+          (※ツールバー上であればどこでも構いません。)
+        </li>
+        <li>
+          ツールバーが隠れている状態でテキスト入力欄との境界線にマウスオーバーするとクリックできる状態
+          (境界線が青色)になり、クリックすると再びツールバーを表示することができます。
+        </li>
+      </ul>
+      <p>
+        ツールバーには以下のようなボタン、ドロップダウンメニューが配置されています。
+      </p>
+
+      <h3 id="link-button">① 🔗 リンクボタン</h3>
+      <img
+        src="assets/link-button-waiting.webp"
+        alt="リンクボタン待機状態の表示"
+      />
+      <ul>
+        <li>
+          このボタンを押すと待機状態(ボタン内表示が<code>Waiting...</code>)になるので
+          ターゲットアプリのテキスト入力欄をクリックして指定します。
+        </li>
+        <li>待機中にもう一度リンクボタンを押すと待機状態が解除されます。</li>
+        <li>
+          待機開始から10秒以上経過するまでにターゲットアプリを指定しないとタイムアウトとなり、
+          待機状態が解除されます。
+        </li>
+        <li>
+          新しいターゲットアプリとリンクする度に最大3つまでのターゲットアプリが
+          <strong>「リンクスロット」</strong>へ記憶されます。
+        </li>
+        <li>現在使用中のスロット番号が表示されます。</li>
+      </ul>
+
+      <h3 id="link-slots">__ ▼ リンクスロット</h3>
+      <img
+        src="assets/link-slots-dropdown.png"
+        alt="リンクスロットのドロップダウンメニュー"
+      />
+      <strong>リンクスロット:</strong>
+      <ul>
+        <li>
+          ∨マーク(<code>chevron</code>)をクリックして現れるドロップダウンメニューから
+          スロットを選択してターゲットアプリを切り替えることができます。
+        </li>
+        <li>選択中のスロットはインジケーターが点灯します。</li>
+        <li>
+          3つを超えてリンクすると新しいターゲットアプリは
+          現在使用中のスロット以外のスロットに上書きされます。
+        </li>
+      </ul>
+
+      <strong>スロットのロック:</strong>
+      <ul>
+        <li>
+          対象スロットの上で右クリック→メニュー選択でスロットの 「<strong
+            >ロック / アンロック</strong
+          >」をすることができます。
+        </li>
+        <li>
+          ロック状態のスロットには<strong>ロックアイコン</strong>🔒が表示されます。
+        </li>
+        <li>
+          ロック状態のスロットは新しいターゲットアプリで上書きされません。
+        </li>
+      </ul>
+
+      <strong>スロットのクリア:</strong>
+      <ul>
+        <li>
+          対象のスロットの上で右クリック→メニュー選択でスロットの
+          「<strong>クリア</strong>」(空にする)ができます。
+        </li>
+        <li>
+          ロック状態のスロットは「<strong>クリア</strong>」することが出来ません。
+          「<strong>クリア</strong>」したい場合は先に対象スロットの
+          「<strong>アンロック</strong>」をして下さい。
+        </li>
+      </ul>
+      <blockquote>
+        ❗ 注意<br />
+        スロットにリンクしているアプリを終了した場合にはスロットは空になります。<br />
+        (ロック中のスロットであっても保護されません。)<br />
+        スロットの記憶は本アプリを終了すると失われます。
+      </blockquote>
+
+      <h3 id="preset-call-buttons">② 1️⃣2️⃣3️⃣ プリセット呼び出しボタン</h3>
+      <ul>
+        <li>
+          プリセットは設定画面で3つまで保存して呼び出すことができます。こちらは呼び出しボタンです。
+        </li>
+        <li>
+          プリセットは設定ファイル(<code>settings.json</code>)に保存され、次回以降の起動時に読み込まれます。
+        </li>
+        <li>
+          プリセットに保存される情報は以下の通りです。
+          <ul>
+            <li>ウィンドウの座標</li>
+            <li>ウィンドウの幅</li>
+            <li>ウィンドウの高さ</li>
+            <li>ツールバーの隠蔽状態</li>
+            <li>ターゲットアクション</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 id="target-action-buttons">③ 🎯 ターゲットアクション選択ボタン</h3>
+      <img
+        src="./assets/target-action-menu.webp"
+        alt="ターゲットアクション選択メニュー"
+      />
+      <ul>
+        <li>
+          ターゲットアプリにテキストを貼り付けた後にターゲットアプリで行うキー操作を指定します。
+        </li>
+        <li>
+          以下の選択肢からドロップダウンメニューで選択します。
+          <ul>
+            <li><kbd>Enter</kbd></li>
+            <li><kbd>Ctrl+Enter</kbd></li>
+            <li><kbd>Shift+Enter</kbd></li>
+            <li><code>Paste Only</code>(貼り付けのみでアクション無し)</li>
+          </ul>
+        </li>
+        <li>
+          この選択状態は設定ファイルに保存され、次回起動時は最後に選択されていた状態を保持します。
+        </li>
+      </ul>
+
+      <h3 id="save-text-button">④ 💾 テキスト保存ボタン</h3>
+      <ul>
+        <li>テキスト入力欄のテキストを保存します。</li>
+        <li>保存先の指定は設定画面で行います。</li>
+        <li>保存先を指定しておけばボタン一発で保存できます。</li>
+        <li>
+          保存形式はプレーンテキスト(<code>.txt</code>)とマークダウン
+          (<code>.md</code>)を選択できます。
+        </li>
+        <li>
+          ファイル名はタイムスタンプ(<code>YYYY-MM-DD-HHmmss</code>)を元に自動生成されます。
+        </li>
+      </ul>
+
+      <h3 id="settings-button">⑤ ⚙️ 設定ボタン</h3>
+      <ul>
+        <li>設定画面へと切り替えます。</li>
+      </ul>
+
+      <h3 id="help-button">⑥ ❓ ヘルプボタン</h3>
+      <ul>
+        <li>ヘルプ画面へと切り替えます</li>
+      </ul>
+
+      <h3 id="text-input-field">💬 テキスト入力欄</h3>
+      <p>
+        ターゲットアプリへ貼り付けるテキスト、もしくは保存するテキストを入力する所です。<br />
+        テキストリオーダー（選択したテキストをドラッグして移動する操作）も使用できます。
+      </p>
+      <ul>
+        <li>
+          🔥 <strong>【ホットキー】</strong><br />
+          テキストエディタで使える一般的なホットキーのうち以下の物が使用できます。
+          <ul>
+            <li>切り取り: <kbd>Ctrl+X</kbd></li>
+            <li>コピー: <kbd>Ctrl+C</kbd></li>
+            <li>貼り付け: <kbd>Ctrl+V</kbd></li>
+            <li>すべて選択: <kbd>Ctrl+A</kbd></li>
+            <li>元に戻す: <kbd>Ctrl+Z</kbd></li>
+            <li>やり直す: <kbd>Ctrl+Y</kbd></li>
+            <li>文字列検索: <kbd>Ctrl+F</kbd></li>
+            <li>印刷: <kbd>Ctrl+P</kbd></li>
+          </ul>
+        </li>
+        <li>
+          🖱️ <strong>【右クリックメニュー】</strong><br />
+          <img
+            src="./assets/context-menu.webp"
+            alt="テキスト入力欄の右クリックメニュー項目"
+          />
+          右クリックメニューを搭載しています。
+          <ul>
+            <li>
+              <strong>Transfer</strong><br />
+              入力したテキストをターゲットアプリへ貼り付けます<br />
+              この選択肢は本アプリ独自機能です。以降はテキストエリアでよくある右クリックメニューです。
+            </li>
+            <li>切り取り</li>
+            <li>コピー</li>
+            <li>貼り付け</li>
+            <li>すべて選択</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h2 id="settings-screen">⚙️ 設定画面</h2>
+      <img
+        src="./assets/ui-structure-settings.webp"
+        alt="設定画面のインターフェース説明"
+      />
+      <p>
+        この設定画面で設定した内容は即時反映されます。<br />
+        設定画面で設定した内容は<code>settings.json</code>に保存されます。
+      </p>
+
+      <h3 id="back-to-main-button">① 🔙 メイン画面へ戻るボタン</h3>
+      <ul>
+        <li>メイン画面に戻ります。</li>
+      </ul>
+
+      <h3 id="open-settings-file">② 📃 設定ファイルを開く</h3>
+      <ul>
+        <li>
+          <code>settings.json</code
+          >ファイルをOS既定のテキストエディタで開きます。<br />
+          ウィンドウサイズを数値で指定したい場合などに設定ファイルを直接編集できます。
+        </li>
+        <blockquote>
+          初回起動時に<code>settings.json</code>が本アプリの実行ファイル
+          (<code>PromptLinker.exe</code>)があるディレクトリに作成されます。<br />
+          <code>Program Files</code>
+          等書き込み権限が必要なディレクトリに実行ファイルがある場合には
+          <code>settings.json</code>は以下のディレクトリに作成されます。
+        </blockquote>
+        <pre><code>C:\Users\&lt;UserName&gt;\AppData\Local\PromptLinker</code></pre>
+
+        <li>
+          このファイルにはGUIからは設定できない項目があります。<br />
+          (※安全のためGUIからは設定できないようにしています。)
+          <pre><code>"SubmitDelay": 400,</code></pre>
+          <blockquote>
+            この値はターゲットアプリへテキストを貼り付けてから
+            ターゲットアクションを行うまでの遅延時間を設定しています。<br />
+            この間隔が短すぎるとターゲットアクションが失敗する場合があるので
+            ターゲットアクションが失敗する場合は値を大きくしてみて下さい。<br />
+            <br />
+            あまり大きくしすぎるとテンポが悪くなるので注意してください。<br />
+            最適な数値は環境により異なります。<br />
+            デフォルトでは400ミリ秒で設定しています。<br />
+            仮想デスクトップなどではもう少し大きな値に設定する必要がある可能性があります。<br />
+            念のため万が一極端な数値に設定した場合でも安全な範囲に補正される仕様になっています。<br />
+            設定変更後は再起動が必要です。
+          </blockquote>
+        </li>
+      </ul>
+
+      <h3 id="save-preset-button">③ 💾💾💾 プリセット保存ボタン</h3>
+      <ul>
+        <li>現在のウィンドウ状態などをプリセットとして保存します。</li>
+        <li>最大で3つのプリセットを保存できます。</li>
+        <li>
+          既に状態をセットしてあるプリセットの保存ボタンを押した場合には現在の状態で上書きされます。
+        </li>
+      </ul>
+
+      <h3 id="trigger-key-selection">④ 🏹 トリガーキー選択ボタン</h3>
+      <ul>
+        <li>
+          本アプリからターゲットアプリへテキストを貼り付けるためのトリガーとなるキーを指定します。
+        </li>
+        <li>
+          <kbd>Ctrl+Enter</kbd>か<kbd>Shift+Enter</kbd>のどちらかを
+          ドロップダウンメニューで選択します。
+        </li>
+      </ul>
+
+      <h3 id="focus-hotkey-settings">⑤ 🔭 フォーカスホットキー設定</h3>
+      <ul>
+        <li>
+          本アプリをアクティブ(フォーカスが当たっている)状態にするホットキーを設定します。
+        </li>
+        <li>
+          ここで設定したホットキーを押すことによって最小化からの復元ができます。
+        </li>
+        <li>
+          最小化されていない時は他のアプリにフォーカスがある状態から本アプリにフォーカスが移ります。
+        </li>
+
+        <li>
+          デフォルトでは<kbd>Ctrl+Alt+F</kbd>が設定されています。
+          右端の「←」アイコンをクリックするとデフォルト設定にリセットできます。
+        </li>
+      </ul>
+      🔧 <strong>【 設定方法 】</strong><br />
+      <img
+        src="./assets/hotkey-recording.webp"
+        alt="ホットキー録画状態の表示"
+      />
+      <ol>
+        <li>
+          ホットキーが記載されているテキストボックスをクリックします。<br />
+          <code>Recording...</code>と表示され待機状態になります。
+        </li>
+        <li>装飾キー(複数可)と通常キーを押します。</li>
+      </ol>
+      <ul>
+        <li>
+          待機状態中に<kbd>DEL</kbd>キーを押すとキャンセルされ待機状態が解除されます。
+        </li>
+        <li>
+          待機開始から10秒以内にホットキーを確定しないとキャンセルされ待機状態が解除されます。
+        </li>
+        <li>
+          Windowsシステムで使用されているホットキーや本アプリで既に使用されている
+          ホットキーは登録できません。
+        </li>
+        <li>装飾キーのみや通常キーのみでは登録できません。</li>
+        <li>
+          装飾キーは<kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>Alt</kbd><kbd>WIN</kbd>
+          で複数同時に指定できます。
+        </li>
+      </ul>
+      <blockquote>
+        ❗❗ <strong>注意</strong><br />
+        このホットキーは本アプリを立ち上げている状態で
+        <strong>グローバルなホットキー</strong>※になります。<br />
+        そのため、このホットキーを設定する時は他のホットキーと衝突しないように注意して下さい。
+      </blockquote>
+      <blockquote>
+        💡 グローバルホットキー（Global Hotkey）とは<br />
+        アプリケーションがアクティブ（最前面）でなくても、OS全体で機能するホットキーのことです。<br />
+        特定のソフトに依存せず、裏で起動しているツールやシステム機能を素早く呼び出せるため、
+        作業効率化に最適です
+      </blockquote>
+
+      <h3 id="font-size-adjustment">⑥ 📐 フォントサイズ調整</h3>
+      <ul>
+        <li>メイン画面のテキスト入力欄のフォントサイズを指定します。</li>
+      </ul>
+
+      <h3 id="tab-key-settings">⑦ ➡ Tabキーの設定ボタン</h3>
+      <ul>
+        <li>
+          メイン画面のテキスト入力欄での<kbd>Tab</kbd>キーの挙動を設定します。
+        </li>
+        <li>
+          選択できる挙動は以下の通りです。
+          <ul>
+            <li>アプリ内フォーカスの移動</li>
+            <li>Tabインデント</li>
+            <li>2スペースインデント</li>
+            <li>4スペースインデント</li>
+          </ul>
+        </li>
+      </ul>
+
+      <h3 id="minimize-option">⑧ ⏬ 最小化オプション</h3>
+      <ul>
+        <li>
+          テキストを貼り付けた後に本アプリを最小化するかどうかを選択することができます。
+        </li>
+        <li>デフォルトではオフに設定されています。</li>
+      </ul>
+      <blockquote>
+        ❗ 注意<br />
+        このオプションをオンにした場合には本アプリに自動で
+        フォーカスが戻る機能は無効化されます。<br />
+        フォーカスホットキー等を利用してください。
+      </blockquote>
+
+      <h3 id="always-on-top-option">⑨ 🔝 最前面オプション</h3>
+      <ul>
+        <li>常に最前面に表示します。</li>
+      </ul>
+      <blockquote>
+        ❗ 注意<br />
+        外部アプリとドラッグアンドドロップできたりとメリットもありますが、
+        本アプリの下にある表示を見逃したり一部の外部アプリとの連携がうまくいかない等の
+        デメリットもあります。
+      </blockquote>
+
+      <h3 id="save-format-selection">⑩ 🔤 テキスト保存形式選択ボタン</h3>
+      <ul>
+        <li>
+          テキスト保存ボタンやホットキーで保存した時の拡張子を選択します。
+        </li>
+      </ul>
+
+      <h3 id="open-save-dir">⑪ 📂 テキスト保存ディレクトリを開く</h3>
+      <ul>
+        <li>テキストを保存するディレクトリをエクスプローラで開きます。</li>
+      </ul>
+
+      <h3 id="select-save-dir">⑫ 🗂️ テキスト保存ディレクトリ選択</h3>
+      <ul>
+        <li>エクスプローラの参照ウィンドウを開いて指定します。</li>
+        <li>途中で変更することも可能です。</li>
+      </ul>
+      <blockquote>
+        ❗❗ <strong>注意</strong><br />
+        書き込み権限が必要なディレクトリを指定した場合はメッセージが出て弾かれますので
+        別のディレクトリを指定してください
+      </blockquote>
+
+      <h2 id="help-screen">❓ ヘルプ画面</h2>
+      <img src="./assets/help-screen.webp" alt="ヘルプ画面スクリーンショット" />
+      <p>
+        マウス操作での特殊な操作やホットキーを確認できます。<br />
+        本アプリはほとんどの機能をホットキーでも操作できます。
+      </p>
+
+      <h3 id="hotkey-list">🗺️ ホットキー一覧</h3>
+      <pre><code># 画面操作
+Alt + H : ツールバー表示/非表示
+Esc : メイン画面を表示
+F1 : ヘルプ画面表示/非表示
+Ctrl + , : 設定画面を表示
+Ctrl + Tab : 画面をローテーション(メイン↔設定↔ヘルプ)
+
+# リンクスロット
+Ctrl + 1〜3 : リンクスロット切替
+Ctrl + Shift + 1〜3 : リンクスロットのロック/アンロック
+Ctrl + Alt + 1〜3 : リンクスロットをクリア
+
+# 転送・ターゲット操作
+Alt + C : テキスト入力欄をクリア
+Alt + L : ターゲットアプリのリンク/キャンセル
+Ctrl/Shift + Enter : テキスト転送
+Alt + Enter : アクション設定：Enter
+Ctrl + Alt + Enter : アクション設定：Ctrl+Enter
+Shift + Alt + Enter : アクション設定：Shift+Enter
+Alt + P : アクション設定：貼り付けのみ
+Alt + K : トリガーキー切替(Ctrl+Enter/Shift+Enter)
+Alt + T : Tabキー動作切替
+
+# プリセット
+Alt + 1〜3 : プリセット呼び出し
+Shift + Alt + 1〜3 : プリセット保存
+
+# 設定・エクスポート
+Ctrl + S : テキスト入力欄のテキストを保存
+Alt + J : 設定ファイル(settings.json)を開く
+Alt + R : フォーカスホットキーを初期化
+Alt + A : 最前面オプションの切替
+Alt + E : テキスト保存時の拡張子切替(.txt/.md)
+Alt + M : 最小化オプション切替
+Alt + - / = : フォントサイズ変更
+Alt + B : テキスト保存ディレクトリを参照
+Alt + O : テキスト保存ディレクトリを開く</code></pre>
+
+      <h2 id="external-apps">💡 外部アプリとの連携</h2>
+      <p>
+        本アプリは入力したテキストをターゲットアプリに貼り付けるという性質上、
+        必然的にクリップボードを経由します。<br />
+        よって、貼り付けたテキストはクリップボードの履歴に残ります。<br />
+        この性質を利用した外部アプリとの連携例を紹介します。
+      </p>
+
+      <h3 id="win-clipboard-history">📋 Windows標準のクリップボード履歴機能</h3>
+      <p>
+        直近で貼り付けた内容を素早く確認したり復元したりする用途には
+        Windows標準のクリップボードの履歴機能を活用すると便利です。<br />
+        標準機能なので何もインストールしなくても<kbd>WIN+V</kbd>で起動できます。<br />
+        本アプリの「<strong>最前面オプション</strong>」をオンにしていても問題ありません。
+      </p>
+
+      <h3 id="clibor">✨ 高機能クリップボード履歴管理ソフトClibor</h3>
+      <p>
+        より高機能なクリップボード履歴フリーソフトの<a
+          href="https://chigusa-web.com/clibor/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Clibor</a
+        >が非常に便利でお薦めです。<br />
+        履歴の保存件数も圧倒的に多く、検索機能や定型文機能もとても便利です。<br />
+        また、テキストデータに特化しているので本アプリとも相性が良いです。
+      </p>
+      <img
+        src="./assets/clibor-integration.webp"
+        alt="Cliborの履歴一覧画面との連携イメージ"
+      />
+      <blockquote>
+        ❗❗ <strong>注意</strong><br />
+        本アプリの「<strong>最前面オプション</strong>」(<code
+          >Always On Top</code
+        >)
+        をオンにしているとフォーカスを受け取れずにCliborからの自動貼り付けに失敗します。<br />
+        Cliborの自動貼り付け機能を使用する場合は本アプリの最前面オプションをオフにしてください。
+      </blockquote>
+
+      <h3 id="obsidian-vault">⚛️ ObsidianのVaultへmdファイルとして保存する</h3>
+      <p>
+        本アプリのテキストの保存形式をマークダウンに設定し、保存場所を<a
+          href="https://obsidian.md/"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Obsidian</a
+        >のVault内のフォルダに設定しておけば保存ボタン、
+        あるいは<kbd>Ctrl+S</kbd>一発で即座にVault内にマークダウンファイルが作成されます。
+      </p>
+      <p>
+        ファイル名は日時から自動生成されるので、テキストエディタなどで保存する場合の
+      </p>
+      <ol>
+        <li>ディレクトリ選択</li>
+        <li>ファイル名を入力</li>
+        <li>拡張子を指定して保存</li>
+      </ol>
+      <p>というフローよりも素早く保存が完了します。</p>
+      <img
+        src="./assets/obsidian-integration.webp"
+        alt="Obsidian内で保存されたマークダウンファイルが表示されている様子"
+      />
+      <p>
+        作業中に思いついたちょっとしたメモを残しておく程度のことであれば
+        わざわざObsidianを起動するまでもなく完了します。<br />
+        また、クリップボード履歴と組み合わせて過去に使用したプロンプトをテンプレートや
+        資料などの用途にに残しておきたいと思った場合にも活用できるかもしれません。
+      </p>
+
+      <h2 id="download-and-installation">📥 ダウンロード・インストール方法</h2>
+      <p>
+        こちらのダウンロードリンクからZipファイルをダウンロードしてください。<br />
+        <a href="" target="_blank" rel="noopener noreferrer"
+          >ダウンロードリンク設置予定場所</a
+        >
+      </p>
+      <p>
+        インストーラーはありません。
+        ダウンロードしたZipファイルを解凍してお好きなディレクトリに置いてください。<br />
+        デスクトップにショートカットを作りたい場合やタスクバーにピン止めする場合は手動で行って下さい。
+      </p>
+      <blockquote>
+        「Prompt Linker」はポータブルアプリとして動作します。<br />
+        設定ファイルを<code>exe</code>ファイルと同じ場所に保存するためユーザーフォルダ内<br />
+        （例：<strong>C:\Users\&lt;UserName&gt;\Apps\PromptLinker</strong>）<br />
+        などに配置することを推奨します。<br />
+        <br />
+        Program Files
+        など書き込み制限のあるフォルダに置いた場合、設定ファイルは自動的に<br />
+        <strong>C:\Users\&lt;UserName&gt;\AppData\Local\PromptLinker</strong>
+        に保存されます。
+      </blockquote>
+
+      <h2 id="disclaimer-and-license">⚠️ 免責事項・ライセンス</h2>
+      <h3 id="disclaimer">免責事項</h3>
+      <p>
+        本アプリの使用によって生じた、いかなる損害（データの消失、破損、業務の停止、PC環境の不具合など）
+        についても作者は一切の責任を負いません。自己責任でご利用ください。
+      </p>
+      <h3 id="license">ライセンス</h3>
+      <p>
+        本アプリのライセンスは <strong>MIT License</strong> に準拠します。<br />
+        商用・非商用を問わず、誰でも無償で自由に使用、複製、変更、再配布することができます。
+      </p>
+    </main>
+    <script src="js/script.js"></script>
+  </body>
+</html>
