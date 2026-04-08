@@ -61,9 +61,31 @@ textarea {
   border: none;
   border-top: 1px solid var(--border-dark);
   padding: 10px;
-  font-size: 16px; /* エディタ部分は視認性重視で固定 */
+  font-size: 16px;
   font-family: var(--font-family);
   resize: none;
   outline: none;
   user-select: text;
+}
+
+/* スクロールバー */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) var(--bg-color);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-color);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 10px;
+  border: 2px solid var(--bg-color);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-light);
 }
