@@ -95,7 +95,7 @@ ApplyWindowPreset(index) {
     MainGui.Move(preset["x"], preset["y"], preset["w"], preset["h"])
     if (preset.Has("isToolbarHidden")) {
         IsToolbarHidden := preset["isToolbarHidden"]
-        wv.PostWebMessageAsString(IsToolbarHidden ? "hideToolbar" 
+        wv.PostWebMessageAsString(IsToolbarHidden ? "hideToolbar"
             : "showToolbar")
     }
 
