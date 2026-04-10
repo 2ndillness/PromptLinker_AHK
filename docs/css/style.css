@@ -195,6 +195,7 @@ main {
   max-width: 900px;
   background-color: var(--bg-color);
   min-height: 100vh;
+  padding-bottom: 80vh;
   box-shadow: var(--main-shadow);
   transition: background-color 0.3s;
 }

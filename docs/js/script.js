@@ -4,38 +4,44 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll("main h1, main h2, main h3, main h4"),
   );
 
-  // Scroll Spy Logic
+  // スクロールスパイ機能
   const observerOptions = {
     root: null,
-    rootMargin: "-10% 0px -80% 0px",
+
+    rootMargin: "-20px 0px -80% 0px",
     threshold: 0,
   };
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const id = entry.target.getAttribute("id");
-        if (id) {
-          sidebarLinks.forEach((link) => {
-            link.classList.remove("active");
-            if (link.getAttribute("href") === `#${id}`) {
-              link.classList.add("active");
-              // Ensure parent is open
-              let parent = link.closest(".has-children");
-              while (parent) {
-                parent.classList.add("open");
-                parent = parent.parentElement.closest(".has-children");
-              }
-            }
-          });
+    sidebarLinks.forEach((link) => link.classList.remove("active"));
+
+    const visibleEntries = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+    if (visibleEntries.length > 0) {
+      const topmostEntry = visibleEntries[0];
+      const id = topmostEntry.target.getAttribute("id");
+      if (id) {
+        const activeLink = document.querySelector(
+          `#sidebar li a[href="#${id}"]`,
+        );
+        if (activeLink) {
+          activeLink.classList.add("active");
+          // 親要素の開閉状態を調整
+          let parent = activeLink.closest(".has-children");
+          while (parent) {
+            parent.classList.add("open");
+            parent = parent.parentElement.closest(".has-children");
+          }
         }
       }
-    });
+    }
   }, observerOptions);
 
   sections.forEach((section) => observer.observe(section));
 
-  // Lightbox Logic
+  // ライトボックス機能
   const lightbox = document.createElement("div");
   lightbox.id = "lightbox";
   document.body.appendChild(lightbox);
@@ -53,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     lightbox.style.display = "none";
   });
 
-  // Copy Button Logic
+  // コードコピー機能
   document.querySelectorAll("main pre").forEach((pre) => {
     const btn = document.createElement("button");
     btn.className = "copy-btn";
@@ -73,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Toggle Sidebar Items
+  // サイドバー項目開閉機能
   document.querySelectorAll(".toggle-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -82,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Smooth scroll for anchors
+  // アンカーリンクのスムーズスクロール
   sidebarLinks.forEach((link) => {
     link.addEventListener("click", (e) => {
       const href = link.getAttribute("href");
