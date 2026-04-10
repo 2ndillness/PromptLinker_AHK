@@ -101,7 +101,17 @@ ToggleSetting(key) {
     valStr := Settings[key] ? "true" : "false"
     wv.ExecuteScriptAsync("updateUI('" key "', " valStr ");")
     SaveSettings()
-    wv.PostWebMessageAsString("notify:success:" . key . " updated")
+
+    ; 表示用名称の変換
+    displayNames := Map(
+        "MinimizeOption", "Minimize Option",
+        "AlwaysOnTop", "Always On Top",
+        "ClearTextAtTransfer", "Clear Text at Transfer",
+        "ClearTextAtSave", "Clear Text at Save"
+    )
+    name := displayNames.Has(key) ? displayNames[key] : key
+    status := Settings[key] ? "ON" : "OFF"
+    wv.PostWebMessageAsString("notify:success:" . name . ": " . status)
 }
 
 /**

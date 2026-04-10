@@ -192,6 +192,8 @@ Hotkey("!=", (*) => ChangeFontSize(1))
 Hotkey("!a", (*) => ToggleAlwaysOnTop())
 Hotkey("!e", (*) => ToggleExportExtension())
 Hotkey("!m", (*) => ToggleSetting("MinimizeOption"))
+Hotkey("+!t", (*) => ToggleSetting("ClearTextAtTransfer"))
+Hotkey("+!s", (*) => ToggleSetting("ClearTextAtSave"))
 Hotkey("!k", ToggleTriggerKey)
 Hotkey("!t", (*) => CycleTabBehavior())
 
