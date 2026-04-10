@@ -97,10 +97,7 @@ global StartTime := 0
 global IsToolbarHidden := false
 
 global CurrentSlotIndex := 1
-global TargetSlots := [
-    { hwnd: 0, exe: "", action: "", locked: false },
-    { hwnd: 0, exe: "", action: "", locked: false },
-    { hwnd: 0, exe: "", action: "", locked: false }
+global TargetSlots := [{ hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }, { hwnd: 0, exe: "", action: "", locked: false }
 ]
 
 global Settings := Map(
@@ -114,6 +111,8 @@ global Settings := Map(
     "FocusHotkey", "^!f",
     "TriggerKey", "Ctrl + Enter",
     "TabBehavior", "Move Focus",
+    "ClearTextAtTransfer", true,
+    "ClearTextAtSave", false,
     "Presets", Map("1", "", "2", "", "3", "")
 )
 
@@ -244,7 +243,7 @@ if Settings["AlwaysOnTop"] {
     MainGui.Opt("+AlwaysOnTop")
 }
 
-MainGui.Show("w500 h440")
+MainGui.Show("w500 h500")
 wvc.Fill()
 
 ToggleAlwaysOnTop() {
@@ -302,7 +301,7 @@ OnWebMsg(sender, args) {
         k := payload.Get("key", "")
         v := payload.Get("value", "")
 
-        if (k == "MinimizeOption" || k == "AlwaysOnTop") {
+        if (k == "MinimizeOption" || k == "AlwaysOnTop" || k == "ClearTextAtTransfer" || k == "ClearTextAtSave") {
             v := (v = true || v = 1 || v == "1" || v == "true") ? true : false
             if (k == "AlwaysOnTop")
                 MainGui.Opt(v ? "+AlwaysOnTop" : "-AlwaysOnTop")

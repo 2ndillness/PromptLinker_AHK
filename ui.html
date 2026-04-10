@@ -385,6 +385,42 @@
           </label>
         </div>
 
+        <!-- 送信時クリア設定 -->
+        <div class="setting-row">
+          <label>Clear Text at Transfer</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="clear-transfer-check"
+              onchange="
+                sendMsg('updateSetting', {
+                  key: 'ClearTextAtTransfer',
+                  value: this.checked,
+                })
+              "
+            />
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <!-- 保存時クリア設定 -->
+        <div class="setting-row">
+          <label>Clear Text at Save</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="clear-save-check"
+              onchange="
+                sendMsg('updateSetting', {
+                  key: 'ClearTextAtSave',
+                  value: this.checked,
+                })
+              "
+            />
+            <span class="slider"></span>
+          </label>
+        </div>
+
         <!-- エクスポート拡張子設定 (ドロップダウン) -->
         <div class="setting-row">
           <label>Export Extension</label>

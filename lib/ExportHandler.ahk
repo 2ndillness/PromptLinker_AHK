@@ -144,6 +144,9 @@ ExportPrompt(content) {
         }
         FileAppend(content, fullPath, "UTF-8")
         wv.PostWebMessageAsString("notify:success:Saved as: " . fileName)
+        if (Settings["ClearTextAtSave"]) {
+            wv.ExecuteScriptAsync("clearTextArea();")
+        }
     } catch as err {
         msg := "Export Failed: " . err.Message
         wv.PostWebMessageAsString("notify:error:" . msg)

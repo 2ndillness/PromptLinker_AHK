@@ -34,7 +34,9 @@ ExecuteTransfer(text) {
     }
 
     Sleep(150)
-    wv.ExecuteScriptAsync("clearTextArea();")
+    if (Settings["ClearTextAtTransfer"]) {
+        wv.ExecuteScriptAsync("clearTextArea();")
+    }
 
     if (Settings["MinimizeOption"]) {
         WinMinimize("ahk_id " . MainGui.Hwnd)
@@ -92,7 +94,6 @@ AddTargetSlot(hwnd, exe, action) {
                 break
             }
         }
-
     }
 
     ; 3. 全てロックされている場合

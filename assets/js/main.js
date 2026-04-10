@@ -277,6 +277,12 @@ function updateUI(key, value) {
     case "AlwaysOnTop":
       document.getElementById("always-on-top-check").checked = isTrue;
       break;
+    case "ClearTextAtTransfer":
+      document.getElementById("clear-transfer-check").checked = isTrue;
+      break;
+    case "ClearTextAtSave":
+      document.getElementById("clear-save-check").checked = isTrue;
+      break;
     case "TriggerKey":
       const tLabel = document.getElementById("trigger-key-label");
       if (tLabel) tLabel.innerText = value;

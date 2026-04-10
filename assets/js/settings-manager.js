@@ -72,6 +72,8 @@ const HOTKEY_BLACKLIST = [
   "!a",
   "!o",
   "!h",
+  "+!t",
+  "+!s",
 ];
 let recordingTimeout = null;
 
@@ -95,6 +97,9 @@ function initSettings(settings) {
   document.getElementById("minimize-option-check").checked =
     settings.MinimizeOption;
   document.getElementById("always-on-top-check").checked = settings.AlwaysOnTop;
+  document.getElementById("clear-transfer-check").checked =
+    settings.ClearTextAtTransfer;
+  document.getElementById("clear-save-check").checked = settings.ClearTextAtSave;
   const extLabel = document.getElementById("export-ext-label");
   if (extLabel) extLabel.innerText = settings.ExportExtension || ".txt";
   const tabLabel = document.getElementById("tab-behavior-label");
