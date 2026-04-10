@@ -145,16 +145,6 @@ CycleTabBehavior(*) {
     UpdateSetting("TabBehavior", newVal, "Tab: " . newVal)
 }
 
-
-/**
- * ターゲットアクションを更新する
- * @param {string} action アクション名
- */
-UpdateTargetAction(action) {
-    UpdateSetting("TargetAction", action, "Action: " action)
-    UpdateSlotAction(action)
-}
-
 /**
  * 設定値を更新し、UI同期・保存・通知を行う共通関数
  * @param {string} key Settingsマップのキー
@@ -176,4 +166,3 @@ UpdateSetting(key, value, notifyMsg := "") {
 
     SaveSettings()
 }
-

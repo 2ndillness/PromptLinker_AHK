@@ -308,7 +308,11 @@ OnWebMsg(sender, args) {
             if (k == "AlwaysOnTop")
                 MainGui.Opt(v ? "+AlwaysOnTop" : "-AlwaysOnTop")
         }
-        UpdateSetting(k, v)
+
+        if (k == "TargetAction")
+            UpdateTargetAction(v)
+        else
+            UpdateSetting(k, v)
 
         if (k == "FocusHotkey") {
             SetFocusHotkey(Settings[k])

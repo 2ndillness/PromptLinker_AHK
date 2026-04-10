@@ -138,11 +138,11 @@ SwitchTargetSlot(index) {
     CurrentSlotIndex := index
     TargetHWND := slot.hwnd
     TargetProcess := slot.exe
-    Settings["TargetAction"] := slot.action
+    ; スロットに保存されているアクションをグローバル設定に同期
+    UpdateTargetAction(slot.action)
 
     ; UI更新
     MainGui.Title := AppName . " - Linked: " . TargetProcess
-    wv.ExecuteScriptAsync("updateUI('TargetAction', '" . slot.action . "');")
     wv.ExecuteScriptAsync("setLinkWaiting(false);")
     SyncSlotsToJS()
     wv.PostWebMessageAsString("notify:success:Switched to Slot " . index)
@@ -204,7 +204,6 @@ ClearTargetSlot(index) {
         TargetProcess := ""
         MainGui.Title := AppName . " - Unlinked"
         wv.ExecuteScriptAsync("setLinkWaiting(false);")
-        wv.ExecuteScriptAsync("updateUI('TargetAction', 'Enter');")
 
         ; 別の有効なスロットを探す
         nextSlot := 0
@@ -232,10 +231,17 @@ ClearTargetSlot(index) {
 }
 
 /**
- * 現在のスロットのアクションを更新
+ * ターゲットアクションを更新し、現在のスロットがあれば同期する
  */
-UpdateSlotAction(action) {
+UpdateTargetAction(action) {
     global TargetSlots, CurrentSlotIndex
+
+    if (action == "")
+        return
+
+    ; 設定管理側の共通関数を呼び出して設定更新・UI同期・保存を行う
+    UpdateSetting("TargetAction", action)
+
     if (TargetSlots[CurrentSlotIndex].hwnd != 0) {
         TargetSlots[CurrentSlotIndex].action := action
         SyncSlotsToJS()
@@ -278,7 +284,6 @@ MonitorTargetStatus() {
                 TargetProcess := ""
                 MainGui.Title := AppName . " - Unlinked"
                 wv.ExecuteScriptAsync("setLinkWaiting(false);")
-                wv.ExecuteScriptAsync("updateUI('TargetAction', 'Enter');")
             }
             slot.hwnd := 0
             slot.exe := ""
