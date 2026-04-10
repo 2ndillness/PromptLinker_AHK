@@ -216,6 +216,13 @@ try {
 wv := wvc.CoreWebView2
 wv.Settings.AreBrowserAcceleratorKeysEnabled := true
 wv.Settings.AreDefaultContextMenusEnabled := false
+
+; WebView2のホワイトフラッシュ対策: 背景を透明にする
+try {
+    wvc.DefaultBackgroundColor := 0 ; ARGBのAlphaを0にする
+} catch {
+    ; エラー回避用
+}
 wv.Settings.IsZoomControlEnabled := false
 
 wv.AddScriptToExecuteOnDocumentCreatedAsync(
