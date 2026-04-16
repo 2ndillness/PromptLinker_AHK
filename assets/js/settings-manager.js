@@ -72,6 +72,7 @@ const HOTKEY_BLACKLIST = [
   "!a",
   "!o",
   "!h",
+  "!left",
   "+!t",
   "+!s",
 ];

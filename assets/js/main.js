@@ -86,36 +86,57 @@ function selectAction(action, e) {
 }
 
 document.addEventListener("keydown", (e) => {
+  if (e.altKey && e.key === "ArrowLeft") {
+    const isMainVisible = !document
+      .getElementById("main-view")
+      .classList.contains("hidden");
+    if (!isMainVisible) {
+      e.preventDefault();
+      showView("main-view");
+    }
+    return;
+  }
+
   if (e.key === "Escape") {
     const hotkeyInput = document.getElementById("hotkey-input");
     if (hotkeyInput && document.activeElement === hotkeyInput) return;
 
-    const targetMenu = document.getElementById("target-menu");
-    const actionMenu = document.getElementById("action-menu");
-    const exportMenu = document.getElementById("export-menu");
-    const triggerMenu = document.getElementById("trigger-menu");
+    // 1. 各種メニュー・コンテキストメニューを閉じる
+    const menus = [
+      "target-menu",
+      "action-menu",
+      "export-menu",
+      "trigger-menu",
+      "tab-behavior-menu",
+      "context-menu",
+      "slot-context-menu",
+    ];
+    menus.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        if (id.includes("context")) {
+          el.style.display = "none";
+        } else {
+          el.classList.add("hidden");
+        }
+      }
+    });
 
-    if (targetMenu && !targetMenu.classList.contains("hidden")) {
-      targetMenu.classList.add("hidden");
-      return;
-    }
-    if (actionMenu && !actionMenu.classList.contains("hidden")) {
-      actionMenu.classList.add("hidden");
-      return;
-    }
-    if (exportMenu && !exportMenu.classList.contains("hidden")) {
-      exportMenu.classList.add("hidden");
-      return;
-    }
-    if (triggerMenu && !triggerMenu.classList.contains("hidden")) {
-      triggerMenu.classList.add("hidden");
-      return;
+    // 2. リンク待機中(Waiting...)であればキャンセル
+    const linkBtn = document.getElementById("link-btn");
+    if (linkBtn && linkBtn.classList.contains("recording")) {
+      sendMsg("toggleLink");
     }
 
-    const isMainVisible = !document
-      .getElementById("main-view")
-      .classList.contains("hidden");
-    if (!isMainVisible) showView("main-view");
+    // 3. テキストエリアの選択状態を解除（ブラウザ標準で不足する分を補完）
+    if (document.activeElement === textArea) {
+      const start = textArea.selectionStart;
+      const end = textArea.selectionEnd;
+      if (start !== end) {
+        // 選択されている場合は、カーソルを選択開始位置に移動して解除
+        textArea.setSelectionRange(start, start);
+      }
+    }
   }
 });
 
